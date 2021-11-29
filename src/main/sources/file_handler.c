@@ -7,7 +7,7 @@
 
 /************************************************************************* Symbolic constants */
 
-#define STORAGE_PATH "../cal_storage"
+#define STORAGE_PATH "../src/main/cal_storage"
 
 /************************************************************************* Static function prototypes */
 
