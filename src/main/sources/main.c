@@ -38,4 +38,3 @@ int main() {
 
     return (0);
 }
-//BRUH DET ER EN TEST
