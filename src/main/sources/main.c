@@ -24,12 +24,11 @@ int main() {
     cal = get_cal(47, 2021);
     cal = get_cal(45, 2021);
     cal = get_cal(44, 2021);
-    cal = get_cal(49, 2021);
+    cal = get_cal(48, 2021);
     cal = get_cal(46, 2021);
 
     cal = get_cal(46, 2021);
     cal.days[0].dom = 1;
-
     save_cal(cal);
 
     delete_cal(49, 2021);
