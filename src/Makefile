@@ -4,6 +4,9 @@ CFLAGS := -std=c89 -Wall
 MEXE := Kisscal.exe
 TEXE := Tester.exe
 
+MOUT := Kisscal.out
+TOUT := Tester.out
+
 #########################################################################
 
 MAIN_SRC := main/sources
@@ -27,7 +30,7 @@ TEST_DEPS := $(patsubst $(TEST_OBJ)/%.o, $(TEST_DEP)/%.d, $(TEST_OBJS))
 
 #########################################################################
 
-all: $(MEXE) $(TEXE)
+all: $(MEXE) $(TEXE) $(MOUT) $(TOUT)
 
 -include $(MAIN_DEPS)
 -include $(TEST_DEPS)
@@ -39,6 +42,12 @@ $(MEXE): $(MAIN_OBJS)
 	$(CC) $^ -o $@ $(CFLAGS)
 
 $(TEXE): $(TEST_OBJS)
+	$(CC) $^ -o $@ $(CFLAGS)
+
+$(MOUT): $(MAIN_OBJS)
+	$(CC) $^ -o $@ $(CFLAGS)
+
+$(TOUT): $(TEST_OBJS)
 	$(CC) $^ -o $@ $(CFLAGS)
 
 $(MAIN_OBJ)/%.o: $(MAIN_SRC)/%.c
@@ -55,7 +64,7 @@ $(shell mkdir -p $(TEST_OBJ) $(TEST_DEP))
 clean:
 	rm -rf $(MAIN_OBJ) $(MAIN_DEP)
 	rm -rf $(TEST_OBJ) $(TEST_DEP)
-	rm -f *.exe
+	rm -f *.exe *.out
 
 clean_storage:
 	rm -f ./main/cal_storage
