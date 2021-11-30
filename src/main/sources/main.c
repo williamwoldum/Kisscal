@@ -31,6 +31,8 @@ int main() {
     cal.days[0].dom = 1;
     save_cal(cal);
 
+    printf("\n size of cal: %ld\n", sizeof(cal));
+
     delete_cal(49, 2021);
 
     prn_file_content();

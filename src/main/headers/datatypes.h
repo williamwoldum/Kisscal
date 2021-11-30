@@ -9,7 +9,7 @@
 
 #define DAYS_IN_WEEK 7
 #define HOURS_IN_DAY 24
-#define TITLE_LENGTH 20
+#define TITLE_LENGTH 16
 
 /************************************************************/
 
@@ -23,7 +23,7 @@ typedef struct event {
 typedef struct day {
     int month;
     int dom;
-    event events[HOURS_IN_DAY];
+    event events[HOURS_IN_DAY * 2];
 } day;
 
 typedef struct calendar {

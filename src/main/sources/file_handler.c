@@ -54,6 +54,7 @@ void save_cal(calendar cal) {
     fclose(file);
 }
 
+/* TODO: should pe "reset_cal" and owerwrite instead of changing "valid"*/
 void delete_cal(int week, int year) {
     FILE *file = fopen(STORAGE_PATH, "rb+");
 
@@ -69,6 +70,8 @@ void delete_cal(int week, int year) {
     }
     fclose(file);
 }
+
+/* TODO: reset day*/
 
 /************************************************************************* Static functions */
 
