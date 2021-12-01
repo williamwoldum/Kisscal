@@ -1,12 +1,17 @@
+#include <regex.h>
 #include <stdio.h>
 #include <time.h>
 
 #include "../headers/datatypes.h"
 #include "../headers/file_handler.h"
+#include "../headers/input_handler.h"
+#include "../headers/regex_handler.h"
 
 int main() {
-    clr_file();
+    regex_t regexs[NUM_RULES];
+    setup_regex(regexs);
 
+    clr_file();
     calendar cal = get_cal(45, 2021);
     cal = get_cal(44, 2021);
     cal = get_cal(43, 2021);
@@ -36,6 +41,8 @@ int main() {
     delete_cal(49, 2021);
 
     prn_file_content();
+
+    prompt_user_intput(regexs);
 
     return (0);
 }
