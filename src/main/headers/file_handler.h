@@ -10,6 +10,7 @@
 calendar get_cal(int week, int year);
 void save_cal(calendar cal);
 void delete_cal(int week, int year);
+void reset_cal(int week, int year);
 
 void clr_file();
 void prn_file_content();

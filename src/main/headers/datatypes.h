@@ -13,6 +13,13 @@
 
 /************************************************************/
 
+typedef struct assignment {
+    char title[TITLE_LENGTH];
+    time_t deadline;
+    int expected_time;
+    int elapsed_time;
+} assignment;
+
 typedef struct event {
     char title[TITLE_LENGTH];
     time_t duration_start;
@@ -24,6 +31,7 @@ typedef struct day {
     int month;
     int dom;
     event events[HOURS_IN_DAY * 2];
+    event assignments[HOURS_IN_DAY * 2];
 } day;
 
 typedef struct calendar {
