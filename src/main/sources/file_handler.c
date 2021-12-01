@@ -44,7 +44,6 @@ calendar get_cal(int week, int year) {
 void save_cal(calendar cal) {
     FILE *file = fopen(STORAGE_PATH, "rb+");
 
-    cal.valid = 1;
     int index = get_cal_index(cal.week, cal.year, file);
 
     if (index == -1) {
@@ -66,27 +65,33 @@ void delete_cal(int week, int year) {
     int index = get_cal_index(week, year, file);
 
     if (index != -1) {
-        calendar cal;
-        fseek(file, sizeof(int) + (index * sizeof(calendar)), SEEK_SET);
-        fread(&cal, sizeof(calendar), 1, file);
-        cal.valid = 0;
+        calendar cal = {.valid = 0};
         fseek(file, sizeof(int) + (index * sizeof(calendar)), SEEK_SET);
         fwrite(&cal, sizeof(calendar), 1, file);
     }
     fclose(file);
 }
 
-void reset_cal(int week, int year) {
-    FILE *file = fopen(STORAGE_PATH, "rb+");
+void clear_day(int dow, int week, int year) {
+    calendar cal = get_cal(week, year);
+    cal.days[dow] = get_fresh_day(dow, week, year);
+    save_cal(cal);
+}
 
-    int index = get_cal_index(week, year, file);
+void add_event(int dow, int week, int year, char *title, time_t start_time, time_t end_time) {
+    calendar cal = get_cal(week, year);
 
-    if (index != -1) {
-        calendar cal = get_fresh_cal(week, year);
-        fseek(file, sizeof(int) + (index * sizeof(calendar)), SEEK_SET);
-        fwrite(&cal, sizeof(calendar), 1, file);
+    int i, is_before, is_after, overlaps = 0;
+    for (i = 0; i < HOURS_IN_DAY * 2; i++) {
+        is_before = (start_time <= cal.days[dow].events[i].start_time && end_time <= cal.days[dow].events[i].start_time);
+        is_after = (start_time >= cal.days[dow].events[i].end_time && end_time >= cal.days[dow].events[i].end_time);
+        if (!(is_before || is_after)) {
+            overlaps = 1;
+        }
     }
-    fclose(file);
+
+    if (!overlaps) {
+    }
 }
 
 /************************************************************************* Static functions */
@@ -96,8 +101,8 @@ static int get_cal_index(int week, int year, FILE *file) {
 
     int length = get_cal_counter(file);
 
-    calendar cal = {.week = 0};
-
+    fseek(file, sizeof(int), SEEK_SET);
+    calendar cal;
     int index = 0, found = 0;
     while (!found && index < length) {
         fread(&cal, sizeof(calendar), 1, file);
@@ -116,15 +121,16 @@ static int get_free_index(int week, int year, FILE *file) {
 
     int length = get_cal_counter(file);
 
-    calendar cal = {.week = 0};
-
+    fseek(file, sizeof(int), SEEK_SET);
+    calendar cal;
     int index = 0, found = 0;
     while (!found && index < length) {
         fread(&cal, sizeof(calendar), 1, file);
         if (!cal.valid) {
             found = 1;
+        } else {
+            index++;
         }
-        index++;
     }
 
     return index;
@@ -160,13 +166,14 @@ static day get_fresh_day(int dow, int week, int year) {
     int hod;
     for (hod = 0; hod < HOURS_IN_DAY * 2; hod++) {
         day.events[hod].title[0] = '\0';
-        day.events[hod].duration_start = -1;
-        day.events[hod].duration_end = -1;
+        day.events[hod].start_time = -1;
+        day.events[hod].end_time = -1;
         day.events[hod].valid = 0;
 
         day.assignments[hod].title[0] = '\0';
-        day.assignments[hod].duration_start = -1;
-        day.assignments[hod].duration_end = -1;
+        day.assignments[hod].deadline = -1;
+        day.assignments[hod].expected_time = 0;
+        day.assignments[hod].elapsed_time = 0;
         day.assignments[hod].valid = 0;
     }
     return day;
@@ -180,6 +187,7 @@ static void fill_day_with_date(day *day, int dow, int week, int year) {
     tm.tm_mday += (week - 1) * DAYS_IN_WEEK - DaysSinceMonday + dow;
 
     mktime(&tm);
+    day->year = tm.tm_year + 1900;
     day->month = tm.tm_mon + 1;
     day->dom = tm.tm_mday;
 }
@@ -220,6 +228,9 @@ void prn_file_content() {
         fread(&cal, sizeof(calendar), 1, file);
         if (cal.valid) {
             printf("Week: %d, year: %d\nDates: ", cal.week, cal.year);
+            prn_cal_dates(cal);
+        } else {
+            printf("(Invalid) Week: %d, year: %d\nDates: ", cal.week, cal.year);
             prn_cal_dates(cal);
         }
     }
