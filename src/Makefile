@@ -66,3 +66,4 @@ clean:
 	rm -rf $(TEST_OBJ) $(TEST_DEP)
 	rm -f *.exe *.out
 	rm -f ./main/cal_storage
+	rm -f ../.DS_Store
