@@ -91,9 +91,22 @@ void add_event(int dow, int week, int year, char *title, time_t start_time, time
     }
 
     if (!overlaps) {
+        int index = 0, search = 0;
+        while (search && index < HOURS_IN_DAY * 2) {
+            if (!cal.days[dow].events[index].valid) {
+                for (i = 0; i < TITLE_LENGTH; i++) {
+                    cal.days[dow].events[index].title[i] = title[i];
+                }
+                cal.days[dow].events[index].start_time = start_time;
+                cal.days[dow].events[index].end_time = end_time;
+                cal.days[dow].events[index].valid = 1;
+                search = 0;
+            }
+        }
+    } else {
+        printf("Event '%s' overlaps other events", title);
     }
 }
-
 /************************************************************************* Static functions */
 
 static int get_cal_index(int week, int year, FILE *file) {
