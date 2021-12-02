@@ -17,29 +17,22 @@ int main() {
     cal = get_cal(43, 2021);
     cal = get_cal(44, 2021);
     cal = get_cal(47, 2021);
-    cal = get_cal(45, 2021);
-    cal = get_cal(44, 2021);
-    cal = get_cal(49, 2021);
-    cal = get_cal(46, 2021);
-    cal = get_cal(45, 2021);
-    cal = get_cal(44, 2021);
-    cal = get_cal(43, 2021);
-    cal = get_cal(44, 2021);
-    cal = get_cal(47, 2021);
-    cal = get_cal(47, 2021);
-    cal = get_cal(45, 2021);
-    cal = get_cal(44, 2021);
-    cal = get_cal(48, 2021);
-    cal = get_cal(46, 2021);
-
-    cal = get_cal(46, 2021);
-    cal.days[0].dom = 1;
     save_cal(cal);
 
-    printf("\n size of cal: %ld\n", sizeof(cal));
-
+    cal = get_cal(49, 2021);
+    save_cal(cal);
     delete_cal(49, 2021);
 
+    cal = get_cal(50, 2021);
+    save_cal(cal);
+
+    cal = get_cal(50, 2021);
+    save_cal(cal);
+
+    cal = get_cal(51, 2021);
+    save_cal(cal);
+
+    printf("\nSize of cal: %ld\n", sizeof(cal));
     prn_file_content();
 
     prompt_user_intput(regexs);
