@@ -13,7 +13,6 @@ void setup_regex(regex_t *regexs) {
 }
 
 int checkregex(char *in, regex_t *regexs) {
-    char msgbuf[200];
     int matched;
     int matched_rule = 0;
 
