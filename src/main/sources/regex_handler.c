@@ -29,13 +29,13 @@ void setup_regex(regex_t *regexs) {
 int checkregex(char *in, regex_t *regexs) {
     int matched, matched_rule;
 
-    int matching = 1, index = 0;
-    while (matching && index < num_input_rules) {
+    int match = 1, index = 0;
+    while (match && index < num_input_rules) {
         matched = !regexec(&regexs[index], in, 0, NULL, 0);
 
         if (matched) {
             matched_rule = index;
-            matching = 0;
+            match = 0;
         } else {
             matched_rule = -1;
         }
