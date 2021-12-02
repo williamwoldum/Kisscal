@@ -15,23 +15,10 @@ enum rules { invalid_input_rule = -1,
              remove_assignment_rule,
              analyze_rule,
              help_rule,
-             close_rule };
+             close_rule,
+             num_input_rules };
 
-#define NUM_RULES 12
-
-static const char *expressions[NUM_RULES] = {
-    "^open calendar [0-9]{1,2} [0-9]{4}\n",
-    "^clear calendar [0-9]{1,2} [0-9]{4}\n",
-    "^next week\n",
-    "^previous week\n",
-    "^clear day (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\n",
-    "^add event '.{1,}' (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday) [0-9]{2}:[0-9]{2} ([0-9]{2}:[0-9]{2}|[0-9]{1,2}|[0-9]{1,2},[0-9])\n",
-    "^remove event '.{1,}' (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\n",
-    "^add assignment '.{1,}' (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday) [0-9]{2}:[0-9]{2} ([0-9]{1,2}|[0-9]{1,2},[0-9])\n",
-    "^remove assignment '.{1,}' (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\n",
-    "^analyze\n",
-    "^help\n",
-    "^close\n"};
+extern const char *expressions[num_input_rules];
 
 void setup_regex(regex_t *regexs);
 int checkregex(char *in, regex_t *regexs);

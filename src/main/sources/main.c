@@ -8,7 +8,7 @@
 #include "../headers/regex_handler.h"
 
 int main() {
-    regex_t regexs[NUM_RULES];
+    regex_t regexs[num_input_rules];
     setup_regex(regexs);
 
     clr_file();

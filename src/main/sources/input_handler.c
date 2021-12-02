@@ -52,7 +52,10 @@ void pull_out_values(char user_input[], char *str, int index) {
 
 void prompt_user_intput(regex_t *regexs) {
     char user_input[INPUT_BUFF_SIZE];
-    while (user_input) {
+
+    /* while loop to be deleted */
+    int run = 1;
+    while (run) {
         printf(">> ");
         fgets(user_input, INPUT_BUFF_SIZE, stdin);
         int match = checkregex(user_input, regexs);
@@ -66,55 +69,34 @@ void prompt_user_intput(regex_t *regexs) {
 
                 pull_out_values(user_input, week, 2);
                 pull_out_values(user_input, year, 3);
-                //pull out values...
-                //render calendar...
                 printf("*** week: %s***\n", week);
                 printf("*** year: %s***\n", year);
 
                 break;
             }
             case clear_calendar_rule:
-                //pull out values
-                //reset calendar
-                //render calendar
                 break;
             case next_week_rule:
-                //render calendar
                 break;
             case previous_week_rule:
-                //render calendar
                 break;
             case clear_day_rule:
-                //reset day
-                //render calendar
                 break;
             case add_event_rule:
-                //pull out values
-                //add event
-                //render calendar
                 break;
             case remove_event_rule:
-                //pull out values
-                //reset event
-                //render calendar
                 break;
             case add_assignment_rule:
-                //pull out values
-                //add assignment
-                //render calendar
                 break;
             case remove_assignment_rule:
-                //pull out values
-                //remove assignment
-                //render calendar
                 break;
             case analyze_rule:
-                //analyze
                 break;
             case help_rule:
                 show_help();
                 break;
             case close_rule:
+                run = 0;
                 exit(EXIT_SUCCESS);
                 break;
             default:
