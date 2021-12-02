@@ -57,10 +57,10 @@ void prompt_user_intput(regex_t *regexs) {
         fgets(user_input, INPUT_BUFF_SIZE, stdin);
         int match = checkregex(user_input, regexs);
         switch (match) {
-            case invalid_input:
+            case invalid_input_rule:
                 printf("Invalid input\n");
                 break;
-            case open_calendar: {
+            case open_calendar_rule: {
                 char week[3] = {'\0', '\0', '\0'};
                 char year[5] = {'\0', '\0', '\0', '\0', '\0'};
 
@@ -73,48 +73,48 @@ void prompt_user_intput(regex_t *regexs) {
 
                 break;
             }
-            case clear_calendar:
+            case clear_calendar_rule:
                 //pull out values
                 //reset calendar
                 //render calendar
                 break;
-            case next_week:
+            case next_week_rule:
                 //render calendar
                 break;
-            case previous_week:
+            case previous_week_rule:
                 //render calendar
                 break;
-            case clear_day:
+            case clear_day_rule:
                 //reset day
                 //render calendar
                 break;
-            case add_event:
+            case add_event_rule:
                 //pull out values
                 //add event
                 //render calendar
                 break;
-            case remove_event:
+            case remove_event_rule:
                 //pull out values
                 //reset event
                 //render calendar
                 break;
-            case add_assignment:
+            case add_assignment_rule:
                 //pull out values
                 //add assignment
                 //render calendar
                 break;
-            case remove_assignment:
+            case remove_assignment_rule:
                 //pull out values
                 //remove assignment
                 //render calendar
                 break;
-            case analyze:
+            case analyze_rule:
                 //analyze
                 break;
-            case help:
+            case help_rule:
                 show_help();
                 break;
-            case close:
+            case close_rule:
                 exit(EXIT_SUCCESS);
                 break;
             default:
