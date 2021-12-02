@@ -28,6 +28,9 @@ int main() {
     cal = get_cal(51, 2021);
     save_cal(cal);
 
+    cal = get_cal(51, -2021);
+    save_cal(cal);
+
     printf("\nSize of cal: %ld\n", sizeof(cal));
     prn_file_content();
 
