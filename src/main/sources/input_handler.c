@@ -105,7 +105,6 @@ void prompt_user_intput(regex_t *regexs) {
                 printf("*** week: %d***\n", week);
                 printf("*** year: %d***\n", year);
 
-                calendar cal = get_cal(week, year);
                 delete_cal(week, year);
                 break;
             }

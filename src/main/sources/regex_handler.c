@@ -27,11 +27,10 @@ void setup_regex(regex_t *regexs) {
 }
 
 int checkregex(char *in, regex_t *regexs) {
-    int matched;
-    int matched_rule = 0;
+    int matched, matched_rule;
 
     int matching = 1, index = 0;
-    while (matching) {
+    while (matching && index < num_input_rules) {
         matched = !regexec(&regexs[index], in, 0, NULL, 0);
 
         if (matched) {
@@ -40,9 +39,8 @@ int checkregex(char *in, regex_t *regexs) {
         } else {
             matched_rule = -1;
         }
-        if (++index > num_input_rules) {
-            matching = 0;
-        }
+        index++;
     }
+
     return matched_rule;
 }
