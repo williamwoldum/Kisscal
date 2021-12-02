@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../headers/datatypes.h"
+#include "../headers/file_handler.h"
 #include "../headers/regex_handler.h"
 
 #define INPUT_BUFF_SIZE 100
@@ -39,9 +41,17 @@ void pull_out_values(char user_input[], char *str, int index) {
         if (user_input[i] == ' ' || user_input[i] == '\n') {
             count++;
             if (count == index) {
-                start_i = i + 1;
+                if (user_input[i + 1] == '\'') {
+                    start_i = i + 2;
+                } else {
+                    start_i = i + 1;
+                }
             } else if (count == index + 1) {
-                end_i = i - 1;
+                if (user_input[i - 1] == '\'') {
+                    end_i = i - 2;
+                } else {
+                    end_i = i - 1;
+                }
             }
         }
     }
@@ -64,43 +74,104 @@ void prompt_user_intput(regex_t *regexs) {
                 printf("Invalid input\n");
                 break;
             case open_calendar_rule: {
-                char week[3] = {'\0', '\0', '\0'};
-                char year[5] = {'\0', '\0', '\0', '\0', '\0'};
+                char week_str[3] = {'\0', '\0', '\0'};
+                char year_str[5] = {'\0', '\0', '\0', '\0', '\0'};
 
-                pull_out_values(user_input, week, 2);
-                pull_out_values(user_input, year, 3);
-                printf("*** week: %s***\n", week);
-                printf("*** year: %s***\n", year);
+                pull_out_values(user_input, week_str, 2);
+                pull_out_values(user_input, year_str, 3);
+
+                int week = atoi(week_str);
+                int year = atoi(year_str);
+
+                printf("*** week: %d***\n", week);
+                printf("*** year: %d***\n", year);
+
+                calendar cal = get_cal(week, year);
+                save_cal(cal);
+                prn_file_content();
 
                 break;
             }
-            case clear_calendar_rule:
+            case clear_calendar_rule: {
+                char week_str[3] = {'\0', '\0', '\0'};
+                char year_str[5] = {'\0', '\0', '\0', '\0', '\0'};
+
+                pull_out_values(user_input, week_str, 2);
+                pull_out_values(user_input, year_str, 3);
+
+                int week = atoi(week_str);
+                int year = atoi(year_str);
+
+                printf("*** week: %d***\n", week);
+                printf("*** year: %d***\n", year);
+
+                calendar cal = get_cal(week, year);
+                delete_cal(week, year);
                 break;
-            case next_week_rule:
+            }
+            case next_week_rule: {
                 break;
-            case previous_week_rule:
+            }
+            case previous_week_rule: {
                 break;
-            case clear_day_rule:
+            }
+            case clear_day_rule: {
                 break;
-            case add_event_rule:
+            }
+            case add_event_rule: {
                 break;
-            case remove_event_rule:
+            }
+            case remove_event_rule: {
                 break;
-            case add_assignment_rule:
+            }
+            case add_assignment_rule: {
                 break;
-            case remove_assignment_rule:
+            }
+            case remove_assignment_rule: {
+                char assignment[10] = {
+                    '\0',
+                    '\0',
+                    '\0',
+                    '\0',
+                    '\0',
+                    '\0',
+                    '\0',
+                    '\0',
+                    '\0',
+                    '\0'};
+                char day[9] = {
+                    '\0',
+                    '\0',
+                    '\0',
+                    '\0',
+                    '\0',
+                    '\0',
+                    '\0',
+                    '\0',
+                    '\0'};
+                pull_out_values(user_input, assignment, 2);
+                pull_out_values(user_input, day, 3);
+
+                printf("****%s****\n", assignment);
+                printf("****%s****\n", day);
+
                 break;
-            case analyze_rule:
+            }
+            case analyze_rule: {
                 break;
-            case help_rule:
+            }
+            case help_rule: {
                 show_help();
                 break;
-            case close_rule:
+            }
+            case close_rule: {
                 run = 0;
                 exit(EXIT_SUCCESS);
                 break;
-            default:
+            }
+            default: {
                 printf("Error\n");
+            }
         }
     }
 }
