@@ -66,7 +66,7 @@ void prompt_user_intput(regex_t *regexs) {
     /* while loop to be deleted */
     int run = 1;
     while (run) {
-        printf(">> ");
+        printf("\n>> ");
         fgets(user_input, INPUT_BUFF_SIZE, stdin);
         int match = checkregex(user_input, regexs);
         switch (match) {
