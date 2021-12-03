@@ -37,7 +37,7 @@ void pull_out_values(char user_input[], char *str, int index) {
     int start_i = 0, end_i = 1;
     int count = 0;
     int i = 0, j = 0;
-    for (i = 0; user_input[i] != '\0'; i++) {
+    for (i = 0; user_input[i] != "\0"; i++) {
         if (user_input[i] == ' ' || user_input[i] == '\n') {
             count++;
             if (count == index) {
@@ -75,7 +75,7 @@ void prompt_user_intput(regex_t *regexs) {
                 break;
             case open_calendar_rule: {
                 char week_str[3] = {"\0\0\0"};
-                char year_str[5] = {'\0\0\0\0\0'};
+                char year_str[5] = {"\0\0\0\0\0"};
 
                 pull_out_values(user_input, week_str, 2);
                 pull_out_values(user_input, year_str, 3);
@@ -89,8 +89,8 @@ void prompt_user_intput(regex_t *regexs) {
                 break;
             }
             case clear_calendar_rule: {
-                char week_str[3] = {'\0\0\0'};
-                char year_str[5] = {'\0\0\0\0\0'};
+                char week_str[3] = {"\0\0\0"};
+                char year_str[5] = {"\0\0\0\0\0"};
 
                 pull_out_values(user_input, week_str, 2);
                 pull_out_values(user_input, year_str, 3);
@@ -108,16 +108,16 @@ void prompt_user_intput(regex_t *regexs) {
                 break;
             }
             case clear_day_rule: {
-                char day_str[9] = {'\0\0\0\0\0\0\0\0\0'};
+                char day_str[9] = {"\0\0\0\0\0\0\0\0\0"};
 
                 pull_out_values(user_input, day_str, 2);
                 break;
             }
             case add_event_rule: {
-                char event_str[TITLE_LENGTH] = {'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0'};
-                char day_str[9] = {'\0\0\0\0\0\0\0\0\0'};
-                char time_start_str[6] = {'\0\0\0\0\0\0'};
-                char time_end_or_duration_str[6] = {'\0\0\0\0\0\0'};
+                char event_str[TITLE_LENGTH] = {"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"};
+                char day_str[9] = {"\0\0\0\0\0\0\0\0\0"};
+                char time_start_str[6] = {"\0\0\0\0\0\0"};
+                char time_end_or_duration_str[6] = {"\0\0\0\0\0\0"};
 
                 pull_out_values(user_input, event_str, 2);
                 pull_out_values(user_input, day_str, 3);
@@ -126,17 +126,17 @@ void prompt_user_intput(regex_t *regexs) {
                 break;
             }
             case remove_event_rule: {
-                char event_str[TITLE_LENGTH] = {'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0'};
-                char day_str[9] = {'\0\0\0\0\0\0\0\0\0'};
+                char event_str[TITLE_LENGTH] = {"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"};
+                char day_str[9] = {"\0\0\0\0\0\0\0\0\0"};
                 pull_out_values(user_input, event_str, 2);
                 pull_out_values(user_input, day_str, 3);
                 break;
             }
             case add_assignment_rule: {
-                char assignment_str[TITLE_LENGTH] = {'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0'};
-                char day_str[9] = {'\0\0\0\0\0\0\0\0\0'};
-                char hand_in_str[5] = {'\0\0\0\0\0'};
-                char duration_str[5] = {'\0\0\0\0\0'};
+                char assignment_str[TITLE_LENGTH] = {"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"};
+                char day_str[9] = {"\0\0\0\0\0\0\0\0\0"};
+                char hand_in_str[5] = {"\0\0\0\0\0"};
+                char duration_str[5] = {"\0\0\0\0\0"};
 
                 pull_out_values(user_input, assignment_str, 2);
                 pull_out_values(user_input, day_str, 3);
@@ -145,8 +145,8 @@ void prompt_user_intput(regex_t *regexs) {
                 break;
             }
             case remove_assignment_rule: {
-                char assignment_str[TITLE_LENGTH] = {'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0'};
-                char day_str[9] = {'\0\0\0\0\0\0\0\0\0'};
+                char assignment_str[TITLE_LENGTH] = {"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"};
+                char day_str[9] = {"\0\0\0\0\0\0\0\0\0"};
 
                 pull_out_values(user_input, assignment_str, 2);
                 pull_out_values(user_input, day_str, 3);
