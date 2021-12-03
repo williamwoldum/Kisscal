@@ -71,7 +71,7 @@ void prompt_user_intput(regex_t *regexs) {
         int match = checkregex(user_input, regexs);
         switch (match) {
             case invalid_input_rule:
-                printf("Invalid input\n");
+                printf("Invalid input (type 'help' to see commands)\n");
                 break;
             case open_calendar_rule: {
                 char week_str[3] = {"\0\0\0"};
