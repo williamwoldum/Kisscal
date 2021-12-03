@@ -22,7 +22,7 @@ void show_help() {
         "clear day <day>\n\n"
 
         "add event '<event name>' <day> <time start> <time end> OR <time start> <duration>\n"
-        "add event '<event name>' <day> <time start> <time end> OR <time start> <duration>\n\n"
+        "remove event '<event name>' <day>\n\n"
 
         "add assignment '<assingment name>' <day> <hand in> <duration>\n"
         "remove assignment '<assingment name>' <day>\n\n"
@@ -83,9 +83,6 @@ void prompt_user_intput(regex_t *regexs) {
                 int week = atoi(week_str);
                 int year = atoi(year_str);
 
-                printf("*** week: %d***\n", week);
-                printf("*** year: %d***\n", year);
-
                 calendar cal = get_cal(week, year);
                 save_cal(cal);
                 prn_file_content();
@@ -102,9 +99,6 @@ void prompt_user_intput(regex_t *regexs) {
                 int week = atoi(week_str);
                 int year = atoi(year_str);
 
-                printf("*** week: %d***\n", week);
-                printf("*** year: %d***\n", year);
-
                 delete_cal(week, year);
                 break;
             }
@@ -115,44 +109,51 @@ void prompt_user_intput(regex_t *regexs) {
                 break;
             }
             case clear_day_rule: {
+                char day_str[9] = {'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'};
+
+                pull_out_values(user_input, day_str, 2);
+
                 break;
             }
             case add_event_rule: {
-                break;
+                char event_str[TITLE_LENGTH] = {'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'};
+                char day_str[9] = {'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'};
+                char time_start_str[6] = {'\0', '\0', '\0', '\0', '\0', '\0'};
+                char time_end_or_duration_str[6] = {'\0', '\0', '\0', '\0', '\0', '\0'};
+
+                pull_out_values(user_input, event_str, 2);
+                pull_out_values(user_input, day_str, 3);
+                pull_out_values(user_input, time_start_str, 4);
+                pull_out_values(user_input, time_end_or_duration_str, 5)
+
+                    break;
             }
             case remove_event_rule: {
+                char event_str[TITLE_LENGTH] = {'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'};
+                char day_str[9] = {'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'};
+                pull_out_values(user_input, event_str, 2);
+                pull_out_values(user_input, day_str, 3);
                 break;
             }
             case add_assignment_rule: {
+                char assignment_str[TITLE_LENGTH] = {'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'};
+                char day_str[9] = {'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'};
+                char hand_in_str[5] = {'\0', '\0', '\0', '\0', '\0'};
+                char duration_str[5] = {'\0', '\0', '\0', '\0', '\0'};
+
+                pull_out_values(user_input, assignment_str, 2);
+                pull_out_values(user_input, day_str, 3);
+                pull_out_values(user_input, hand_in_str, 4);
+                pull_out_values(user_input, duration_str, 5);
+
                 break;
             }
             case remove_assignment_rule: {
-                char assignment[10] = {
-                    '\0',
-                    '\0',
-                    '\0',
-                    '\0',
-                    '\0',
-                    '\0',
-                    '\0',
-                    '\0',
-                    '\0',
-                    '\0'};
-                char day[9] = {
-                    '\0',
-                    '\0',
-                    '\0',
-                    '\0',
-                    '\0',
-                    '\0',
-                    '\0',
-                    '\0',
-                    '\0'};
-                pull_out_values(user_input, assignment, 2);
-                pull_out_values(user_input, day, 3);
+                char assignment_str[TITLE_LENGTH] = {'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'};
+                char day_str[9] = {'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'};
 
-                printf("****%s****\n", assignment);
-                printf("****%s****\n", day);
+                pull_out_values(user_input, assignment_str, 2);
+                pull_out_values(user_input, day_str, 3);
 
                 break;
             }
