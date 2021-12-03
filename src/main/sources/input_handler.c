@@ -86,7 +86,6 @@ void prompt_user_intput(regex_t *regexs) {
                 calendar cal = get_cal(week, year);
                 save_cal(cal);
                 prn_file_content();
-
                 break;
             }
             case clear_calendar_rule: {
@@ -112,7 +111,6 @@ void prompt_user_intput(regex_t *regexs) {
                 char day_str[9] = {'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'};
 
                 pull_out_values(user_input, day_str, 2);
-
                 break;
             }
             case add_event_rule: {
@@ -124,9 +122,8 @@ void prompt_user_intput(regex_t *regexs) {
                 pull_out_values(user_input, event_str, 2);
                 pull_out_values(user_input, day_str, 3);
                 pull_out_values(user_input, time_start_str, 4);
-                pull_out_values(user_input, time_end_or_duration_str, 5)
-
-                    break;
+                pull_out_values(user_input, time_end_or_duration_str, 5);
+                break;
             }
             case remove_event_rule: {
                 char event_str[TITLE_LENGTH] = {'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'};
@@ -145,7 +142,6 @@ void prompt_user_intput(regex_t *regexs) {
                 pull_out_values(user_input, day_str, 3);
                 pull_out_values(user_input, hand_in_str, 4);
                 pull_out_values(user_input, duration_str, 5);
-
                 break;
             }
             case remove_assignment_rule: {
@@ -154,7 +150,6 @@ void prompt_user_intput(regex_t *regexs) {
 
                 pull_out_values(user_input, assignment_str, 2);
                 pull_out_values(user_input, day_str, 3);
-
                 break;
             }
             case analyze_rule: {
