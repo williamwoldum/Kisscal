@@ -37,7 +37,7 @@ void pull_out_values(char user_input[], char *str, int index) {
     int start_i = 0, end_i = 1;
     int count = 0;
     int i = 0, j = 0;
-    for (i = 0; user_input[i] != "\0"; i++) {
+    for (i = 0; user_input[i] != '\0'; i++) {
         if (user_input[i] == ' ' || user_input[i] == '\n') {
             count++;
             if (count == index) {
