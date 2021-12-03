@@ -1,9 +1,6 @@
 CC := gcc
 CFLAGS := -std=c89 -Wall
 
-MEXE := Kisscal.exe
-TEXE := Tester.exe
-
 MOUT := Kisscal.out
 TOUT := Tester.out
 
@@ -30,7 +27,7 @@ TEST_DEPS := $(patsubst $(TEST_OBJ)/%.o, $(TEST_DEP)/%.d, $(TEST_OBJS))
 
 #########################################################################
 
-all: $(MEXE) $(TEXE) $(MOUT) $(TOUT)
+all: $(MOUT) $(TOUT)
 
 -include $(MAIN_DEPS)
 -include $(TEST_DEPS)
@@ -64,6 +61,6 @@ $(shell mkdir -p $(TEST_OBJ) $(TEST_DEP))
 clean:
 	rm -rf $(MAIN_OBJ) $(MAIN_DEP)
 	rm -rf $(TEST_OBJ) $(TEST_DEP)
-	rm -f *.exe *.out
+	rm -f  *.out
 	rm -f ./main/cal_storage
 	rm -f ../.DS_Store
