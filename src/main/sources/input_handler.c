@@ -80,11 +80,11 @@ void prompt_user_intput(regex_t *regexs) {
                 pull_out_values(user_input, week_str, 2);
                 pull_out_values(user_input, year_str, 3);
 
-                int week = atoi(week_str);
+                /* int week = atoi(week_str);
                 int year = atoi(year_str);
 
-                calendar cal = get_cal(week, year);
-                save_cal(cal);
+                calendar cal = get_cal(week, year); */
+
                 prn_file_content();
                 break;
             }
