@@ -33,33 +33,6 @@ void show_help() {
         "********************************************************************************************\n");
 }
 
-void pull_out_values(char user_input[], char *str, int index) {
-    int start_i = 0, end_i = 1;
-    int count = 0;
-    int i = 0, j = 0;
-    for (i = 0; user_input[i] != '\0'; i++) {
-        if (user_input[i] == ' ' || user_input[i] == '\n') {
-            count++;
-            if (count == index) {
-                if (user_input[i + 1] == '\'') {
-                    start_i = i + 2;
-                } else {
-                    start_i = i + 1;
-                }
-            } else if (count == index + 1) {
-                if (user_input[i - 1] == '\'') {
-                    end_i = i - 2;
-                } else {
-                    end_i = i - 1;
-                }
-            }
-        }
-    }
-    for (i = start_i, j = 0; i <= end_i; i++, j++) {
-        str[j] = user_input[i];
-    }
-}
-
 void prompt_user_intput(regex_t *regexs) {
     char user_input[INPUT_BUFF_SIZE];
 
@@ -74,14 +47,9 @@ void prompt_user_intput(regex_t *regexs) {
                 printf("Invalid input\n");
                 break;
             case open_calendar_rule: {
-                char week_str[3] = {"\0\0\0"};
-                char year_str[5] = {"\0\0\0\0\0"};
+                int week, year;
 
-                pull_out_values(user_input, week_str, 2);
-                pull_out_values(user_input, year_str, 3);
-
-                int week = atoi(week_str);
-                int year = atoi(year_str);
+                sscanf(user_input + 13, " %d %d", &week, &year);
 
                 calendar cal = get_cal(week, year);
                 save_cal(cal);
@@ -89,15 +57,9 @@ void prompt_user_intput(regex_t *regexs) {
                 break;
             }
             case clear_calendar_rule: {
-                char week_str[3] = {"\0\0\0"};
-                char year_str[5] = {"\0\0\0\0\0"};
+                int week, year;
 
-                pull_out_values(user_input, week_str, 2);
-                pull_out_values(user_input, year_str, 3);
-
-                int week = atoi(week_str);
-                int year = atoi(year_str);
-
+                sscanf(user_input + 14, " %d %d", &week, &year);
                 delete_cal(week, year);
                 break;
             }
@@ -110,7 +72,7 @@ void prompt_user_intput(regex_t *regexs) {
             case clear_day_rule: {
                 char day_str[9] = {"\0\0\0\0\0\0\0\0\0"};
 
-                pull_out_values(user_input, day_str, 2);
+                sscanf(user_input + 9, " %s", day_str);
                 break;
             }
             case add_event_rule: {
@@ -119,17 +81,14 @@ void prompt_user_intput(regex_t *regexs) {
                 char time_start_str[6] = {"\0\0\0\0\0\0"};
                 char time_end_or_duration_str[6] = {"\0\0\0\0\0\0"};
 
-                pull_out_values(user_input, event_str, 2);
-                pull_out_values(user_input, day_str, 3);
-                pull_out_values(user_input, time_start_str, 4);
-                pull_out_values(user_input, time_end_or_duration_str, 5);
+                sscanf(user_input + 11, " %[^']' %s %s %s", event_str, day_str, time_start_str, time_end_or_duration_str);
                 break;
             }
             case remove_event_rule: {
                 char event_str[TITLE_LENGTH] = {"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"};
                 char day_str[9] = {"\0\0\0\0\0\0\0\0\0"};
-                pull_out_values(user_input, event_str, 2);
-                pull_out_values(user_input, day_str, 3);
+
+                sscanf(user_input + 14, " %[^']' %s", event_str, day_str);
                 break;
             }
             case add_assignment_rule: {
@@ -138,18 +97,14 @@ void prompt_user_intput(regex_t *regexs) {
                 char hand_in_str[5] = {"\0\0\0\0\0"};
                 char duration_str[5] = {"\0\0\0\0\0"};
 
-                pull_out_values(user_input, assignment_str, 2);
-                pull_out_values(user_input, day_str, 3);
-                pull_out_values(user_input, hand_in_str, 4);
-                pull_out_values(user_input, duration_str, 5);
+                sscanf(user_input + 16, " %[^']' %s %s %s", assignment_str, day_str, hand_in_str, duration_str);
                 break;
             }
             case remove_assignment_rule: {
                 char assignment_str[TITLE_LENGTH] = {"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"};
                 char day_str[9] = {"\0\0\0\0\0\0\0\0\0"};
 
-                pull_out_values(user_input, assignment_str, 2);
-                pull_out_values(user_input, day_str, 3);
+                sscanf(user_input + 19, " %[^']' %s", assignment_str, day_str);
                 break;
             }
             case analyze_rule: {
