@@ -33,7 +33,7 @@ void show_help() {
         "********************************************************************************************\n");
 }
 
-void prompt_user_intput(regex_t *regexs) {
+void prompt_user_input(regex_t *regexs) {
     char user_input[INPUT_BUFF_SIZE];
 
     /* while loop to be deleted */
@@ -44,7 +44,7 @@ void prompt_user_intput(regex_t *regexs) {
         int match = checkregex(user_input, regexs);
         switch (match) {
             case invalid_input_rule:
-                printf("Invalid input\n");
+                printf("Invalid input (type 'help' to see commands)\n");
                 break;
             case open_calendar_rule: {
                 int week, year;
@@ -52,7 +52,7 @@ void prompt_user_intput(regex_t *regexs) {
                 sscanf(user_input + 13, " %d %d", &week, &year);
 
                 calendar cal = get_cal(week, year);
-                save_cal(cal);
+
                 prn_file_content();
                 break;
             }
@@ -70,41 +70,41 @@ void prompt_user_intput(regex_t *regexs) {
                 break;
             }
             case clear_day_rule: {
-                char day_str[9] = {"\0\0\0\0\0\0\0\0\0"};
+                char day_str[9];
 
                 sscanf(user_input + 9, " %s", day_str);
                 break;
             }
             case add_event_rule: {
-                char event_str[TITLE_LENGTH] = {"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"};
-                char day_str[9] = {"\0\0\0\0\0\0\0\0\0"};
-                char time_start_str[6] = {"\0\0\0\0\0\0"};
-                char time_end_or_duration_str[6] = {"\0\0\0\0\0\0"};
+                char event_str[TITLE_LENGTH];
+                char day_str[9];
+                char time_start_str[6];
+                char time_end_or_duration_str[6];
 
                 sscanf(user_input + 11, " %[^']' %s %s %s", event_str, day_str, time_start_str, time_end_or_duration_str);
                 break;
             }
             case remove_event_rule: {
-                char event_str[TITLE_LENGTH] = {"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"};
-                char day_str[9] = {"\0\0\0\0\0\0\0\0\0"};
+                char event_str[TITLE_LENGTH];
+                char day_str[9];
 
                 sscanf(user_input + 14, " %[^']' %s", event_str, day_str);
                 break;
             }
             case add_assignment_rule: {
-                char assignment_str[TITLE_LENGTH] = {"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"};
-                char day_str[9] = {"\0\0\0\0\0\0\0\0\0"};
-                char hand_in_str[5] = {"\0\0\0\0\0"};
-                char duration_str[5] = {"\0\0\0\0\0"};
+                char assignment_str[TITLE_LENGTH];
+                char day_str[9];
+                char hand_in_str[5];
+                char duration_str[5];
 
                 sscanf(user_input + 16, " %[^']' %s %s %s", assignment_str, day_str, hand_in_str, duration_str);
                 break;
             }
             case remove_assignment_rule: {
-                char assignment_str[TITLE_LENGTH] = {"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"};
-                char day_str[9] = {"\0\0\0\0\0\0\0\0\0"};
+                char assignment_str[TITLE_LENGTH];
+                char day_str[9];
 
-                sscanf(user_input + 19, " %[^']' %s", assignment_str, day_str);
+                sscanf(user_input + 19, " %[^ ']' %s", assignment_str, day_str);
                 break;
             }
             case analyze_rule: {
