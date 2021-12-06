@@ -13,9 +13,13 @@
 int main() {
     srand(time(NULL));
 
+<<<<<<< HEAD
     regex_t regexs[num_input_rules];
     setup_regex(regexs);
     setup_renderer();
+=======
+    setup_regex();
+>>>>>>> regexs_update
 
     clr_file();
 
@@ -23,7 +27,7 @@ int main() {
 
     int run = 1;
     while (run) {
-        run = prompt_user_input(regexs);
+        run = prompt_user_input();
     }
 
     return (0);

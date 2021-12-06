@@ -34,12 +34,12 @@ void show_help() {
         "********************************************************************************************\n");
 }
 
-int prompt_user_input(regex_t *regexs) {
+int prompt_user_input() {
     printf("\n>> ");
 
     char user_input[INPUT_BUFF_SIZE];
     fgets(user_input, INPUT_BUFF_SIZE, stdin);
-    int match = checkregex(user_input, regexs);
+    int match = checkregex(user_input);
 
     int run = 1;
 

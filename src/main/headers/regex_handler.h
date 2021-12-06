@@ -18,9 +18,7 @@ enum rules { invalid_input_rule = -1,
              close_rule,
              num_input_rules };
 
-extern const char *expressions[num_input_rules];
-
-void setup_regex(regex_t *regexs);
-int checkregex(char *in, regex_t *regexs);
+void setup_regex();
+int checkregex(char *in);
 
 #endif
