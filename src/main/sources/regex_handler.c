@@ -3,7 +3,9 @@
 #include <regex.h>
 #include <stdio.h>
 
-void setup_regex(regex_t *regexs) {
+regex_t regexs[num_input_rules];
+
+void setup_regex() {
     const char *expressions[num_input_rules] = {
         "^open calendar [0-9]{1,2} [0-9]{4}\n",
         "^clear calendar [0-9]{1,2} [0-9]{4}\n",
@@ -26,7 +28,7 @@ void setup_regex(regex_t *regexs) {
     }
 }
 
-int checkregex(char *in, regex_t *regexs) {
+int checkregex(char *in) {
     int matched, matched_rule;
 
     int match = 1, index = 0;

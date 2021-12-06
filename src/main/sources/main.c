@@ -12,8 +12,7 @@
 int main() {
     srand(time(NULL));
 
-    regex_t regexs[num_input_rules];
-    setup_regex(regexs);
+    setup_regex();
 
     clr_file();
     calendar cal = get_cal(47, 2021);
@@ -35,7 +34,7 @@ int main() {
 
     int run = 1;
     while (run) {
-        run = prompt_user_input(regexs);
+        run = prompt_user_input();
     }
 
     return (0);
