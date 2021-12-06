@@ -1,3 +1,5 @@
+#include "../headers/cal_renderer.h"
+
 #include <regex.h>
 #include <stdio.h>
 #include <stdlib.h>
