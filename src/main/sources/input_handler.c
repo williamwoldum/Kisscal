@@ -1,4 +1,5 @@
 #include "../headers/input_handler.h"
+#include "../headers/cal_renderer.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,7 +54,7 @@ int prompt_user_input(regex_t *regexs) {
 
             calendar cal = get_cal(week, year);
 
-            prn_file_content();
+            print_calender();
             break;
         }
         case clear_calendar_rule: {
@@ -64,15 +65,18 @@ int prompt_user_input(regex_t *regexs) {
             break;
         }
         case next_week_rule: {
+            print_calender();
             break;
         }
         case previous_week_rule: {
+            print_calender();
             break;
         }
         case clear_day_rule: {
             char day_str[9];
 
             sscanf(user_input + 9, " %s", day_str);
+            print_calender();
             break;
         }
         case add_event_rule: {
@@ -82,6 +86,7 @@ int prompt_user_input(regex_t *regexs) {
             char time_end_or_duration_str[6];
 
             sscanf(user_input + 11, " %[^']' %s %s %s", event_str, day_str, time_start_str, time_end_or_duration_str);
+            print_calender();
             break;
         }
         case remove_event_rule: {
@@ -89,6 +94,7 @@ int prompt_user_input(regex_t *regexs) {
             char day_str[9];
 
             sscanf(user_input + 14, " %[^']' %s", event_str, day_str);
+            print_calender();
             break;
         }
         case add_assignment_rule: {
@@ -98,6 +104,7 @@ int prompt_user_input(regex_t *regexs) {
             char duration_str[5];
 
             sscanf(user_input + 16, " %[^']' %s %s %s", assignment_str, day_str, hand_in_str, duration_str);
+            print_calender();
             break;
         }
         case remove_assignment_rule: {
@@ -105,6 +112,7 @@ int prompt_user_input(regex_t *regexs) {
             char day_str[9];
 
             sscanf(user_input + 19, " %[^ ']' %s", assignment_str, day_str);
+            print_calender();
             break;
         }
         case analyze_rule: {
