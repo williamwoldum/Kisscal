@@ -33,7 +33,7 @@ void show_help() {
         "********************************************************************************************\n");
 }
 
-void prompt_user_intput(regex_t *regexs) {
+void prompt_user_input(regex_t *regexs) {
     char user_input[INPUT_BUFF_SIZE];
 
     /* while loop to be deleted */
