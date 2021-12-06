@@ -7,7 +7,7 @@
 #include "../headers/file_handler.h"
 #include "../headers/regex_handler.h"
 
-#define INPUT_BUFF_SIZE 120
+#define INPUT_BUFF_SIZE 100
 
 void show_help() {
     printf(
