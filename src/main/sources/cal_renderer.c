@@ -9,6 +9,8 @@
 #include "../headers/input_handler.h"
 #include "../headers/regex_handler.h"
 
+calendar current_cal;
+
 char pixel_arr[29][108] = {
     /*0         1         2         3         4         5         6         7         8         9         10     */
     /*01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456*/
@@ -56,6 +58,7 @@ char* date_locs[DAYS_IN_WEEK] = {
 char day_strs[DAYS_IN_WEEK][4] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 
 void setup_renderer(void) {
+    current_cal = get_cal(49, 2021);
 }
 
 /*  &pixel_arr[6][9],
@@ -73,16 +76,17 @@ void load_into_arr(char* location, char* str) {
     }
 }
 
-void print_calender(void) {
+void prn_cal(void) {
+    /*system("clear");*/
     char cal_header_buf[20];
-    sprintf(cal_header_buf, "Week %d, year %d", 45, 4003);
+    sprintf(cal_header_buf, "Week %d, year %d", current_cal.week, current_cal.year);
     load_into_arr(cal_header_loc, cal_header_buf);
 
     int i;
 
     char date_buf[30];
     for (i = 0; i < DAYS_IN_WEEK; i++) {
-        sprintf(date_buf, "%s %d/%2d", day_strs[i], i + 3, 12);
+        sprintf(date_buf, "%s %d/%2d", day_strs[i], current_cal.days[i].dom, current_cal.days[i].month);
         load_into_arr(date_locs[i], date_buf);
     }
 
