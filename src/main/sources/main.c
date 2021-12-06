@@ -17,25 +17,18 @@ int main() {
 
     clr_file();
     calendar cal = get_cal(47, 2021);
-    save_cal(cal);
 
     cal = get_cal(49, 2021);
-    save_cal(cal);
-    delete_cal(49, 2021);
 
     cal = get_cal(50, 2021);
-    save_cal(cal);
 
     cal = get_cal(50, 2021);
-    save_cal(cal);
 
     convert_cal_to_ics(get_cal(45, 2021));
 
     cal = get_cal(51, 2021);
-    save_cal(cal);
 
     cal = get_cal(51, -2021);
-    save_cal(cal);
 
     printf("\nSize of cal: %ld\n", sizeof(cal));
     prn_file_content();
