@@ -36,7 +36,8 @@ typedef struct day {
     assignment assignments[HOURS_IN_DAY * 2];
 } day;
 
-typedef struct calendar {
+typedef struct calendar
+{
     int year;
     int week;
     int valid;
