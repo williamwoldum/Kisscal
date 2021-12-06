@@ -88,7 +88,7 @@ void prn_cal(void) {
 
     char date_buf[30];
     for (i = 0; i < DAYS_IN_WEEK; i++) {
-        sprintf(date_buf, "%s %d/%2d", day_strs[i], current_cal.days[i].dom, current_cal.days[i].month);
+        sprintf(date_buf, "%s %2d/%-2d", day_strs[i], current_cal.days[i].dom, current_cal.days[i].month);
         load_into_arr(date_locs[i], date_buf);
     }
 
