@@ -63,4 +63,5 @@ clean:
 	rm -rf $(TEST_OBJ) $(TEST_DEP)
 	rm -f  *.out
 	rm -f ./main/cal_storage
+	rm -f ./ics_output.ics
 	rm -f ../.DS_Store
