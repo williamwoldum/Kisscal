@@ -46,7 +46,7 @@ char pixel_arr[29][108] = {
     {"| 23:00 |             |             |             |             |             |             |             |\0"},
     {"'---------------------------------------------------------------------------------------------------------'\0"}};
 
-char* cal_header_loc = &pixel_arr[1][47];
+char* cal_header_loc = &pixel_arr[1][49];
 char* date_locs[DAYS_IN_WEEK] = {
     &pixel_arr[3][11],
     &pixel_arr[3][25],
@@ -79,9 +79,9 @@ void load_into_arr(char* location, char* str) {
 }
 
 void prn_cal(void) {
-    /*system("clear");*/
+    system("clear");
     char cal_header_buf[20];
-    sprintf(cal_header_buf, "Week %d, year %d", current_cal.week, current_cal.year);
+    sprintf(cal_header_buf, "Week %-2d year %d", current_cal.week, current_cal.year);
     load_into_arr(cal_header_loc, cal_header_buf);
 
     int i;

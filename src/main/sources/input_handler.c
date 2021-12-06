@@ -13,7 +13,8 @@
 void show_help() {
     printf(
         "\n"
-        "********************************************************************************************\n"
+        "-----------------------------------------------------------------------------------------------------------\n"
+        "\n"
         "open calendar <week> <year>\n"
         "clear calendar <week> <year>\n\n"
 
@@ -31,7 +32,8 @@ void show_help() {
         "analyze\n\n"
 
         "close\n"
-        "********************************************************************************************\n");
+        "\n"
+        "-----------------------------------------------------------------------------------------------------------\n");
 }
 
 int prompt_user_input() {
@@ -52,7 +54,7 @@ int prompt_user_input() {
 
             sscanf(user_input + 13, " %d %d", &week, &year);
 
-            calendar cal = get_cal(week, year);
+            current_cal = get_cal(week, year);
 
             prn_cal();
             break;
@@ -61,14 +63,18 @@ int prompt_user_input() {
             int week, year;
 
             sscanf(user_input + 14, " %d %d", &week, &year);
+
             delete_cal(week, year);
+            current_cal = get_cal(week, year);
             break;
         }
         case next_week_rule: {
+            current_cal = get_cal(current_cal.week + 1, current_cal.year);
             prn_cal();
             break;
         }
         case previous_week_rule: {
+            current_cal = get_cal(current_cal.week - 1, current_cal.year);
             prn_cal();
             break;
         }

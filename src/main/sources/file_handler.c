@@ -1,6 +1,7 @@
 #include "../headers/file_handler.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "../headers/datatypes.h"
@@ -18,10 +19,13 @@ static void load_fresh_cal(calendar *cal, int week, int year);
 static void load_fresh_day(day *day, int dow, int week, int year);
 static void fill_day_with_date(day *day, int dow, int week, int year);
 static int get_num_cals(FILE *file);
+void constrain_week(int *week, int *year);
 
 /************************************************************************* Global functions  */
 
 calendar get_cal(int week, int year) {
+    constrain_week(&week, &year);
+
     FILE *file = fopen(STORAGE_PATH, "rb+");
 
     int index = get_cal_index(week, year, file);
@@ -60,19 +64,25 @@ void clear_day(int dow, int week, int year) {
 }
 
 void add_event(int dow, int week, int year, char *title, time_t start_time, time_t end_time) {
+    if (start_time >= end_time) {
+        printf("Event '%s' must end after it starts", title);
+    }
+
     calendar cal = get_cal(week, year);
 
     int i, is_before, is_after, overlaps = 0;
-    for (i = 0; i < HOURS_IN_DAY * 2; i++) {
-        is_before = (start_time <= cal.days[dow].events[i].start_time && end_time <= cal.days[dow].events[i].start_time);
-        is_after = (start_time >= cal.days[dow].events[i].end_time && end_time >= cal.days[dow].events[i].end_time);
+    int index = 0, search = 1;
+    while (search && index < HOURS_IN_DAY * 2) {
+        is_before = (start_time <= cal.days[dow].events[index].start_time && end_time <= cal.days[dow].events[index].start_time);
+        is_after = (start_time >= cal.days[dow].events[index].end_time && end_time >= cal.days[dow].events[index].end_time);
         if (!(is_before || is_after)) {
+            search = 0;
             overlaps = 1;
         }
     }
 
     if (!overlaps) {
-        int index = 0, search = 0;
+        index = 0, search = 1;
         while (search && index < HOURS_IN_DAY * 2) {
             if (!cal.days[dow].events[index].valid) {
                 for (i = 0; i < TITLE_LENGTH; i++) {
@@ -188,6 +198,25 @@ static void fill_day_with_date(day *day, int dow, int week, int year) {
 static int get_num_cals(FILE *file) {
     fseek(file, 0, SEEK_END);
     return ftell(file) / sizeof(calendar);
+}
+
+void constrain_week(int *week, int *year) {
+    if (*year < 1900) {
+        *year = 1900;
+    } else if (*year > 9999) {
+        *year = 9999;
+    }
+
+    struct tm tm = {.tm_year = *year - 1900, .tm_mon = 0, .tm_mday = 4, .tm_hour = 12};
+    mktime(&tm);
+    int DaysSinceMonday = (tm.tm_wday - 1) % DAYS_IN_WEEK;
+    tm.tm_mday += (*week - 1) * DAYS_IN_WEEK - DaysSinceMonday;
+    mktime(&tm);
+
+    *year = tm.tm_year + 1900;
+    char week_number_str[3];
+    strftime(week_number_str, 3, "%W", &tm);
+    *week = atoi(week_number_str);
 }
 
 /************************************************************************* Debug functions */

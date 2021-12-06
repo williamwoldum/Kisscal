@@ -13,16 +13,19 @@
 int main() {
     srand(time(NULL));
 
+    
     setup_regex();
 
     clr_file();
-
+    /*Courser segfault hvis over clr_file()*/
+    setup_renderer();
     prn_cal();
 
     int run = 1;
     while (run) {
         run = prompt_user_input();
     }
+  
 
     return (0);
 }
