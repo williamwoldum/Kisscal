@@ -6,6 +6,6 @@
 #include <stdlib.h>
 
 void show_help(void);
-void prompt_user_input(regex_t *regexs);
+int prompt_user_input(regex_t *regexs);
 
 #endif

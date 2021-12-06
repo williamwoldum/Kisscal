@@ -34,9 +34,10 @@ int main() {
     printf("\nSize of cal: %ld\n", sizeof(cal));
     prn_file_content();
 
-    print_calender();
-
-    prompt_user_input(regexs);
+    do {
+        system("clear");
+        print_calender();
+    } while (prompt_user_input(regexs));
 
     return (0);
 }
