@@ -44,15 +44,15 @@ void prompt_user_intput(regex_t *regexs) {
         int match = checkregex(user_input, regexs);
         switch (match) {
             case invalid_input_rule:
-                printf("Invalid input\n");
+                printf("Invalid input (type 'help' to see commands)\n");
                 break;
             case open_calendar_rule: {
                 int week, year;
 
                 sscanf(user_input + 13, " %d %d", &week, &year);
 
-                calendar cal = get_cal(week, year);
-                save_cal(cal);
+                calendar cal = get_cal(week, year); */
+
                 prn_file_content();
                 break;
             }
