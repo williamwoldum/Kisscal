@@ -12,11 +12,13 @@
 /************************************************************************* Static function prototypes */
 
 static int get_cal_index(int week, int year, FILE *file);
+static int get_free_index(int week, int year, FILE *file);
 static void handle_empty_file(FILE *file);
-static calendar create_cal(int week, int year, FILE *file);
-static void fill_cal_with_dates(calendar *);
-static void save_new_cal(calendar cal, FILE *file);
+static calendar get_fresh_cal(int week, int year);
+static day get_fresh_day(int dow, int week, int year);
+static void fill_day_with_date(day *day, int dow, int week, int year);
 static int inc_cal_counter(FILE *file);
+static int get_cal_counter(FILE *file);
 
 /************************************************************************* Global functions  */
 
@@ -28,7 +30,7 @@ calendar get_cal(int week, int year) {
     calendar cal;
 
     if (index == -1) {
-        cal = create_cal(week, year, file);
+        cal = get_fresh_cal(week, year);
     } else {
         fseek(file, sizeof(int) + (index * sizeof(calendar)), SEEK_SET);
         fread(&cal, sizeof(calendar), 1, file);
@@ -45,51 +47,103 @@ void save_cal(calendar cal) {
     int index = get_cal_index(cal.week, cal.year, file);
 
     if (index == -1) {
-        save_new_cal(cal, file);
-    } else {
-        fseek(file, sizeof(int) + (index * sizeof(calendar)), SEEK_SET);
-        fwrite(&cal, sizeof(calendar), 1, file);
+        index = get_free_index(cal.week, cal.year, file);
+        if (index == get_cal_counter(file)) {
+            inc_cal_counter(file);
+        }
     }
+
+    fseek(file, sizeof(int) + (index * sizeof(calendar)), SEEK_SET);
+    fwrite(&cal, sizeof(calendar), 1, file);
 
     fclose(file);
 }
 
-/* TODO: should pe "reset_cal" and owerwrite instead of changing "valid"*/
 void delete_cal(int week, int year) {
     FILE *file = fopen(STORAGE_PATH, "rb+");
 
     int index = get_cal_index(week, year, file);
 
     if (index != -1) {
-        calendar cal;
-        fseek(file, sizeof(int) + (index * sizeof(calendar)), SEEK_SET);
-        fread(&cal, sizeof(calendar), 1, file);
-        cal.valid = 0;
+        calendar cal = {.valid = 0};
         fseek(file, sizeof(int) + (index * sizeof(calendar)), SEEK_SET);
         fwrite(&cal, sizeof(calendar), 1, file);
     }
     fclose(file);
 }
 
-/* TODO: reset day*/
+void clear_day(int dow, int week, int year) {
+    calendar cal = get_cal(week, year);
+    cal.days[dow] = get_fresh_day(dow, week, year);
+    save_cal(cal);
+}
 
+void add_event(int dow, int week, int year, char *title, time_t start_time, time_t end_time) {
+    calendar cal = get_cal(week, year);
+
+    int i, is_before, is_after, overlaps = 0;
+    for (i = 0; i < HOURS_IN_DAY * 2; i++) {
+        is_before = (start_time <= cal.days[dow].events[i].start_time && end_time <= cal.days[dow].events[i].start_time);
+        is_after = (start_time >= cal.days[dow].events[i].end_time && end_time >= cal.days[dow].events[i].end_time);
+        if (!(is_before || is_after)) {
+            overlaps = 1;
+        }
+    }
+
+    if (!overlaps) {
+        int index = 0, search = 0;
+        while (search && index < HOURS_IN_DAY * 2) {
+            if (!cal.days[dow].events[index].valid) {
+                for (i = 0; i < TITLE_LENGTH; i++) {
+                    cal.days[dow].events[index].title[i] = title[i];
+                }
+                cal.days[dow].events[index].start_time = start_time;
+                cal.days[dow].events[index].end_time = end_time;
+                cal.days[dow].events[index].valid = 1;
+                search = 0;
+            }
+        }
+    } else {
+        printf("Event '%s' overlaps other events", title);
+    }
+}
 /************************************************************************* Static functions */
 
 static int get_cal_index(int week, int year, FILE *file) {
     handle_empty_file(file);
 
-    int index = -1;
-    calendar cal = {.week = 0};
+    int length = get_cal_counter(file);
 
-    int length;
-    fseek(file, 0, SEEK_SET);
-    fread(&length, sizeof(int), 1, file);
-
-    int i;
-    for (i = 0; i < length; i++) {
+    fseek(file, sizeof(int), SEEK_SET);
+    calendar cal;
+    int index = 0, found = 0;
+    while (!found && index < length) {
         fread(&cal, sizeof(calendar), 1, file);
-        if (cal.week == week && cal.year == year && cal.valid)
-            index = i;
+        if (cal.week == week && cal.year == year && cal.valid) {
+            found = 1;
+        } else {
+            index++;
+        }
+    }
+
+    return index == length ? -1 : index;
+}
+
+static int get_free_index(int week, int year, FILE *file) {
+    handle_empty_file(file);
+
+    int length = get_cal_counter(file);
+
+    fseek(file, sizeof(int), SEEK_SET);
+    calendar cal;
+    int index = 0, found = 0;
+    while (!found && index < length) {
+        fread(&cal, sizeof(calendar), 1, file);
+        if (!cal.valid) {
+            found = 1;
+        } else {
+            index++;
+        }
     }
 
     return index;
@@ -106,51 +160,63 @@ static void handle_empty_file(FILE *file) {
     }
 }
 
-static calendar create_cal(int week, int year, FILE *file) {
-    calendar cal = {.year = year, .week = week, .valid = 1};
+static calendar get_fresh_cal(int week, int year) {
+    calendar cal = {.year = year, .week = week, .valid = 0};
 
-    fill_cal_with_dates(&cal);
-    save_new_cal(cal, file);
+    int dow;
+    for (dow = 0; dow < DAYS_IN_WEEK; dow++) {
+        cal.days[dow] = get_fresh_day(dow, week, year);
+    }
 
     return cal;
 }
 
-static void fill_cal_with_dates(calendar *cal) {
-    struct tm tm = {.tm_year = cal->year - 1900, .tm_mon = 0, .tm_mday = 4, .tm_hour = 12};
+static day get_fresh_day(int dow, int week, int year) {
+    day day;
+
+    fill_day_with_date(&day, dow, week, year);
+
+    int hod;
+    for (hod = 0; hod < HOURS_IN_DAY * 2; hod++) {
+        day.events[hod].title[0] = '\0';
+        day.events[hod].start_time = -1;
+        day.events[hod].end_time = -1;
+        day.events[hod].valid = 0;
+
+        day.assignments[hod].title[0] = '\0';
+        day.assignments[hod].deadline = -1;
+        day.assignments[hod].expected_time = 0;
+        day.assignments[hod].elapsed_time = 0;
+        day.assignments[hod].valid = 0;
+    }
+    return day;
+}
+
+static void fill_day_with_date(day *day, int dow, int week, int year) {
+    struct tm tm = {.tm_year = year - 1900, .tm_mon = 0, .tm_mday = 4, .tm_hour = 12};
     mktime(&tm);
 
     int DaysSinceMonday = (tm.tm_wday - 1) % DAYS_IN_WEEK;
-    tm.tm_mday += (cal->week - 1) * DAYS_IN_WEEK - DaysSinceMonday;
+    tm.tm_mday += (week - 1) * DAYS_IN_WEEK - DaysSinceMonday + dow;
 
-    int dow, hod;
-    for (dow = 0; dow < DAYS_IN_WEEK; dow++) {
-        mktime(&tm);
-        cal->days[dow].month = tm.tm_mon + 1;
-        cal->days[dow].dom = tm.tm_mday;
-        tm.tm_mday++;
-
-        for (hod = 0; hod < HOURS_IN_DAY; hod++) {
-            cal->days[dow].events[hod].title[0] = '\0';
-            cal->days[dow].events[hod].duration_start = -1;
-            cal->days[dow].events[hod].duration_end = -1;
-            cal->days[dow].events[hod].valid = 0;
-        }
-    }
-}
-
-static void save_new_cal(calendar cal, FILE *file) {
-    int index = inc_cal_counter(file) - 1;
-    fseek(file, sizeof(int) + (index * sizeof(calendar)), SEEK_SET);
-    fwrite(&cal, sizeof(calendar), 1, file);
+    mktime(&tm);
+    day->year = tm.tm_year + 1900;
+    day->month = tm.tm_mon + 1;
+    day->dom = tm.tm_mday;
 }
 
 static int inc_cal_counter(FILE *file) {
-    int length;
-    fseek(file, 0, SEEK_SET);
-    fread(&length, sizeof(int), 1, file);
+    int length = get_cal_counter(file);
     length++;
     fseek(file, 0, SEEK_SET);
     fwrite(&length, sizeof(int), 1, file);
+    return length;
+}
+
+static int get_cal_counter(FILE *file) {
+    int length;
+    fseek(file, 0, SEEK_SET);
+    fread(&length, sizeof(int), 1, file);
     return length;
 }
 
@@ -175,6 +241,9 @@ void prn_file_content() {
         fread(&cal, sizeof(calendar), 1, file);
         if (cal.valid) {
             printf("Week: %d, year: %d\nDates: ", cal.week, cal.year);
+            prn_cal_dates(cal);
+        } else {
+            printf("(Invalid) Week: %d, year: %d\nDates: ", cal.week, cal.year);
             prn_cal_dates(cal);
         }
     }

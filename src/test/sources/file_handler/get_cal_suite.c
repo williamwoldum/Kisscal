@@ -17,8 +17,8 @@ void get_cal_test_week_45(CuTest* tc) {
 
         for (hod = 0; hod < HOURS_IN_DAY; hod++) {
             expected.days[dow].events[hod].title[0] = '\0';
-            expected.days[dow].events[hod].duration_start = -1;
-            expected.days[dow].events[hod].duration_end = -1;
+            expected.days[dow].events[hod].start_time = -1;
+            expected.days[dow].events[hod].end_time = -1;
             expected.days[dow].events[hod].valid = 0;
         }
     }

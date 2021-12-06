@@ -34,8 +34,8 @@ int cmp_days(day day1, day day2) {
 int cmp_events(event event1, event event2) {
     int failed = 0;
     failed += cmp_titles(event1.title, event2.title) ? 0 : 1;
-    failed += event1.duration_start != event2.duration_start;
-    failed += event1.duration_end != event2.duration_end;
+    failed += event1.start_time != event2.start_time;
+    failed += event1.end_time != event2.end_time;
     failed += event1.valid != event2.valid;
 
     return !failed;
