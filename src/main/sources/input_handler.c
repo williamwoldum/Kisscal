@@ -29,6 +29,11 @@ void show_help() {
         "add assignment '<assingment name>' <day> <hand in> <duration>\n"
         "remove assignment '<assingment name>' <day>\n\n"
 
+        "print day <day>\n\n"
+
+        "import ICS\n"
+        "export ICS\n\n"
+
         "analyze\n\n"
 
         "close\n"
