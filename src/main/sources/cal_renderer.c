@@ -10,6 +10,7 @@
 #include "../headers/file_handler.h"
 #include "../headers/input_handler.h"
 #include "../headers/regex_handler.h"
+#include "../headers/time_handler.h"
 
 calendar current_cal;
 
@@ -60,7 +61,8 @@ char* date_locs[DAYS_IN_WEEK] = {
 char day_strs[DAYS_IN_WEEK][4] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 
 void setup_renderer(void) {
-    current_cal = get_cal(49, 2021);
+    time_t cal_time = get_cal_time_from_day_time(time(NULL));
+    current_cal = get_cal(cal_time);
 }
 
 /*  &pixel_arr[6][9],
@@ -79,16 +81,17 @@ void load_into_arr(char* location, char* str) {
 }
 
 void prn_cal(void) {
-    system("clear");
+    /*     system("clear");
+     */
     char cal_header_buf[20];
-    sprintf(cal_header_buf, "Week %-2d year %d", current_cal.week, current_cal.year);
+    sprintf(cal_header_buf, "Week %-2d year %d", get_t_data(current_cal.time, t_week), get_t_data(current_cal.time, t_year));
     load_into_arr(cal_header_loc, cal_header_buf);
 
     int i;
 
     char date_buf[30];
     for (i = 0; i < DAYS_IN_WEEK; i++) {
-        sprintf(date_buf, "%s %2d/%-2d", day_strs[i], current_cal.days[i].dom, current_cal.days[i].month);
+        sprintf(date_buf, "%s %2d/%-2d", day_strs[i], get_t_data(current_cal.days[i].time, t_dom), get_t_data(current_cal.days[i].time, t_mon));
         load_into_arr(date_locs[i], date_buf);
     }
 

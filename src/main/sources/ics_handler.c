@@ -6,7 +6,6 @@
 #include "../headers/datatypes.h"
 #include "../headers/file_handler.h"
 
-char *get_DTSTAMP(calendar, int, int);
 char *get_dtstart_dtend(event, int);
 int get_uid();
 
@@ -37,7 +36,7 @@ void convert_cal_to_ics(calendar cal) {
         int j;
         for (j = 0; j < 48; j++) {
             if (cal.days[i].events[j].valid == 1) {
-                char *dtstamp = get_DTSTAMP(cal, i, j);
+                char *dtstamp = "";
 
                 char *dtstart = get_dtstart_dtend(cal.days[i].events[j], 1);
 
@@ -69,22 +68,6 @@ void convert_cal_to_ics(calendar cal) {
     fprintf(cal_file, "END:VCALENDAR\n");
     fclose(cal_file);
     /*cal.days[0].events[0].*/
-}
-
-char *get_DTSTAMP(calendar cal, int day, int event) {
-    time_t start_time = cal.days[day].events[event].start_time;
-
-    int year = cal.year;
-    int month = cal.days->month;
-    int date = cal.days->dom;
-
-    struct tm *start = localtime(&start_time);
-
-    char *final = (char *)malloc(48 * sizeof(char));
-
-    sprintf(final, "DTSTAMP:%02d%02d%02dT%02d%02d%02dZ", year, month, date, start->tm_hour, start->tm_min, start->tm_sec);
-
-    return final;
 }
 
 char *get_dtstart_dtend(event event, int isStart) {

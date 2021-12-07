@@ -7,6 +7,7 @@
 #include "../headers/datatypes.h"
 #include "../headers/file_handler.h"
 #include "../headers/regex_handler.h"
+#include "../headers/time_handler.h"
 
 #define INPUT_BUFF_SIZE 100
 
@@ -54,27 +55,30 @@ int prompt_user_input() {
 
             sscanf(user_input + 13, " %d %d", &week, &year);
 
-            current_cal = get_cal(week, year);
+            time_t cal_time = get_cal_time_from_week_and_year(week, year);
+            current_cal = get_cal(cal_time);
 
             prn_cal();
             break;
         }
         case clear_calendar_rule: {
-            int week, year;
-
-            sscanf(user_input + 14, " %d %d", &week, &year);
-
-            delete_cal(week, year);
-            current_cal = get_cal(week, year);
+            delete_cal(current_cal.time);
+            current_cal = get_cal(current_cal.time);
             break;
         }
         case next_week_rule: {
-            current_cal = get_cal(current_cal.week + 1, current_cal.year);
+            int week = get_t_data(current_cal.time, t_week) + 1;
+            int year = get_t_data(current_cal.time, t_year);
+            time_t cal_time = get_cal_time_from_week_and_year(week, year);
+            current_cal = get_cal(cal_time);
             prn_cal();
             break;
         }
         case previous_week_rule: {
-            current_cal = get_cal(current_cal.week - 1, current_cal.year);
+            int week = get_t_data(current_cal.time, t_week) - 1;
+            int year = get_t_data(current_cal.time, t_year);
+            time_t cal_time = get_cal_time_from_week_and_year(week, year);
+            current_cal = get_cal(cal_time);
             prn_cal();
             break;
         }

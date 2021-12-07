@@ -7,10 +7,10 @@
 
 /************************************************************/
 
-calendar get_cal(int week, int year);
-void delete_cal(int week, int year);
-void clear_day(int dow, int week, int year);
-void add_event(int dow, int week, int year, char *title, time_t start_time, time_t end_time);
+calendar get_cal(time_t cal_time);
+void delete_cal(time_t cal_time);
+void clear_day(time_t day_time);
+void add_event(char *title, time_t start_time, time_t end_time);
 
 void clr_file();
 void prn_file_content();
