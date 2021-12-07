@@ -16,6 +16,9 @@ void setup_regex() {
         "^remove event '.{1,}' (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\n",
         "^add assignment '.{1,}' (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday) [0-9]{2}:[0-9]{2} ([0-9]{1,2}|[0-9]{1,2}.[0-9])\n",
         "^remove assignment '.{1,}' (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\n",
+        "^print day (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\n",
+        "^import ics\n",
+        "^export ics\n",
         "^analyze\n",
         "^help\n",
         "^close\n"};

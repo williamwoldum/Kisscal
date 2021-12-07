@@ -121,6 +121,21 @@ int prompt_user_input() {
             prn_cal();
             break;
         }
+        case print_day_rule: {
+            char day_str[9];
+
+            sscanf(user_input + 9, " %s", day_str);
+            printf("%s", day_str);
+            break;
+        }
+        case import_ics_rule: {
+            
+            break;
+        }
+        case export_ics_rule: {
+            
+            break;
+        }
         case analyze_rule: {
             break;
         }
