@@ -16,7 +16,7 @@ void show_help() {
         "-----------------------------------------------------------------------------------------------------------\n"
         "\n"
         "open calendar <week> <year>\n"
-        "clear calendar <week> <year>\n\n"
+        "clear calendar\n\n"
 
         "next week\n"
         "previous week\n\n"
@@ -60,11 +60,7 @@ int prompt_user_input() {
             break;
         }
         case clear_calendar_rule: {
-            int week, year;
-
-            sscanf(user_input + 14, " %d %d", &week, &year);
-
-            delete_cal(week, year);
+            delete_cal(current_cal.week, current_cal.year);
             current_cal = get_cal(week, year);
             break;
         }
