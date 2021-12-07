@@ -17,7 +17,7 @@ void show_help() {
         "-----------------------------------------------------------------------------------------------------------\n"
         "\n"
         "open calendar <week> <year>\n"
-        "clear calendar <week> <year>\n\n"
+        "clear calendar\n\n"
 
         "next week\n"
         "previous week\n\n"
@@ -29,6 +29,11 @@ void show_help() {
 
         "add assignment '<assingment name>' <day> <hand in> <duration>\n"
         "remove assignment '<assingment name>' <day>\n\n"
+
+        "print day <day>\n\n"
+
+        "import ICS\n"
+        "export ICS\n\n"
 
         "analyze\n\n"
 
@@ -123,6 +128,19 @@ int prompt_user_input() {
 
             sscanf(user_input + 19, " %[^ ']' %s", assignment_str, day_str);
             prn_cal();
+            break;
+        }
+        case print_day_rule: {
+            char day_str[9];
+
+            sscanf(user_input + 9, " %s", day_str);
+            printf("%s", day_str);
+            break;
+        }
+        case import_ics_rule: {
+            break;
+        }
+        case export_ics_rule: {
             break;
         }
         case analyze_rule: {
