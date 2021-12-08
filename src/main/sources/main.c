@@ -9,7 +9,8 @@
 #include "../headers/input_handler.h"
 #include "../headers/regex_handler.h"
 
-int main() {
+int main()
+{
     srand(time(NULL));
 
     regex_t regexs[num_input_rules];
@@ -24,7 +25,10 @@ int main() {
 
     cal = get_cal(50, 2021);
 
+    /*ICS TESTING*/
     convert_cal_to_ics(get_cal(45, 2021));
+    import_ics("test");
+    /*ICS TESTING*/
 
     cal = get_cal(51, 2021);
 
