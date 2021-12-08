@@ -6,7 +6,6 @@
 #include "../headers/datatypes.h"
 #include "../headers/file_handler.h"
 
-<<<<<<< HEAD
 static char *get_dtstart_dtend(event, int);
 static int get_uid();
 static void create_event(FILE *, calendar, int, int);
@@ -15,12 +14,6 @@ static char *get_deadline(assignment);
 
 void convert_cal_to_ics(calendar cal)
 {
-=======
-char *get_dtstart_dtend(event, int);
-int get_uid();
-
-void convert_cal_to_ics(calendar cal) {
->>>>>>> 1a30afd319a856d1e63c975bd4f47ab41ebf4d27
     /*opretter test element*/
     cal.days[1].events[0].start_time = 1638868865;
     cal.days[1].events[0].end_time = 1638868865 + 3600 * 24;
@@ -47,7 +40,6 @@ void convert_cal_to_ics(calendar cal) {
 
     int day;
 
-<<<<<<< HEAD
     for (day = 0; day < DAYS_IN_WEEK; day++)
     {
         int hour;
@@ -57,13 +49,6 @@ void convert_cal_to_ics(calendar cal) {
             {
                 create_event(cal_file, cal, day, hour);
             }
-=======
-    for (i = 0; i < 7; i++) {
-        int j;
-        for (j = 0; j < 48; j++) {
-            if (cal.days[i].events[j].valid == 1) {
-                char *dtstamp = "";
->>>>>>> 1a30afd319a856d1e63c975bd4f47ab41ebf4d27
 
             if (cal.days[day].assignments[hour].valid == 1)
             {
@@ -101,7 +86,6 @@ static void create_event(FILE *cal_file, calendar cal, int day, int hour)
     fprintf(cal_file, "END:VEVENT\n");
 }
 
-<<<<<<< HEAD
 static void create_assignment(FILE *cal_file, calendar cal, int day, int hour)
 {
     char *dtstart = get_deadline(cal.days[day].assignments[hour]);
@@ -128,9 +112,6 @@ static void create_assignment(FILE *cal_file, calendar cal, int day, int hour)
 
 static char *get_dtstart_dtend(event event, int isStart)
 {
-=======
-char *get_dtstart_dtend(event event, int isStart) {
->>>>>>> 1a30afd319a856d1e63c975bd4f47ab41ebf4d27
     char *final = (char *)malloc(48 * sizeof(char));
 
     if (isStart)
@@ -179,7 +160,6 @@ void import_ics(char *path, calendar cal)
     }
 
     char line[100];
-    int eventfound = 0;
 
     char c;
     int linecount = 0;
@@ -193,7 +173,8 @@ void import_ics(char *path, calendar cal)
     fseek(file, 0, SEEK_SET);
 
     int eventstatus = 0;
-    for (int i = 0; i < linecount; i++)
+    int i = 0;
+    for (i = 0; i < linecount; i++)
     {
 
         char buffer[100];
@@ -241,7 +222,7 @@ void import_ics(char *path, calendar cal)
                        &time.tm_mday,
                        &time.tm_hour,
                        &time.tm_min);
-                *time_t end_time = mktime(&time);
+                time_t end_time = mktime(&time);
 
                 /* add_event(title, start_time, end_time);*/
             }
@@ -254,7 +235,7 @@ void import_ics(char *path, calendar cal)
 
                 free(buffer2);
 
-                *time_t start_time = mktime(*time);
+                /*time_t start_time = mktime(time);*/
 
                 /* add_event(title, start_time, end_time);*/
             }

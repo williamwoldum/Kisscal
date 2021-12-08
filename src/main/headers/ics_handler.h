@@ -8,7 +8,7 @@
 /************************************************************/
 
 void convert_cal_to_ics(calendar cal);
-void import_ics(char *path);
+void import_ics(char *, calendar);
 
 /************************************************************/
 
