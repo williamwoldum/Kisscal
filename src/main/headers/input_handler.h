@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void show_help(void);
-int prompt_user_input();
+int prompt_user_input(void);
 
 #endif

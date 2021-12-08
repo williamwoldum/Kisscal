@@ -1,6 +1,5 @@
 #include "../headers/time_handler.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -62,6 +61,22 @@ time_t get_cal_time_from_week_and_year(int week, int year) {
     int DaysSinceMonday = (tm.tm_wday - 1) % DAYS_IN_WEEK;
     tm.tm_mday += (week - 1) * DAYS_IN_WEEK - DaysSinceMonday;
     return mktime(&tm);
+}
+
+time_t digi_time_to_time_t(time_t time, int hour, int mins) {
+    if (mins >= 39) {
+        mins = 0;
+        hour++;
+    } else if (mins >= 18) {
+        mins = 30;
+    } else {
+        mins = 0;
+    }
+
+    struct tm *tm = localtime(&time);
+    tm->tm_hour = hour;
+    tm->tm_min = mins;
+    return mktime(tm);
 }
 
 static int get_year(struct tm *tm) {

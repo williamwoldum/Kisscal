@@ -12,6 +12,8 @@
 #include "../headers/regex_handler.h"
 #include "../headers/time_handler.h"
 
+static void load_into_arr(char* location, char* str);
+
 calendar current_cal;
 
 char pixel_arr[29][108] = {
@@ -48,6 +50,7 @@ char pixel_arr[29][108] = {
     {"'---------------------------------------------------------------------------------------------------------'\0"}};
 
 char* cal_header_loc = &pixel_arr[1][49];
+
 char* date_locs[DAYS_IN_WEEK] = {
     &pixel_arr[3][11],
     &pixel_arr[3][25],
@@ -57,27 +60,21 @@ char* date_locs[DAYS_IN_WEEK] = {
     &pixel_arr[3][81],
     &pixel_arr[3][95],
 };
+char* day_corners[DAYS_IN_WEEK] = {
+    &pixel_arr[6][9],
+    &pixel_arr[6][23],
+    &pixel_arr[6][37],
+    &pixel_arr[6][51],
+    &pixel_arr[6][65],
+    &pixel_arr[6][79],
+    &pixel_arr[6][93],
+};
 
 char day_strs[DAYS_IN_WEEK][4] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 
 void setup_renderer(void) {
     time_t cal_time = get_cal_time_from_day_time(time(NULL));
     current_cal = get_cal(cal_time);
-}
-
-/*  &pixel_arr[6][9],
-  &pixel_arr[6][23],
-  &pixel_arr[6][37],
-  &pixel_arr[6][51],
-  &pixel_arr[6][65],
-  &pixel_arr[6][79],
-  &pixel_arr[6][93],*/
-
-void load_into_arr(char* location, char* str) {
-    int i;
-    for (i = 0; i < strlen(str); i++) {
-        location[i] = str[i];
-    }
 }
 
 void prn_cal(void) {
@@ -100,5 +97,12 @@ void prn_cal(void) {
 
     for (i = 0; i < 29; i++) {
         printf("%s\n", pixel_arr[i]);
+    }
+}
+
+static void load_into_arr(char* location, char* str) {
+    int i;
+    for (i = 0; i < strlen(str); i++) {
+        location[i] = str[i];
     }
 }

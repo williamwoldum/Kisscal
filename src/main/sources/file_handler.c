@@ -19,7 +19,6 @@ static int get_free_index(FILE *file);
 static void load_fresh_cal(calendar *cal, time_t cal_time);
 static void load_fresh_day(day *day, time_t day_time);
 static int get_num_cals(FILE *file);
-void constrain_week(int *week, int *year);
 
 /************************************************************************* Global functions  */
 
@@ -66,10 +65,11 @@ void clear_day(time_t day_time) {
 void add_event(char *title, time_t start_time, time_t end_time) {
     if (start_time >= end_time) {
         printf("Event '%s' must end after it starts", title);
+        return;
     }
 
     calendar cal = get_cal(get_cal_time_from_day_time(start_time));
-    ;
+
     int dow = get_t_data(start_time, t_dow);
 
     int i, is_before, is_after, overlaps = 0;
