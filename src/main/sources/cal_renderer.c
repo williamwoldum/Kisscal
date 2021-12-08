@@ -83,9 +83,8 @@ void load_into_arr(char* location, char* str) {
 void prn_cal(void) {
     /*     system("clear");
      */
-    int week, year;
-    struct tm* tm = localtime(&current_cal.time);
-    get_week_year(tm, &year, &week);
+    int year = get_t_data(current_cal.time, t_year);
+    int week = get_t_data(current_cal.time, t_week);
 
     char cal_header_buf[20];
     sprintf(cal_header_buf, "Week %-2d year %d", week, year);

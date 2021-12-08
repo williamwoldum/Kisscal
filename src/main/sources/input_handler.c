@@ -72,18 +72,16 @@ int prompt_user_input() {
             break;
         }
         case next_week_rule: {
-            int week, year;
-            struct tm *tm = localtime(&current_cal.time);
-            get_week_year(tm, &year, &week);
+            int year = get_t_data(current_cal.time, t_year);
+            int week = get_t_data(current_cal.time, t_week);
             time_t cal_time = get_cal_time_from_week_and_year(week + 1, year);
             current_cal = get_cal(cal_time);
             prn_cal();
             break;
         }
         case previous_week_rule: {
-            int week, year;
-            struct tm *tm = localtime(&current_cal.time);
-            get_week_year(tm, &year, &week);
+            int year = get_t_data(current_cal.time, t_year);
+            int week = get_t_data(current_cal.time, t_week);
             time_t cal_time = get_cal_time_from_week_and_year(week - 1, year);
             current_cal = get_cal(cal_time);
             prn_cal();
