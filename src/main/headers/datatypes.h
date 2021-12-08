@@ -16,8 +16,8 @@
 typedef struct assignment {
     char title[TITLE_LENGTH];
     time_t deadline;
-    int expected_time;
-    int elapsed_time;
+    float expected_time;
+    float elapsed_time;
     int valid;
 } assignment;
 
@@ -29,17 +29,13 @@ typedef struct event {
 } event;
 
 typedef struct day {
-    int year;
-    int month;
-    int dom;
+    time_t time;
     event events[HOURS_IN_DAY * 2];
     assignment assignments[HOURS_IN_DAY * 2];
 } day;
 
-typedef struct calendar
-{
-    int year;
-    int week;
+typedef struct calendar {
+    time_t time;
     int valid;
     day days[DAYS_IN_WEEK];
 } calendar;

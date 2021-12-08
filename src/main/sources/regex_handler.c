@@ -3,10 +3,12 @@
 #include <regex.h>
 #include <stdio.h>
 
-void setup_regex(regex_t *regexs) {
+regex_t regexs[num_input_rules];
+
+void setup_regex() {
     const char *expressions[num_input_rules] = {
         "^open calendar [0-9]{1,2} [0-9]{4}\n",
-        "^clear calendar [0-9]{1,2} [0-9]{4}\n",
+        "^clear calendar\n",
         "^next week\n",
         "^previous week\n",
         "^clear day (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\n",
@@ -14,6 +16,9 @@ void setup_regex(regex_t *regexs) {
         "^remove event '.{1,}' (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\n",
         "^add assignment '.{1,}' (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday) [0-9]{2}:[0-9]{2} ([0-9]{1,2}|[0-9]{1,2}.[0-9])\n",
         "^remove assignment '.{1,}' (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\n",
+        "^print day (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\n",
+        "^import ics\n",
+        "^export ics\n",
         "^analyze\n",
         "^help\n",
         "^close\n"};
@@ -26,7 +31,7 @@ void setup_regex(regex_t *regexs) {
     }
 }
 
-int checkregex(char *in, regex_t *regexs) {
+int checkregex(char *in) {
     int matched, matched_rule;
 
     int match = 1, index = 0;

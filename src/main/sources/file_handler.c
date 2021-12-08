@@ -1,9 +1,11 @@
 #include "../headers/file_handler.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "../headers/datatypes.h"
+#include "../headers/time_handler.h"
 
 /************************************************************************* Symbolic constants */
 
@@ -12,24 +14,24 @@
 /************************************************************************* Static function prototypes */
 
 static void save_cal(calendar *cal);
-static int get_cal_index(int week, int year, FILE *file);
-static int get_free_index(int week, int year, FILE *file);
-static void load_fresh_cal(calendar *cal, int week, int year);
-static void load_fresh_day(day *day, int dow, int week, int year);
-static void fill_day_with_date(day *day, int dow, int week, int year);
+static int get_cal_index(time_t cal_time, FILE *file);
+static int get_free_index(FILE *file);
+static void load_fresh_cal(calendar *cal, time_t cal_time);
+static void load_fresh_day(day *day, time_t day_time);
 static int get_num_cals(FILE *file);
+void constrain_week(int *week, int *year);
 
 /************************************************************************* Global functions  */
 
-calendar get_cal(int week, int year) {
+calendar get_cal(time_t cal_time) {
     FILE *file = fopen(STORAGE_PATH, "rb+");
 
-    int index = get_cal_index(week, year, file);
+    int index = get_cal_index(cal_time, file);
 
     calendar cal;
 
     if (index == -1) {
-        load_fresh_cal(&cal, week, year);
+        load_fresh_cal(&cal, cal_time);
     } else {
         fseek(file, index * sizeof(calendar), SEEK_SET);
         fread(&cal, sizeof(calendar), 1, file);
@@ -40,10 +42,10 @@ calendar get_cal(int week, int year) {
     return cal;
 }
 
-void delete_cal(int week, int year) {
+void delete_cal(time_t cal_time) {
     FILE *file = fopen(STORAGE_PATH, "rb+");
 
-    int index = get_cal_index(week, year, file);
+    int index = get_cal_index(cal_time, file);
 
     if (index != -1) {
         calendar cal = {.valid = 0};
@@ -53,26 +55,36 @@ void delete_cal(int week, int year) {
     fclose(file);
 }
 
-void clear_day(int dow, int week, int year) {
-    calendar cal = get_cal(week, year);
-    load_fresh_day(&cal.days[dow], dow, week, year);
+void clear_day(time_t day_time) {
+    time_t cal_time = get_cal_time_from_day_time(day_time);
+    calendar cal = get_cal(cal_time);
+    int dow = get_t_data(day_time, t_dow);
+    load_fresh_day(&cal.days[dow], day_time);
     save_cal(&cal);
 }
 
-void add_event(int dow, int week, int year, char *title, time_t start_time, time_t end_time) {
-    calendar cal = get_cal(week, year);
+void add_event(char *title, time_t start_time, time_t end_time) {
+    if (start_time >= end_time) {
+        printf("Event '%s' must end after it starts", title);
+    }
+
+    calendar cal = get_cal(get_cal_time_from_day_time(start_time));
+    ;
+    int dow = get_t_data(start_time, t_dow);
 
     int i, is_before, is_after, overlaps = 0;
-    for (i = 0; i < HOURS_IN_DAY * 2; i++) {
-        is_before = (start_time <= cal.days[dow].events[i].start_time && end_time <= cal.days[dow].events[i].start_time);
-        is_after = (start_time >= cal.days[dow].events[i].end_time && end_time >= cal.days[dow].events[i].end_time);
+    int index = 0, search = 1;
+    while (search && index < HOURS_IN_DAY * 2) {
+        is_before = (start_time <= cal.days[dow].events[index].start_time && end_time <= cal.days[dow].events[index].start_time);
+        is_after = (start_time >= cal.days[dow].events[index].end_time && end_time >= cal.days[dow].events[index].end_time);
         if (!(is_before || is_after)) {
+            search = 0;
             overlaps = 1;
         }
     }
 
     if (!overlaps) {
-        int index = 0, search = 0;
+        index = 0, search = 1;
         while (search && index < HOURS_IN_DAY * 2) {
             if (!cal.days[dow].events[index].valid) {
                 for (i = 0; i < TITLE_LENGTH; i++) {
@@ -94,10 +106,10 @@ static void save_cal(calendar *cal) {
     if (cal->valid) {
         FILE *file = fopen(STORAGE_PATH, "rb+");
 
-        int index = get_cal_index(cal->week, cal->year, file);
+        int index = get_cal_index(cal->time, file);
 
         if (index == -1) {
-            index = get_free_index(cal->week, cal->year, file);
+            index = get_free_index(file);
         }
 
         fseek(file, index * sizeof(calendar), SEEK_SET);
@@ -107,7 +119,7 @@ static void save_cal(calendar *cal) {
     }
 }
 
-static int get_cal_index(int week, int year, FILE *file) {
+static int get_cal_index(time_t cal_time, FILE *file) {
     int length = get_num_cals(file);
 
     fseek(file, 0, SEEK_SET);
@@ -115,7 +127,7 @@ static int get_cal_index(int week, int year, FILE *file) {
     int index = 0, found = 0;
     while (!found && index < length) {
         fread(&cal, sizeof(calendar), 1, file);
-        if (cal.week == week && cal.year == year && cal.valid) {
+        if (cal.time == cal_time && cal.valid) {
             found = 1;
         } else {
             index++;
@@ -125,7 +137,7 @@ static int get_cal_index(int week, int year, FILE *file) {
     return index == length ? -1 : index;
 }
 
-static int get_free_index(int week, int year, FILE *file) {
+static int get_free_index(FILE *file) {
     int length = get_num_cals(file);
 
     fseek(file, 0, SEEK_SET);
@@ -143,19 +155,19 @@ static int get_free_index(int week, int year, FILE *file) {
     return index;
 }
 
-static void load_fresh_cal(calendar *cal, int week, int year) {
-    cal->year = year;
-    cal->week = week;
+static void load_fresh_cal(calendar *cal, time_t cal_time) {
+    cal->time = cal_time;
     cal->valid = 0;
 
     int dow;
     for (dow = 0; dow < DAYS_IN_WEEK; dow++) {
-        load_fresh_day(&cal->days[dow], dow, week, year);
+        time_t day_time = get_day_time_from_cal_time(dow, cal_time);
+        load_fresh_day(&cal->days[dow], day_time);
     }
 }
 
-static void load_fresh_day(day *day, int dow, int week, int year) {
-    fill_day_with_date(day, dow, week, year);
+static void load_fresh_day(day *day, time_t day_time) {
+    day->time = day_time;
 
     int hod;
     for (hod = 0; hod < HOURS_IN_DAY * 2; hod++) {
@@ -170,19 +182,6 @@ static void load_fresh_day(day *day, int dow, int week, int year) {
         day->assignments[hod].elapsed_time = 0;
         day->assignments[hod].valid = 0;
     }
-}
-
-static void fill_day_with_date(day *day, int dow, int week, int year) {
-    struct tm tm = {.tm_year = year - 1900, .tm_mon = 0, .tm_mday = 4, .tm_hour = 12};
-    mktime(&tm);
-
-    int DaysSinceMonday = (tm.tm_wday - 1) % DAYS_IN_WEEK;
-    tm.tm_mday += (week - 1) * DAYS_IN_WEEK - DaysSinceMonday + dow;
-
-    mktime(&tm);
-    day->year = tm.tm_year + 1900;
-    day->month = tm.tm_mon + 1;
-    day->dom = tm.tm_mday;
 }
 
 static int get_num_cals(FILE *file) {
@@ -208,13 +207,11 @@ void prn_file_content() {
     int i;
     for (i = 0; i < length; i++) {
         fread(&cal, sizeof(calendar), 1, file);
-        if (cal.valid) {
-            printf("Week: %d, year: %d\nDates: ", cal.week, cal.year);
-            prn_cal_dates(&cal);
-        } else {
-            printf("(Invalid) Week: %d, year: %d\nDates: ", cal.week, cal.year);
-            prn_cal_dates(&cal);
+        if (!cal.valid) {
+            printf("(Invalid) ");
         }
+        printf("Week: %d, year: %d\nDates: ", get_t_data(cal.time, t_week), get_t_data(cal.time, t_year));
+        prn_cal_dates(&cal);
     }
     fclose(file);
 }
@@ -222,7 +219,7 @@ void prn_file_content() {
 void prn_cal_dates(calendar *cal) {
     int i;
     for (i = 0; i < DAYS_IN_WEEK; i++) {
-        printf("%d/%d ", cal->days[i].dom, cal->days[i].month);
+        printf("%d/%d ", get_t_data(cal->days[i].time, t_dom), get_t_data(cal->days[i].time, t_mon));
     }
     printf("\n\n");
 }
