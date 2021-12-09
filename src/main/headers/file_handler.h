@@ -14,7 +14,6 @@ void add_event(char *title, time_t start_time, time_t end_time);
 
 void clr_file(void);
 void prn_file_content(void);
-void prn_day_content(time_t day_time);
 
 /************************************************************/
 

@@ -13,22 +13,6 @@ static void create_assignment(FILE *, calendar, int, int);
 static char *get_deadline(assignment);
 
 void convert_cal_to_ics(calendar cal) {
-    /*opretter test element*/
-    cal.days[1].events[0].start_time = 1638868865;
-    cal.days[1].events[0].end_time = 1638868865 + 3600 * 24;
-    cal.days[1].events[0].valid = 1;
-
-    cal.days[1].events[1].start_time = 1638868865;
-    cal.days[1].events[1].end_time = 1638868865 + 3600 * 2;
-    cal.days[1].events[1].valid = 1;
-
-    cal.days[6].assignments[1].deadline = 1638868865;
-    cal.days[6].assignments[1].valid = 1;
-
-    /*strncpy(cal.days[1].events[0].title, "fuck", 16);*/
-    strcpy(cal.days[1].events[0].title, "fuck");
-    strcpy(cal.days[6].assignments[1].title, "fuckassignment");
-
     FILE *cal_file = fopen("./ics_output.ics", "w");
     fprintf(cal_file,
             "BEGIN:VCALENDAR\n"
@@ -181,7 +165,7 @@ void import_ics(char *path, calendar cal) {
                        &time.tm_mday,
                        &time.tm_hour,
                        &time.tm_min);
-                time_t start_time = mktime(&time);
+                /* time_t start_time = mktime(&time); */
             } else if (strstr(line, "DTEND")) {
                 char buf[100];
                 sscanf(line, "%[^:]:%s", buf, buffer);
@@ -193,7 +177,7 @@ void import_ics(char *path, calendar cal) {
                        &time.tm_mday,
                        &time.tm_hour,
                        &time.tm_min);
-                time_t end_time = mktime(&time);
+                /* time_t end_time = mktime(&time); */
 
                 /* add_event(title, start_time, end_time);*/
             } else if (strstr(line, "SUMMARY")) {

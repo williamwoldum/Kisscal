@@ -7,6 +7,7 @@
 #include "../headers/cal_renderer.h"
 #include "../headers/datatypes.h"
 #include "../headers/file_handler.h"
+#include "../headers/ics_handler.h"
 #include "../headers/regex_handler.h"
 #include "../headers/time_handler.h"
 
@@ -14,6 +15,7 @@
 
 static void prn_help(void);
 static int get_dow_from_str(char *str);
+static void prn_day_content(time_t day_time);
 
 int prompt_user_input(void) {
     printf("\n>> ");
@@ -124,6 +126,7 @@ int prompt_user_input(void) {
             break;
         }
         case export_ics_rule: {
+            convert_cal_to_ics(current_cal);
             break;
         }
         case analyze_rule: {
@@ -194,4 +197,44 @@ static int get_dow_from_str(char *str) {
         dow = 6;
     }
     return dow;
+}
+
+static void prn_day_content(time_t day_time) {
+    time_t cal_time = get_cal_time_from_day_time(day_time);
+
+    calendar cal = get_cal(cal_time);
+
+    day day;
+    int i;
+    for (i = 0; i < DAYS_IN_WEEK; i++) {
+        if (cal.days[i].time == day_time) {
+            day = cal.days[i];
+        }
+    }
+
+    printf("Events:\n");
+    for (i = 0; i < HOURS_IN_DAY * 2; i++) {
+        event event = day.events[i];
+        if (event.valid) {
+            printf("Event: %s, starts: %02d:%02d, ends: %02d:%02d\n",
+                   event.title,
+                   get_t_data(event.start_time, t_hour),
+                   get_t_data(event.start_time, t_min),
+                   get_t_data(event.end_time, t_hour),
+                   get_t_data(event.end_time, t_min));
+        }
+    }
+
+    printf("Assignments:\n");
+    for (i = 0; i < HOURS_IN_DAY * 2; i++) {
+        assignment assignment = day.assignments[i];
+        if (assignment.valid) {
+            printf("Assignement: %s, deadline: %d:%d, expected time: %lf hour(s), used time: %lf hour(s)\n",
+                   assignment.title,
+                   get_t_data(assignment.deadline, t_hour),
+                   get_t_data(assignment.deadline, t_min),
+                   assignment.expected_time,
+                   assignment.elapsed_time);
+        }
+    }
 }
