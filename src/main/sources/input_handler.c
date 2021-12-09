@@ -41,6 +41,7 @@ int prompt_user_input(void) {
         case clear_week_rule: {
             delete_cal(current_cal.time);
             current_cal = get_cal(current_cal.time);
+            prn_cal();
             break;
         }
         case next_week_rule: {
@@ -62,6 +63,8 @@ int prompt_user_input(void) {
         case clear_day_rule: {
             char day_str[10];
             sscanf(user_input + 9, " %s", day_str);
+            int dow = get_dow_from_str(day_str);
+            clear_day(current_cal.days[dow].time);
             prn_cal();
             break;
         }
