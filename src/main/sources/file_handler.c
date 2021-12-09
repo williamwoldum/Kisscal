@@ -234,14 +234,11 @@ void prn_day_content(time_t day_time) {
         }
     }
 
-    int j;
-    printf("%d\n", i + 1);
-
     printf("Events:\n");
-    for (j = 0; j < HOURS_IN_DAY * 2; j++) {
-        event event = day.events[j];
+    for (i = 0; i < HOURS_IN_DAY * 2; i++) {
+        event event = day.events[i];
         if (event.valid) {
-            printf("Event: %s start: %d:%d end: %d:%d\n",
+            printf("Event: %s, starts: %d:%d, ends: %d:%d\n",
                    event.title,
                    get_t_data(event.start_time, t_hour),
                    get_t_data(event.start_time, t_min),
@@ -251,17 +248,15 @@ void prn_day_content(time_t day_time) {
     }
 
     printf("Assignments:\n");
-    for (j = 0; j < HOURS_IN_DAY * 2; j++) {
-        assignment assignment = day.assignments[j];
+    for (i = 0; i < HOURS_IN_DAY * 2; i++) {
+        assignment assignment = day.assignments[i];
         if (assignment.valid) {
-            printf("Assignement %s Deadline: %d:%d Expected time: %d:%d Elapsed time: %d:%d \n",
+            printf("Assignement: %s, deadline: %d:%d, expected time: %lf hour(s), used time: %lf hour(s)\n",
                    assignment.title,
                    get_t_data(assignment.deadline, t_hour),
                    get_t_data(assignment.deadline, t_min),
-                   get_t_data(assignment.expected_time, t_hour),
-                   get_t_data(assignment.expected_time, t_min),
-                   get_t_data(assignment.elapsed_time, t_hour),
-                   get_t_data(assignment.elapsed_time, t_min));
+                   assignment.expected_time,
+                   assignment.elapsed_time);
         }
     }
 }
