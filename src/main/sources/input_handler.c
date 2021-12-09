@@ -148,8 +148,8 @@ static void prn_help(void) {
         "\n"
         "-----------------------------------------------------------------------------------------------------------\n"
         "\n"
-        "open calendar <week> <year>\n"
-        "clear calendar\n\n"
+        "open week <week> <year>\n"
+        "clear week\n\n"
 
         "next week\n"
         "previous week\n\n"
