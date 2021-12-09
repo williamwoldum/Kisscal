@@ -141,6 +141,7 @@ static void prn_event_line(event* event, char* corner, int hour, int mins, int t
     }
 
     if (title_enabled) {
+        printf("\n\nyo\n\n");
         if (strlen(event->title) > 13) {
             char title_buf[14];
             strncpy(title_buf, event->title, 10);

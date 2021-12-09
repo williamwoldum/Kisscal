@@ -58,14 +58,14 @@ int prompt_user_input(void) {
             break;
         }
         case clear_day_rule: {
-            char day_str[9];
+            char day_str[10];
             sscanf(user_input + 9, " %s", day_str);
             prn_cal();
             break;
         }
         case add_event_rule: {
             char event_str[TITLE_LENGTH];
-            char day_str[9];
+            char day_str[10];
             char time_start_str[6];
             char time_end_str[6];
             sscanf(user_input + 11, " %[^']' %s %s %s", event_str, day_str, time_start_str, time_end_str);
@@ -87,7 +87,7 @@ int prompt_user_input(void) {
         }
         case remove_event_rule: {
             char event_str[TITLE_LENGTH];
-            char day_str[9];
+            char day_str[10];
 
             sscanf(user_input + 14, " %[^']' %s", event_str, day_str);
             prn_cal();
@@ -95,7 +95,7 @@ int prompt_user_input(void) {
         }
         case add_assignment_rule: {
             char assignment_str[TITLE_LENGTH];
-            char day_str[9];
+            char day_str[10];
             char hand_in_str[5];
             char duration_str[5];
 
@@ -105,14 +105,14 @@ int prompt_user_input(void) {
         }
         case remove_assignment_rule: {
             char assignment_str[TITLE_LENGTH];
-            char day_str[9];
+            char day_str[10];
 
             sscanf(user_input + 19, " %[^ ']' %s", assignment_str, day_str);
             prn_cal();
             break;
         }
         case print_day_rule: {
-            char day_str[9];
+            char day_str[10];
 
             sscanf(user_input + 9, " %s", day_str);
             printf("%s", day_str);
