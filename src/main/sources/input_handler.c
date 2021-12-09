@@ -68,7 +68,6 @@ int prompt_user_input(void) {
             char day_str[9];
             char time_start_str[6];
             char time_end_str[6];
-
             sscanf(user_input + 11, " %[^']' %s %s %s", event_str, day_str, time_start_str, time_end_str);
 
             int dow = get_dow_from_str(day_str);
@@ -80,8 +79,10 @@ int prompt_user_input(void) {
             int hour_end, mins_end;
             sscanf(time_end_str, "%d:%d", &hour_end, &mins_end);
             time_t time_end = digi_time_to_time_t(current_cal.days[dow].time, hour_end, mins_end);
+            printf("start %d:%d, end %d:%d, day %d, title %s\n", hour_start, mins_start, hour_end, mins_end, dow, event_str);
+            printf("%ld %ld\n", time_start, time_end);
 
-            add_event(day_str, time_start, time_end);
+            add_event(event_str, time_start, time_end);
             prn_cal();
             break;
         }

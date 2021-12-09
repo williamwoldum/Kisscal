@@ -26,7 +26,7 @@ int get_t_data(time_t time, int t_type) {
             data = tm->tm_mday;
             break;
         case t_dow:
-            data = tm->tm_wday;
+            data = (tm->tm_wday - 1) % DAYS_IN_WEEK;
             break;
         case t_hour:
             data = tm->tm_hour;

@@ -26,5 +26,5 @@ int main() {
         run = prompt_user_input();
     }
 
-    return (0);
+    return EXIT_SUCCESS;
 }

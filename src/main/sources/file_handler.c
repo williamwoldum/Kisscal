@@ -23,7 +23,7 @@ static int get_num_cals(FILE *file);
 /************************************************************************* Global functions  */
 
 calendar get_cal(time_t cal_time) {
-    FILE *file = fopen(STORAGE_PATH, "rb+");
+    FILE *file = fopen(STORAGE_PATH, "rb");
 
     int index = get_cal_index(cal_time, file);
 
@@ -72,9 +72,9 @@ void add_event(char *title, time_t start_time, time_t end_time) {
 
     int dow = get_t_data(start_time, t_dow);
 
-    int i, is_before, is_after, overlaps = 0;
+    int is_before, is_after, overlaps = 0;
     int index = 0, search = 1;
-    while (search && index < HOURS_IN_DAY * 2) {
+    while (search && index++ < HOURS_IN_DAY * 2) {
         is_before = (start_time <= cal.days[dow].events[index].start_time && end_time <= cal.days[dow].events[index].start_time);
         is_after = (start_time >= cal.days[dow].events[index].end_time && end_time >= cal.days[dow].events[index].end_time);
         if (!(is_before || is_after)) {
@@ -85,17 +85,22 @@ void add_event(char *title, time_t start_time, time_t end_time) {
 
     if (!overlaps) {
         index = 0, search = 1;
-        while (search && index < HOURS_IN_DAY * 2) {
+        while (search && index++ < HOURS_IN_DAY * 2) {
             if (!cal.days[dow].events[index].valid) {
-                for (i = 0; i < TITLE_LENGTH; i++) {
-                    cal.days[dow].events[index].title[i] = title[i];
-                }
+                sprintf(cal.days[dow].events[index].title, "%s", title);
                 cal.days[dow].events[index].start_time = start_time;
                 cal.days[dow].events[index].end_time = end_time;
                 cal.days[dow].events[index].valid = 1;
+                cal.valid = 1;
                 search = 0;
             }
         }
+
+        save_cal(&cal);
+        prn_file_content();
+
+        prn_day_content(cal.time);
+
     } else {
         printf("Event '%s' overlaps other events", title);
     }
@@ -113,7 +118,7 @@ static void save_cal(calendar *cal) {
         }
 
         fseek(file, index * sizeof(calendar), SEEK_SET);
-        fwrite(&cal, sizeof(calendar), 1, file);
+        fwrite(cal, sizeof(calendar), 1, file);
 
         fclose(file);
     }
@@ -191,35 +196,42 @@ static int get_num_cals(FILE *file) {
 
 /************************************************************************* Debug functions */
 
-void clr_file() {
+void clr_file(void) {
     fclose(fopen(STORAGE_PATH, "wb"));
 }
 
-void prn_file_content() {
+void prn_file_content(void) {
     FILE *file = fopen(STORAGE_PATH, "rb");
     int length = get_num_cals(file);
 
-    fseek(file, 0, SEEK_SET);
-
     printf("\nSize (including non-valids): %d\n", length);
 
+    fseek(file, 0, SEEK_SET);
+
     calendar cal;
+
     int i;
     for (i = 0; i < length; i++) {
         fread(&cal, sizeof(calendar), 1, file);
         if (!cal.valid) {
             printf("(Invalid) ");
         }
-        printf("Week: %d, year: %d\nDates: ", get_t_data(cal.time, t_week), get_t_data(cal.time, t_year));
-        prn_cal_dates(&cal);
+        printf("Time: %ld, Week: %d, year: %d\n", cal.time, get_t_data(cal.time, t_week), get_t_data(cal.time, t_year));
     }
+
     fclose(file);
 }
 
-void prn_cal_dates(calendar *cal) {
-    int i;
+void prn_day_content(time_t cal_time) {
+    calendar cal = get_cal(cal_time);
+    int i, j;
+
     for (i = 0; i < DAYS_IN_WEEK; i++) {
-        printf("%d/%d ", get_t_data(cal->days[i].time, t_dom), get_t_data(cal->days[i].time, t_mon));
+        for (j = 0; j < HOURS_IN_DAY * 2; j++) {
+            event event = cal.days[i].events[j];
+            if (event.valid) {
+                printf("%d: title %s start: %ld end: %ld\n", j, event.title, event.start_time, event.end_time);
+            }
+        }
     }
-    printf("\n\n");
 }

@@ -1,6 +1,8 @@
 #include "../../headers/file_handler/get_cal_suite.h"
 
+#include "../../../main/headers/datatypes.h"
 #include "../../../main/sources/file_handler.c"
+#include "../../../main/sources/time_handler.c"
 #include "../../headers/CuTest.h"
 #include "../../headers/file_handler/compare_helper.h"
 
