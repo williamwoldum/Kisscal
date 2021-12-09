@@ -63,7 +63,7 @@ void clear_day(time_t day_time) {
 }
 
 void add_event(char *title, time_t start_time, time_t end_time) {
-    if (start_time >= end_time) {
+    if (start_time > end_time) {
         printf("Event '%s' must end after it starts", title);
         return;
     }
