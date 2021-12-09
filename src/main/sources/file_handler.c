@@ -71,6 +71,7 @@ void add_event(char *title, time_t start_time, time_t end_time) {
     calendar cal = get_cal(get_cal_time_from_day_time(start_time));
 
     int dow = get_t_data(start_time, t_dow);
+    printf("\ndow %d\n", dow);
 
     int is_before, is_after, overlaps = 0;
     int index = 0, search = 1;
@@ -99,10 +100,8 @@ void add_event(char *title, time_t start_time, time_t end_time) {
         save_cal(&cal);
         prn_file_content();
 
-        prn_day_content(cal.time);
-
     } else {
-        printf("Event '%s' overlaps other events", title);
+        printf("Event '%s' overlaps other events\n", title);
     }
 }
 /************************************************************************* Static functions */

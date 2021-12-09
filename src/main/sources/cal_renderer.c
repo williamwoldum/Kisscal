@@ -13,62 +13,12 @@
 #include "../headers/time_handler.h"
 
 static void load_into_arr(char* location, char* str);
+static void prn_event_line(event* event, char* corner, int hour, int mins, int title_enabled);
+
+#define ROW_LENGTH 108
+#define COLUMN_LENGTH 30
 
 calendar current_cal;
-
-char pixel_arr[29][108] = {
-    /*0         1         2         3         4         5         6         7         8         9         10     */
-    /*01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456*/
-    {"        ,-------------------------------------------------------------------------------------------------,\0"},
-    {"        |                                                                                                 |\0"},
-    {"        |-------------------------------------------------------------------------------------------------|\0"},
-    {"        |             |             |             |             |             |             |             |\0"},
-    {",-------|-------------|-------------|-------------|-------------|-------------|-------------|-------------|\0"},
-    {"| 00:00 |             |             |             |             |             |             |             |\0"},
-    {"| 01:00 |             |             |             |             |             |             |             |\0"},
-    {"| 03:00 |             |             |             |             |             |             |             |\0"},
-    {"| 04:00 |             |             |             |             |             |             |             |\0"},
-    {"| 05:00 |             |             |             |             |             |             |             |\0"},
-    {"| 06:00 |             |             |             |             |             |             |             |\0"},
-    {"| 07:00 |             |             |             |             |             |             |             |\0"},
-    {"| 08:00 |             |             |             |             |             |             |             |\0"},
-    {"| 09:00 |             |             |             |             |             |             |             |\0"},
-    {"| 10:00 |             |             |             |             |             |             |             |\0"},
-    {"| 11:00 |             |             |             |             |             |             |             |\0"},
-    {"| 12:00 |             |             |             |             |             |             |             |\0"},
-    {"| 13:00 |             |             |             |             |             |             |             |\0"},
-    {"| 14:00 |             |             |             |             |             |             |             |\0"},
-    {"| 15:00 |             |             |             |             |             |             |             |\0"},
-    {"| 16:00 |             |             |             |             |             |             |             |\0"},
-    {"| 17:00 |             |             |             |             |             |             |             |\0"},
-    {"| 18:00 |             |             |             |             |             |             |             |\0"},
-    {"| 19:00 |             |             |             |             |             |             |             |\0"},
-    {"| 20:00 |             |             |             |             |             |             |             |\0"},
-    {"| 21:00 |             |             |             |             |             |             |             |\0"},
-    {"| 22:00 |             |             |             |             |             |             |             |\0"},
-    {"| 23:00 |             |             |             |             |             |             |             |\0"},
-    {"'---------------------------------------------------------------------------------------------------------'\0"}};
-
-char* cal_header_loc = &pixel_arr[1][49];
-
-char* date_locs[DAYS_IN_WEEK] = {
-    &pixel_arr[3][11],
-    &pixel_arr[3][25],
-    &pixel_arr[3][39],
-    &pixel_arr[3][53],
-    &pixel_arr[3][67],
-    &pixel_arr[3][81],
-    &pixel_arr[3][95],
-};
-char* day_corners[DAYS_IN_WEEK] = {
-    &pixel_arr[6][9],
-    &pixel_arr[6][23],
-    &pixel_arr[6][37],
-    &pixel_arr[6][51],
-    &pixel_arr[6][65],
-    &pixel_arr[6][79],
-    &pixel_arr[6][93],
-};
 
 char day_strs[DAYS_IN_WEEK][4] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 
@@ -80,6 +30,64 @@ void setup_renderer(void) {
 void prn_cal(void) {
     /*     system("clear");
      */
+
+    current_cal = get_cal(current_cal.time);
+
+    char pixel_arr[COLUMN_LENGTH][ROW_LENGTH] = {
+        /*0         1         2         3         4         5         6         7         8         9         10     */
+        /*01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456*/
+        {"        ,-------------------------------------------------------------------------------------------------,\0"},
+        {"        |                                                                                                 |\0"},
+        {"        |-------------------------------------------------------------------------------------------------|\0"},
+        {"        |             |             |             |             |             |             |             |\0"},
+        {",-------|-------------|-------------|-------------|-------------|-------------|-------------|-------------|\0"},
+        {"| 00:00 |             |             |             |             |             |             |             |\0"},
+        {"| 01:00 |             |             |             |             |             |             |             |\0"},
+        {"| 02:00 |             |             |             |             |             |             |             |\0"},
+        {"| 03:00 |             |             |             |             |             |             |             |\0"},
+        {"| 04:00 |             |             |             |             |             |             |             |\0"},
+        {"| 05:00 |             |             |             |             |             |             |             |\0"},
+        {"| 06:00 |             |             |             |             |             |             |             |\0"},
+        {"| 07:00 |             |             |             |             |             |             |             |\0"},
+        {"| 08:00 |             |             |             |             |             |             |             |\0"},
+        {"| 09:00 |             |             |             |             |             |             |             |\0"},
+        {"| 10:00 |             |             |             |             |             |             |             |\0"},
+        {"| 11:00 |             |             |             |             |             |             |             |\0"},
+        {"| 12:00 |             |             |             |             |             |             |             |\0"},
+        {"| 13:00 |             |             |             |             |             |             |             |\0"},
+        {"| 14:00 |             |             |             |             |             |             |             |\0"},
+        {"| 15:00 |             |             |             |             |             |             |             |\0"},
+        {"| 16:00 |             |             |             |             |             |             |             |\0"},
+        {"| 17:00 |             |             |             |             |             |             |             |\0"},
+        {"| 18:00 |             |             |             |             |             |             |             |\0"},
+        {"| 19:00 |             |             |             |             |             |             |             |\0"},
+        {"| 20:00 |             |             |             |             |             |             |             |\0"},
+        {"| 21:00 |             |             |             |             |             |             |             |\0"},
+        {"| 22:00 |             |             |             |             |             |             |             |\0"},
+        {"| 23:00 |             |             |             |             |             |             |             |\0"},
+        {"'---------------------------------------------------------------------------------------------------------'\0"}};
+
+    char* cal_header_loc = &pixel_arr[1][49];
+
+    char* date_locs[DAYS_IN_WEEK] = {
+        &pixel_arr[3][11],
+        &pixel_arr[3][25],
+        &pixel_arr[3][39],
+        &pixel_arr[3][53],
+        &pixel_arr[3][67],
+        &pixel_arr[3][81],
+        &pixel_arr[3][95],
+    };
+    char* day_corners[DAYS_IN_WEEK] = {
+        &pixel_arr[4][9],
+        &pixel_arr[4][23],
+        &pixel_arr[4][37],
+        &pixel_arr[4][51],
+        &pixel_arr[4][65],
+        &pixel_arr[4][79],
+        &pixel_arr[4][93],
+    };
+
     int year = get_t_data(current_cal.time, t_year);
     int week = get_t_data(current_cal.time, t_week);
 
@@ -95,8 +103,55 @@ void prn_cal(void) {
         load_into_arr(date_locs[i], date_buf);
     }
 
-    for (i = 0; i < 29; i++) {
+    int j;
+    char title_buf[TITLE_LENGTH];
+    for (i = 0; i < DAYS_IN_WEEK; i++) {
+        for (j = 0; j < HOURS_IN_DAY * 2; j++) {
+            event event = current_cal.days[i].events[j];
+            if (event.valid) {
+                int start_hour = get_t_data(event.start_time, t_hour);
+                int start_mins = get_t_data(event.start_time, t_min);
+                int end_hour = get_t_data(event.end_time, t_hour);
+                int end_mins = get_t_data(event.end_time, t_min);
+                int title_enabled = (end_hour * 60 + end_mins) - (start_hour * 60 + start_mins) >= 120;
+
+                prn_event_line(&event, day_corners[i], start_hour, start_mins, title_enabled);
+                prn_event_line(&event, day_corners[i], end_hour, end_mins, 0);
+            }
+        }
+    }
+
+    for (i = 0; i < COLUMN_LENGTH; i++) {
         printf("%s\n", pixel_arr[i]);
+    }
+
+    prn_day_content(current_cal.time);
+}
+
+static void prn_event_line(event* event, char* corner, int hour, int mins, int title_enabled) {
+    int dashed = mins == 30;
+    char* loc = corner + (hour + dashed) * ROW_LENGTH;
+    char current = *(loc + 1);
+
+    if (hour != 0) {
+        if (current == '-' && !dashed) {
+            load_into_arr(loc, "=============");
+        } else if (dashed) {
+            load_into_arr(loc, "-------------");
+        } else {
+            load_into_arr(loc, "_____________");
+        }
+    }
+
+    if (title_enabled) {
+        if (strlen(event->title) > 13) {
+            char title_buf[14];
+            strncpy(title_buf, event->title, 10);
+            sprintf(title_buf + 10, "%s", "...");
+            load_into_arr(loc + ROW_LENGTH, title_buf);
+        } else {
+            load_into_arr(loc + ROW_LENGTH, event->title);
+        }
     }
 }
 

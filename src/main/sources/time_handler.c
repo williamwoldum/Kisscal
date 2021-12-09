@@ -26,7 +26,7 @@ int get_t_data(time_t time, int t_type) {
             data = tm->tm_mday;
             break;
         case t_dow:
-            data = (tm->tm_wday - 1) % DAYS_IN_WEEK;
+            data = (tm->tm_wday + (DAYS_IN_WEEK - 1)) % DAYS_IN_WEEK;
             break;
         case t_hour:
             data = tm->tm_hour;
@@ -46,7 +46,7 @@ time_t get_day_time_from_cal_time(int dow, time_t cal_time) {
     tm->tm_min = 0;
     tm->tm_sec = 0;
     mktime(tm);
-    int DaysSinceMonday = (tm->tm_wday - 1) % DAYS_IN_WEEK;
+    int DaysSinceMonday = (tm->tm_wday + (DAYS_IN_WEEK - 1)) % DAYS_IN_WEEK;
     tm->tm_mday += dow - DaysSinceMonday;
     return mktime(tm);
 }
@@ -58,7 +58,7 @@ time_t get_cal_time_from_day_time(time_t day_time) {
 time_t get_cal_time_from_week_and_year(int week, int year) {
     struct tm tm = {.tm_year = year - 1900, .tm_mon = 0, .tm_mday = 4, .tm_hour = 12};
     mktime(&tm);
-    int DaysSinceMonday = (tm.tm_wday - 1) % DAYS_IN_WEEK;
+    int DaysSinceMonday = (tm.tm_wday + (DAYS_IN_WEEK - 1)) % DAYS_IN_WEEK;
     tm.tm_mday += (week - 1) * DAYS_IN_WEEK - DaysSinceMonday;
     return mktime(&tm);
 }
@@ -81,7 +81,7 @@ time_t digi_time_to_time_t(time_t time, int hour, int mins) {
 
 static int get_year(struct tm *tm) {
     mktime(tm);
-    int DayOfTheWeek = (tm->tm_wday - 1) % DAYS_IN_WEEK;
+    int DayOfTheWeek = (tm->tm_wday + (DAYS_IN_WEEK - 1)) % DAYS_IN_WEEK;
     tm->tm_mday -= DayOfTheWeek;
     tm->tm_mday += 3;
     mktime(tm);
@@ -90,7 +90,7 @@ static int get_year(struct tm *tm) {
 
 static int get_week(struct tm *tm) {
     mktime(tm);
-    int DayOfTheWeek = (tm->tm_wday - 1) % DAYS_IN_WEEK;
+    int DayOfTheWeek = (tm->tm_wday + (DAYS_IN_WEEK - 1)) % DAYS_IN_WEEK;
     tm->tm_mday -= DayOfTheWeek;
     tm->tm_mday += 3;
     mktime(tm);

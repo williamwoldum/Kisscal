@@ -4,8 +4,8 @@
 #include <regex.h>
 
 enum rules { invalid_input_rule = -1,
-             open_calendar_rule,
-             clear_calendar_rule,
+             open_week_rule,
+             clear_week_rule,
              next_week_rule,
              previous_week_rule,
              clear_day_rule,

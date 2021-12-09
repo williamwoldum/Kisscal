@@ -28,7 +28,7 @@ int prompt_user_input(void) {
         case invalid_input_rule:
             printf("Invalid input (type 'help' to see commands)\n");
             break;
-        case open_calendar_rule: {
+        case open_week_rule: {
             int week, year;
             sscanf(user_input + 10, " %d %d", &week, &year);
             time_t cal_time = get_cal_time_from_week_and_year(week, year);
@@ -36,7 +36,7 @@ int prompt_user_input(void) {
             prn_cal();
             break;
         }
-        case clear_calendar_rule: {
+        case clear_week_rule: {
             delete_cal(current_cal.time);
             current_cal = get_cal(current_cal.time);
             break;
@@ -69,7 +69,6 @@ int prompt_user_input(void) {
             char time_start_str[6];
             char time_end_str[6];
             sscanf(user_input + 11, " %[^']' %s %s %s", event_str, day_str, time_start_str, time_end_str);
-
             int dow = get_dow_from_str(day_str);
 
             int hour_start, mins_start;
