@@ -221,16 +221,47 @@ void prn_file_content(void) {
     fclose(file);
 }
 
-void prn_day_content(time_t cal_time) {
-    calendar cal = get_cal(cal_time);
-    int i, j;
+void prn_day_content(time_t day_time) {
+    time_t cal_time = get_cal_time_from_day_time(day_time);
 
+    calendar cal = get_cal(cal_time);
+
+    day day;
+    int i;
     for (i = 0; i < DAYS_IN_WEEK; i++) {
-        for (j = 0; j < HOURS_IN_DAY * 2; j++) {
-            event event = cal.days[i].events[j];
-            if (event.valid) {
-                printf("%d: title %s start: %ld end: %ld\n", j, event.title, event.start_time, event.end_time);
-            }
+        if (cal.days[i].time == day_time) {
+            day = cal.days[i];
+        }
+    }
+
+    int j;
+    printf("%d\n", i + 1);
+
+    printf("Events:\n");
+    for (j = 0; j < HOURS_IN_DAY * 2; j++) {
+        event event = day.events[j];
+        if (event.valid) {
+            printf("Event: %s start: %d:%d end: %d:%d\n",
+                   event.title,
+                   get_t_data(event.start_time, t_hour),
+                   get_t_data(event.start_time, t_min),
+                   get_t_data(event.end_time, t_hour),
+                   get_t_data(event.end_time, t_min));
+        }
+    }
+
+    printf("Assignments:\n");
+    for (j = 0; j < HOURS_IN_DAY * 2; j++) {
+        assignment assignment = day.assignments[j];
+        if (assignment.valid) {
+            printf("Assignement %s Deadline: %d:%d Expected time: %d:%d Elapsed time: %d:%d \n",
+                   assignment.title,
+                   get_t_data(assignment.deadline, t_hour),
+                   get_t_data(assignment.deadline, t_min),
+                   get_t_data(assignment.expected_time, t_hour),
+                   get_t_data(assignment.expected_time, t_min),
+                   get_t_data(assignment.elapsed_time, t_hour),
+                   get_t_data(assignment.elapsed_time, t_min));
         }
     }
 }

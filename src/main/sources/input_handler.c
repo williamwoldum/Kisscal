@@ -116,6 +116,9 @@ int prompt_user_input(void) {
 
             sscanf(user_input + 9, " %s", day_str);
             printf("%s", day_str);
+
+            int dow = get_dow_from_str(day_str);
+            prn_day_content(current_cal.days[dow].time);
             break;
         }
         case import_ics_rule: {

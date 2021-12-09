@@ -104,7 +104,6 @@ void prn_cal(void) {
     }
 
     int j;
-    char title_buf[TITLE_LENGTH];
     for (i = 0; i < DAYS_IN_WEEK; i++) {
         for (j = 0; j < HOURS_IN_DAY * 2; j++) {
             event event = current_cal.days[i].events[j];
@@ -124,8 +123,6 @@ void prn_cal(void) {
     for (i = 0; i < COLUMN_LENGTH; i++) {
         printf("%s\n", pixel_arr[i]);
     }
-
-    prn_day_content(current_cal.time);
 }
 
 static void prn_event_line(event* event, char* corner, int hour, int mins, int title_enabled) {
