@@ -193,10 +193,10 @@ static void prn_help(void) {
         "clear: <day>\n\n"
 
         "add event: '<event name>' <day> <time start> <time end>\n"
-        "remove event: '<event name>' <day>\n\n"
+        "remove event: <day> <time start>\n\n"
 
         "add assignment: '<assingment name>' <day> <deadline> <duration>\n"
-        "remove assignment: '<assingment name>' <day>\n\n"
+        "remove assignment: <day> <deadline>\n\n"
 
         "print: <day>\n\n"
 
