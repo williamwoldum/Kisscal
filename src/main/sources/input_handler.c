@@ -195,12 +195,12 @@ static void prn_help(void) {
         "add event: '<event name>' <day> <time start> <time end>\n"
         "remove event: <day> <time start>\n\n"
 
-        "add assignment: '<assingment name>' <day> <deadline> <duration>\n"
+        "add assignment: '<assingment name>' <day> <deadline> <expected time> <used time>\n"
         "remove assignment: <day> <deadline>\n\n"
 
         "print: <day>\n\n"
 
-        "import ICS\n"
+        "import ICS: <path>\n"
         "export ICS\n\n"
 
         "analyze\n\n"

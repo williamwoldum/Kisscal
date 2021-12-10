@@ -29,8 +29,7 @@ void setup_renderer(void) {
 }
 
 void prn_cal(void) {
-    /*     system("clear");
-     */
+    system("clear");
 
     current_cal = get_cal(current_cal.time);
 
