@@ -73,7 +73,7 @@ int prompt_user_input(void) {
             char day_str[10];
             char time_start_str[6];
             char time_end_str[6];
-            sscanf(user_input + 11, " %[^']' %s %s %s", event_str, day_str, time_start_str, time_end_str);
+            sscanf(user_input + 11, " %15[^'] %*[^']' %s %s %s", event_str, day_str, time_start_str, time_end_str);
             int dow = get_dow_from_str(day_str);
 
             int hour_start, mins_start;
@@ -111,7 +111,7 @@ int prompt_user_input(void) {
             float expexted_time;
             float elapsed_time;
 
-            sscanf(user_input + 16, " %[^']' %s %s %f %f", assignment_str, day_str, deadline_str, &expexted_time, &elapsed_time);
+            sscanf(user_input + 16, " %15[^'] %*[^']' %s %s %f %f", assignment_str, day_str, deadline_str, &expexted_time, &elapsed_time);
 
             int dow = get_dow_from_str(day_str);
             int hour, mins;
