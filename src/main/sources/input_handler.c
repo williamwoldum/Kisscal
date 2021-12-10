@@ -73,7 +73,7 @@ int prompt_user_input(void) {
             char day_str[10];
             char time_start_str[6];
             char time_end_str[6];
-            sscanf(user_input + 11, " %[^']' %s %s %s", event_str, day_str, time_start_str, time_end_str);
+            sscanf(user_input + 11, " %15[^'] %*[^']' %s %s %s", event_str, day_str, time_start_str, time_end_str);
             int dow = get_dow_from_str(day_str);
 
             int hour_start, mins_start;
@@ -94,7 +94,7 @@ int prompt_user_input(void) {
             char event_str[TITLE_LENGTH];
             char day_str[10];
 
-            sscanf(user_input + 14, " %[^']' %s", event_str, day_str);
+            sscanf(user_input + 14, " %15[^'] %*[^']' %s", event_str, day_str);
             prn_cal();
             break;
         }
@@ -104,7 +104,7 @@ int prompt_user_input(void) {
             char hand_in_str[5];
             char duration_str[5];
 
-            sscanf(user_input + 16, " %[^']' %s %s %s", assignment_str, day_str, hand_in_str, duration_str);
+            sscanf(user_input + 16, " %15[^'] %*[^']' %s %s %s", assignment_str, day_str, hand_in_str, duration_str);
             prn_cal();
             break;
         }
@@ -112,7 +112,7 @@ int prompt_user_input(void) {
             char assignment_str[TITLE_LENGTH];
             char day_str[10];
 
-            sscanf(user_input + 19, " %[^ ']' %s", assignment_str, day_str);
+            sscanf(user_input + 19, " %15[^'] %*[^']' %s", assignment_str, day_str);
             prn_cal();
             break;
         }
