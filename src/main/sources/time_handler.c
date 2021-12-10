@@ -45,6 +45,7 @@ time_t get_day_time_from_cal_time(int dow, time_t cal_time) {
     tm->tm_hour = 12;
     tm->tm_min = 0;
     tm->tm_sec = 0;
+    tm->tm_isdst = 0;
     mktime(tm);
     int DaysSinceMonday = (tm->tm_wday + (DAYS_IN_WEEK - 1)) % DAYS_IN_WEEK;
     tm->tm_mday += dow - DaysSinceMonday;

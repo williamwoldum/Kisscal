@@ -40,7 +40,9 @@ int prompt_user_input(calendar* current_cal) {
             sscanf(user_input, "%*[^:]: %d %d", &week, &year);
             time_t cal_time = get_cal_time_from_week_and_year(week, year);
             printf("\ncurrent cal from input %ld\n", cal_time);
+            printf("time 1 %ld\n", current_cal->time);
             *current_cal = get_cal(cal_time);
+            printf("time 2 %ld\n", current_cal->time);
             prn_cal(current_cal);
             break;
         }
