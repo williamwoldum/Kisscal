@@ -13,6 +13,7 @@
 
 /************************************************************************* Static function prototypes */
 
+static int check_cal_has_content(calendar *cal);
 static void save_cal(calendar *cal);
 static int get_cal_index(time_t cal_time, FILE *file);
 static int get_free_index(FILE *file);
@@ -69,24 +70,23 @@ void add_event(char *title, time_t start_time, time_t end_time) {
     }
 
     calendar cal = get_cal(get_cal_time_from_day_time(start_time));
-
     int dow = get_t_data(start_time, t_dow);
-    printf("\ndow %d\n", dow);
 
     int is_before, is_after, overlaps = 0;
     int index = 0, search = 1;
-    while (search && index++ < HOURS_IN_DAY * 2) {
+    while (search && index < HOURS_IN_DAY * 2) {
         is_before = (start_time <= cal.days[dow].events[index].start_time && end_time <= cal.days[dow].events[index].start_time);
         is_after = (start_time >= cal.days[dow].events[index].end_time && end_time >= cal.days[dow].events[index].end_time);
         if (!(is_before || is_after)) {
             search = 0;
             overlaps = 1;
         }
+        index++;
     }
 
     if (!overlaps) {
         index = 0, search = 1;
-        while (search && index++ < HOURS_IN_DAY * 2) {
+        while (search && index < HOURS_IN_DAY * 2) {
             if (!cal.days[dow].events[index].valid) {
                 sprintf(cal.days[dow].events[index].title, "%s", title);
                 cal.days[dow].events[index].start_time = start_time;
@@ -95,16 +95,99 @@ void add_event(char *title, time_t start_time, time_t end_time) {
                 cal.valid = 1;
                 search = 0;
             }
+            index++;
         }
 
         save_cal(&cal);
-        prn_file_content();
 
     } else {
         printf("Event '%s' overlaps other events\n", title);
     }
 }
+
+void delete_event(time_t start_time) {
+    calendar cal = get_cal(get_cal_time_from_day_time(start_time));
+    int dow = get_t_data(start_time, t_dow);
+
+    int index = 0, found = 0;
+    while (!found && index < HOURS_IN_DAY * 2) {
+        if (cal.days[dow].events[index].start_time == start_time) {
+            cal.days[dow].events[index].valid = 0;
+            found = 1;
+        }
+        index++;
+    }
+
+    if (!check_cal_has_content(&cal)) {
+        ;
+        delete_cal(cal.time);
+    } else {
+        save_cal(&cal);
+    }
+}
+
+void add_assignemnt(char *title, time_t deadline, float expected_time, float elapsed_time) {
+    calendar cal = get_cal(get_cal_time_from_day_time(deadline));
+    int dow = get_t_data(deadline, t_dow);
+
+    int index = 0, found = 0;
+    while (!found && index < HOURS_IN_DAY * 2) {
+        if (!cal.days[dow].assignments[index].valid) {
+            sprintf(cal.days[dow].assignments[index].title, "%s", title);
+            cal.days[dow].assignments[index].deadline = deadline;
+            cal.days[dow].assignments[index].expected_time = expected_time;
+            cal.days[dow].assignments[index].elapsed_time = elapsed_time;
+            cal.days[dow].assignments[index].valid = 1;
+            cal.valid = 1;
+            found = 1;
+        }
+        index++;
+    }
+    if (found) {
+        save_cal(&cal);
+    }
+}
+
+void delete_assignment(time_t deadline) {
+    calendar cal = get_cal(get_cal_time_from_day_time(deadline));
+    int dow = get_t_data(deadline, t_dow);
+
+    int index = 0, found = 0;
+    while (!found && index < HOURS_IN_DAY * 2) {
+        if (cal.days[dow].assignments[index].deadline == deadline) {
+            cal.days[dow].assignments[index].valid = 0;
+            found = 1;
+        }
+        index++;
+    }
+
+    if (!check_cal_has_content(&cal)) {
+        ;
+        delete_cal(cal.time);
+    } else {
+        save_cal(&cal);
+    }
+}
+
 /************************************************************************* Static functions */
+
+static int check_cal_has_content(calendar *cal) {
+    int day_index = 0, content_index = 0, found = 0;
+
+    while (!found && day_index < DAYS_IN_WEEK) {
+        while (!found && content_index < HOURS_IN_DAY * 2) {
+            if (cal->days[day_index].events[content_index].valid) {
+                found = 1;
+            } else if (cal->days[day_index].assignments[content_index].valid) {
+                found = 1;
+            }
+            content_index++;
+        }
+        day_index++;
+        content_index = 0;
+    }
+    return found;
+}
 
 static void save_cal(calendar *cal) {
     if (cal->valid) {
@@ -202,10 +285,9 @@ void clr_file(void) {
 void prn_file_content(void) {
     FILE *file = fopen(STORAGE_PATH, "rb");
     int length = get_num_cals(file);
+    fseek(file, 0, SEEK_SET);
 
     printf("\nSize (including non-valids): %d\n", length);
-
-    fseek(file, 0, SEEK_SET);
 
     calendar cal;
 
@@ -215,7 +297,7 @@ void prn_file_content(void) {
         if (!cal.valid) {
             printf("(Invalid) ");
         }
-        printf("Time: %ld, Week: %d, year: %d\n", cal.time, get_t_data(cal.time, t_week), get_t_data(cal.time, t_year));
+        printf("Week: %d, year: %d, time: %ld, \n", get_t_data(cal.time, t_week), get_t_data(cal.time, t_year), cal.time);
     }
 
     fclose(file);

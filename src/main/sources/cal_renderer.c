@@ -118,6 +118,26 @@ void prn_cal(void) {
                 prn_event_line(&event, day_corners[i], end_hour, end_mins, 0);
             }
         }
+
+        for (j = 0; j < HOURS_IN_DAY * 2; j++) {
+            assignment assignment = current_cal.days[i].assignments[j];
+            if (assignment.valid) {
+                int hour = get_t_data(assignment.deadline, t_hour);
+                char* loc = day_corners[i] + hour * ROW_LENGTH;
+
+                if (strlen(assignment.title) > 11) {
+                    char title_buf[14];
+                    title_buf[0] = '{';
+                    strncpy(title_buf + 1, assignment.title, 8);
+                    sprintf(title_buf + 9, "%s", "...}");
+                    load_into_arr(loc + ROW_LENGTH, title_buf);
+                } else {
+                    char title_buf[14];
+                    sprintf(title_buf, "{%s}", assignment.title);
+                    load_into_arr(loc + ROW_LENGTH, title_buf);
+                }
+            }
+        }
     }
 
     for (i = 0; i < COLUMN_LENGTH; i++) {
@@ -141,7 +161,6 @@ static void prn_event_line(event* event, char* corner, int hour, int mins, int t
     }
 
     if (title_enabled) {
-        printf("\n\nyo\n\n");
         if (strlen(event->title) > 13) {
             char title_buf[14];
             strncpy(title_buf, event->title, 10);

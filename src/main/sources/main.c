@@ -23,6 +23,7 @@ int main() {
 
     int run = 1;
     while (run) {
+        prn_file_content();
         run = prompt_user_input();
     }
 

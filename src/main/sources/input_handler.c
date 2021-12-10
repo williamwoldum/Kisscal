@@ -83,43 +83,68 @@ int prompt_user_input(void) {
             int hour_end, mins_end;
             sscanf(time_end_str, "%d:%d", &hour_end, &mins_end);
             time_t time_end = digi_time_to_time_t(current_cal.days[dow].time, hour_end, mins_end);
-            printf("start %d:%d, end %d:%d, day %d, title %s\n", hour_start, mins_start, hour_end, mins_end, dow, event_str);
-            printf("%ld %ld\n", time_start, time_end);
 
             add_event(event_str, time_start, time_end);
             prn_cal();
             break;
         }
         case remove_event_rule: {
-            char event_str[TITLE_LENGTH];
             char day_str[10];
+            char time_str[6];
 
-            sscanf(user_input + 14, " %[^']' %s", event_str, day_str);
+            sscanf(user_input + 12, "%s %s", day_str, time_str);
+
+            int dow = get_dow_from_str(day_str);
+            int hour, mins;
+            sscanf(time_str, "%d:%d", &hour, &mins);
+            time_t time_start = digi_time_to_time_t(current_cal.days[dow].time, hour, mins);
+
+            delete_event(time_start);
+
             prn_cal();
             break;
         }
         case add_assignment_rule: {
             char assignment_str[TITLE_LENGTH];
             char day_str[10];
-            char hand_in_str[5];
-            char duration_str[5];
+            char deadline_str[6];
+            float expexted_time;
+            float elapsed_time;
 
-            sscanf(user_input + 16, " %[^']' %s %s %s", assignment_str, day_str, hand_in_str, duration_str);
+            sscanf(user_input + 16, " %[^']' %s %s %f %f", assignment_str, day_str, deadline_str, &expexted_time, &elapsed_time);
+
+            int dow = get_dow_from_str(day_str);
+            int hour, mins;
+            sscanf(deadline_str, "%d:%d", &hour, &mins);
+            time_t time_deadline = digi_time_to_time_t(current_cal.days[dow].time, hour, mins);
+
+            printf("\nhowdy '%s'\n", deadline_str);
+
+            add_assignemnt(assignment_str, time_deadline, expexted_time, elapsed_time);
+
             prn_cal();
             break;
         }
         case remove_assignment_rule: {
-            char assignment_str[TITLE_LENGTH];
             char day_str[10];
+            char time_str[6];
 
-            sscanf(user_input + 19, " %[^ ']' %s", assignment_str, day_str);
+            sscanf(user_input + 17, "%s %s", day_str, time_str);
+
+            int dow = get_dow_from_str(day_str);
+            int hour, mins;
+            sscanf(time_str, "%d:%d", &hour, &mins);
+            time_t time_start = digi_time_to_time_t(current_cal.days[dow].time, hour, mins);
+
+            delete_assignment(time_start);
+
             prn_cal();
             break;
         }
         case print_day_rule: {
             char day_str[10];
 
-            sscanf(user_input + 9, " %s", day_str);
+            sscanf(user_input + 5, " %s", day_str);
 
             int dow = get_dow_from_str(day_str);
             prn_day_content(current_cal.days[dow].time);
@@ -164,13 +189,13 @@ static void prn_help(void) {
 
         "clear day <day>\n\n"
 
-        "add event '<event name>' <day> <time start> <time end> OR <time start> <duration>\n"
+        "add event '<event name>' <day> <time start> <time end>\n"
         "remove event '<event name>' <day>\n\n"
 
-        "add assignment '<assingment name>' <day> <hand in> <duration>\n"
+        "add assignment '<assingment name>' <day> <deadline> <duration>\n"
         "remove assignment '<assingment name>' <day>\n\n"
 
-        "print day <day>\n\n"
+        "print <day>\n\n"
 
         "import ICS\n"
         "export ICS\n\n"
@@ -214,30 +239,31 @@ static void prn_day_content(time_t day_time) {
             day = cal.days[i];
         }
     }
-
-    printf("Events:\n");
+    printf("\n-----------------------------------------------------------------------------------------------------------\n");
+    printf("\nEvents:\n");
     for (i = 0; i < HOURS_IN_DAY * 2; i++) {
         event event = day.events[i];
         if (event.valid) {
-            printf("Event: %s, starts: %02d:%02d, ends: %02d:%02d\n",
-                   event.title,
+            printf("%02d:%02d to %02d:%02d | '%s'\n",
                    get_t_data(event.start_time, t_hour),
                    get_t_data(event.start_time, t_min),
                    get_t_data(event.end_time, t_hour),
-                   get_t_data(event.end_time, t_min));
+                   get_t_data(event.end_time, t_min),
+                   event.title);
         }
     }
 
-    printf("Assignments:\n");
+    printf("\nAssignments:\n");
     for (i = 0; i < HOURS_IN_DAY * 2; i++) {
         assignment assignment = day.assignments[i];
         if (assignment.valid) {
-            printf("Assignement: %s, deadline: %d:%d, expected time: %lf hour(s), used time: %lf hour(s)\n",
-                   assignment.title,
+            printf("Deadline: %02d:%02d, expected time: %.1lf hour(s), used time: %.1lf hour(s) | '%s'\n",
                    get_t_data(assignment.deadline, t_hour),
                    get_t_data(assignment.deadline, t_min),
                    assignment.expected_time,
-                   assignment.elapsed_time);
+                   assignment.elapsed_time,
+                   assignment.title);
         }
     }
+    printf("\n-----------------------------------------------------------------------------------------------------------\n");
 }
