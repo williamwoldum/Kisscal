@@ -18,13 +18,14 @@ int main() {
 
     clr_file();
     /*Courser segfault hvis over clr_file()*/
-    setup_renderer();
-    prn_cal();
+    time_t cal_time = get_cal_time_from_day_time(time(NULL));
+    calendar current_cal = get_cal(cal_time);
+    prn_cal(&current_cal);
 
     int run = 1;
     while (run) {
         prn_file_content();
-        run = prompt_user_input();
+        run = prompt_user_input(&current_cal);
     }
 
     return EXIT_SUCCESS;

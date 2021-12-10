@@ -22,7 +22,7 @@ static void sort_content(day* day);
 static int cmp_events(const void* a_, const void* b_);
 static int cmp_assignments(const void* a_, const void* b_);
 
-int prompt_user_input(void) {
+int prompt_user_input(calendar* current_cal) {
     printf("\n>> ");
 
     char user_input[INPUT_BUFF_SIZE];
@@ -39,38 +39,39 @@ int prompt_user_input(void) {
             int week, year;
             sscanf(user_input, "%*[^:]: %d %d", &week, &year);
             time_t cal_time = get_cal_time_from_week_and_year(week, year);
-            current_cal = get_cal(cal_time);
-            prn_cal();
+            printf("\ncurrent cal from input %ld\n", cal_time);
+            *current_cal = get_cal(cal_time);
+            prn_cal(current_cal);
             break;
         }
         case clear_week_rule: {
-            delete_cal(current_cal.time);
-            current_cal = get_cal(current_cal.time);
-            prn_cal();
+            delete_cal(current_cal->time);
+            *current_cal = get_cal(current_cal->time);
+            prn_cal(current_cal);
             break;
         }
         case next_week_rule: {
-            int year = get_t_data(current_cal.time, t_year);
-            int week = get_t_data(current_cal.time, t_week);
+            int year = get_t_data(current_cal->time, t_year);
+            int week = get_t_data(current_cal->time, t_week);
             time_t cal_time = get_cal_time_from_week_and_year(week + 1, year);
-            current_cal = get_cal(cal_time);
-            prn_cal();
+            *current_cal = get_cal(cal_time);
+            prn_cal(current_cal);
             break;
         }
         case previous_week_rule: {
-            int year = get_t_data(current_cal.time, t_year);
-            int week = get_t_data(current_cal.time, t_week);
+            int year = get_t_data(current_cal->time, t_year);
+            int week = get_t_data(current_cal->time, t_week);
             time_t cal_time = get_cal_time_from_week_and_year(week - 1, year);
-            current_cal = get_cal(cal_time);
-            prn_cal();
+            *current_cal = get_cal(cal_time);
+            prn_cal(current_cal);
             break;
         }
         case clear_day_rule: {
             char day_str[DAY_LEN];
             sscanf(user_input, "%*[^:]: %s", day_str);
             int dow = get_dow_from_str(day_str);
-            clear_day(current_cal.days[dow].time);
-            prn_cal();
+            clear_day(current_cal->days[dow].time);
+            prn_cal(current_cal);
             break;
         }
         case add_event_rule: {
@@ -83,14 +84,14 @@ int prompt_user_input(void) {
 
             int hour_start, mins_start;
             sscanf(time_start_str, "%d:%d", &hour_start, &mins_start);
-            time_t time_start = digi_time_to_time_t(current_cal.days[dow].time, hour_start, mins_start);
+            time_t time_start = digi_time_to_time_t(current_cal->days[dow].time, hour_start, mins_start);
 
             int hour_end, mins_end;
             sscanf(time_end_str, "%d:%d", &hour_end, &mins_end);
-            time_t time_end = digi_time_to_time_t(current_cal.days[dow].time, hour_end, mins_end);
+            time_t time_end = digi_time_to_time_t(current_cal->days[dow].time, hour_end, mins_end);
 
             add_event(event_str, time_start, time_end);
-            prn_cal();
+            prn_cal(current_cal);
             break;
         }
         case remove_event_rule: {
@@ -102,11 +103,11 @@ int prompt_user_input(void) {
             int dow = get_dow_from_str(day_str);
             int hour, mins;
             sscanf(time_str, "%d:%d", &hour, &mins);
-            time_t time_start = digi_time_to_time_t(current_cal.days[dow].time, hour, mins);
+            time_t time_start = digi_time_to_time_t(current_cal->days[dow].time, hour, mins);
 
             delete_event(time_start);
 
-            prn_cal();
+            prn_cal(current_cal);
             break;
         }
         case add_assignment_rule: {
@@ -121,11 +122,11 @@ int prompt_user_input(void) {
             int dow = get_dow_from_str(day_str);
             int hour, mins;
             sscanf(deadline_str, "%d:%d", &hour, &mins);
-            time_t time_deadline = digi_time_to_time_t(current_cal.days[dow].time, hour, mins);
+            time_t time_deadline = digi_time_to_time_t(current_cal->days[dow].time, hour, mins);
 
             add_assignemnt(assignment_str, time_deadline, expexted_time, elapsed_time);
 
-            prn_cal();
+            prn_cal(current_cal);
             break;
         }
         case remove_assignment_rule: {
@@ -137,11 +138,11 @@ int prompt_user_input(void) {
             int dow = get_dow_from_str(day_str);
             int hour, mins;
             sscanf(time_str, "%d:%d", &hour, &mins);
-            time_t time_start = digi_time_to_time_t(current_cal.days[dow].time, hour, mins);
+            time_t time_start = digi_time_to_time_t(current_cal->days[dow].time, hour, mins);
 
             delete_assignment(time_start);
 
-            prn_cal();
+            prn_cal(current_cal);
             break;
         }
         case print_day_rule: {
@@ -150,7 +151,7 @@ int prompt_user_input(void) {
             sscanf(user_input, "%*[^:]: %s", day_str);
 
             int dow = get_dow_from_str(day_str);
-            prn_day_content(current_cal.days[dow].time);
+            prn_day_content(current_cal->days[dow].time);
             break;
         }
         case import_ics_rule: {
@@ -249,12 +250,13 @@ static void prn_day_content(time_t day_time) {
     for (i = 0; i < HOURS_IN_DAY * 2; i++) {
         event event = day.events[i];
         if (event.valid) {
-            printf("%02d:%02d to %02d:%02d | '%s'\n",
+            printf("%02d:%02d to %02d:%02d | '%s' %ld\n",
                    get_t_data(event.start_time, t_hour),
                    get_t_data(event.start_time, t_min),
                    get_t_data(event.end_time, t_hour),
                    get_t_data(event.end_time, t_min),
-                   event.title);
+                   event.title,
+                   event.start_time);
         }
     }
 

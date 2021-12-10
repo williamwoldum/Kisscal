@@ -19,20 +19,13 @@ static void prn_event_line(event* event, char* corner, int hour, int mins, int t
 #define CAL_H 30
 #define COLUMN_W 13
 
-calendar current_cal;
-
 char day_strs[DAYS_IN_WEEK][4] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 
-void setup_renderer(void) {
-    time_t cal_time = get_cal_time_from_day_time(time(NULL));
-    current_cal = get_cal(cal_time);
-}
-
-void prn_cal(void) {
+void prn_cal(calendar* current_cal) {
     /*     system("clear");
      */
 
-    current_cal = get_cal(current_cal.time);
+    *current_cal = get_cal(current_cal->time);
 
     char pixel_arr[CAL_H][CAL_W] = {
         /*0         1         2         3         4         5         6         7         8         9         10     */
@@ -89,8 +82,8 @@ void prn_cal(void) {
         &pixel_arr[4][93],
     };
 
-    int year = get_t_data(current_cal.time, t_year);
-    int week = get_t_data(current_cal.time, t_week);
+    int year = get_t_data(current_cal->time, t_year);
+    int week = get_t_data(current_cal->time, t_week);
 
     char cal_header_buf[20];
     sprintf(cal_header_buf, "Week %-2d year %d", week, year);
@@ -100,14 +93,14 @@ void prn_cal(void) {
 
     char date_buf[30];
     for (i = 0; i < DAYS_IN_WEEK; i++) {
-        sprintf(date_buf, "%s %2d/%-2d", day_strs[i], get_t_data(current_cal.days[i].time, t_dom), get_t_data(current_cal.days[i].time, t_mon));
+        sprintf(date_buf, "%s %2d/%-2d", day_strs[i], get_t_data(current_cal->days[i].time, t_dom), get_t_data(current_cal->days[i].time, t_mon));
         load_into_arr(date_locs[i], date_buf);
     }
 
     int j;
     for (i = 0; i < DAYS_IN_WEEK; i++) {
         for (j = 0; j < HOURS_IN_DAY * 2; j++) {
-            event event = current_cal.days[i].events[j];
+            event event = current_cal->days[i].events[j];
             if (event.valid) {
                 int start_hour = get_t_data(event.start_time, t_hour);
                 int start_mins = get_t_data(event.start_time, t_min);
@@ -121,7 +114,7 @@ void prn_cal(void) {
         }
 
         for (j = 0; j < HOURS_IN_DAY * 2; j++) {
-            assignment assignment = current_cal.days[i].assignments[j];
+            assignment assignment = current_cal->days[i].assignments[j];
             if (assignment.valid) {
                 int hour = get_t_data(assignment.deadline, t_hour);
                 char* loc = day_corners[i] + hour * CAL_W;
