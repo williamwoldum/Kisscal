@@ -15,8 +15,9 @@
 static void load_into_arr(char* location, char* str);
 static void prn_event_line(event* event, char* corner, int hour, int mins, int title_enabled);
 
-#define ROW_LENGTH 108
-#define COLUMN_LENGTH 30
+#define CAL_W 108
+#define CAL_H 30
+#define COLUMN_W 13
 
 calendar current_cal;
 
@@ -33,7 +34,7 @@ void prn_cal(void) {
 
     current_cal = get_cal(current_cal.time);
 
-    char pixel_arr[COLUMN_LENGTH][ROW_LENGTH] = {
+    char pixel_arr[CAL_H][CAL_W] = {
         /*0         1         2         3         4         5         6         7         8         9         10     */
         /*01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456*/
         {"        ,-------------------------------------------------------------------------------------------------,\0"},
@@ -123,31 +124,31 @@ void prn_cal(void) {
             assignment assignment = current_cal.days[i].assignments[j];
             if (assignment.valid) {
                 int hour = get_t_data(assignment.deadline, t_hour);
-                char* loc = day_corners[i] + hour * ROW_LENGTH;
+                char* loc = day_corners[i] + hour * CAL_W;
 
-                if (strlen(assignment.title) > 11) {
-                    char title_buf[14];
+                if (strlen(assignment.title) > COLUMN_W - 2) {
+                    char title_buf[COLUMN_W + 1];
                     title_buf[0] = '{';
-                    strncpy(title_buf + 1, assignment.title, 8);
-                    sprintf(title_buf + 9, "%s", "...}");
-                    load_into_arr(loc + ROW_LENGTH, title_buf);
+                    strncpy(title_buf + 1, assignment.title, COLUMN_W - 5);
+                    sprintf(title_buf + COLUMN_W - 4, "%s", "...}");
+                    load_into_arr(loc + CAL_W, title_buf);
                 } else {
-                    char title_buf[14];
+                    char title_buf[COLUMN_W + 1];
                     sprintf(title_buf, "{%s}", assignment.title);
-                    load_into_arr(loc + ROW_LENGTH, title_buf);
+                    load_into_arr(loc + CAL_W, title_buf);
                 }
             }
         }
     }
 
-    for (i = 0; i < COLUMN_LENGTH; i++) {
+    for (i = 0; i < CAL_H; i++) {
         printf("%s\n", pixel_arr[i]);
     }
 }
 
 static void prn_event_line(event* event, char* corner, int hour, int mins, int title_enabled) {
     int dashed = mins == 30;
-    char* loc = corner + (hour + dashed) * ROW_LENGTH;
+    char* loc = corner + (hour + dashed) * CAL_W;
     char current = *(loc + 1);
 
     if (hour != 0) {
@@ -161,13 +162,13 @@ static void prn_event_line(event* event, char* corner, int hour, int mins, int t
     }
 
     if (title_enabled) {
-        if (strlen(event->title) > 13) {
-            char title_buf[14];
-            strncpy(title_buf, event->title, 10);
-            sprintf(title_buf + 10, "%s", "...");
-            load_into_arr(loc + ROW_LENGTH, title_buf);
+        if (strlen(event->title) > COLUMN_W) {
+            char title_buf[COLUMN_W + 1];
+            strncpy(title_buf, event->title, COLUMN_W - 3);
+            sprintf(title_buf + COLUMN_W - 3, "%s", "...");
+            load_into_arr(loc + CAL_W, title_buf);
         } else {
-            load_into_arr(loc + ROW_LENGTH, event->title);
+            load_into_arr(loc + CAL_W, event->title);
         }
     }
 }

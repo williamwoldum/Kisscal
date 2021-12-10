@@ -7,16 +7,16 @@ regex_t regexs[num_input_rules];
 
 void setup_regex() {
     const char *expressions[num_input_rules] = {
-        "^open week [0-9]{1,2} [0-9]{4}\n",
+        "^open week: [0-9]{1,2} [0-9]{4}\n",
         "^clear week\n",
         "^next week\n",
         "^previous week\n",
-        "^clear day (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\n",
-        "^add event '.{1,}' (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday) [0-9]{2}:[0-9]{2} [0-9]{2}:[0-9]{2}\n",
-        "^remove event (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday) [0-9]{2}:[0-9]{2}\n",
-        "^add assignment '.{1,}' (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday) [0-9]{2}:[0-9]{2} ([0-9]{1,2}|[0-9]{1,2}.[0-9]) ([0-9]{1,2}|[0-9]{1,2}.[0-9])\n",
-        "^remove assignment (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday) [0-9]{2}:[0-9]{2}\n",
-        "^print (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\n",
+        "^clear: (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\n",
+        "^add event: '.{1,15}' (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday) [0-9]{2}:[0-9]{2} [0-9]{2}:[0-9]{2}\n",
+        "^remove event: (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday) [0-9]{2}:[0-9]{2}\n",
+        "^add assignment: '.{1,15}' (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday) [0-9]{2}:[0-9]{2} ([0-9]{1,2}|[0-9]{1,2}.[0-9]) ([0-9]{1,2}|[0-9]{1,2}.[0-9])\n",
+        "^remove assignment: (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday) [0-9]{2}:[0-9]{2}\n",
+        "^print: (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\n",
         "^import ics\n",
         "^export ics\n",
         "^analyze\n",

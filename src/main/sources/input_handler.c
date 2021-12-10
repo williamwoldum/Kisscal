@@ -12,10 +12,15 @@
 #include "../headers/time_handler.h"
 
 #define INPUT_BUFF_SIZE 100
+#define TIME_LEN 6
+#define DAY_LEN 10
 
 static void prn_help(void);
-static int get_dow_from_str(char *str);
+static int get_dow_from_str(char* str);
 static void prn_day_content(time_t day_time);
+static void sort_content(day* day);
+static int cmp_events(const void* a_, const void* b_);
+static int cmp_assignments(const void* a_, const void* b_);
 
 int prompt_user_input(void) {
     printf("\n>> ");
@@ -32,7 +37,7 @@ int prompt_user_input(void) {
             break;
         case open_week_rule: {
             int week, year;
-            sscanf(user_input + 10, " %d %d", &week, &year);
+            sscanf(user_input, "%*[^:]: %d %d", &week, &year);
             time_t cal_time = get_cal_time_from_week_and_year(week, year);
             current_cal = get_cal(cal_time);
             prn_cal();
@@ -61,8 +66,8 @@ int prompt_user_input(void) {
             break;
         }
         case clear_day_rule: {
-            char day_str[10];
-            sscanf(user_input + 9, " %s", day_str);
+            char day_str[DAY_LEN];
+            sscanf(user_input, "%*[^:]: %s", day_str);
             int dow = get_dow_from_str(day_str);
             clear_day(current_cal.days[dow].time);
             prn_cal();
@@ -70,10 +75,10 @@ int prompt_user_input(void) {
         }
         case add_event_rule: {
             char event_str[TITLE_LENGTH];
-            char day_str[10];
-            char time_start_str[6];
-            char time_end_str[6];
-            sscanf(user_input + 11, " %15[^'] %*[^']' %s %s %s", event_str, day_str, time_start_str, time_end_str);
+            char day_str[DAY_LEN];
+            char time_start_str[TIME_LEN];
+            char time_end_str[TIME_LEN];
+            sscanf(user_input, "%*[^:]: '%[^']'  %s %s %s", event_str, day_str, time_start_str, time_end_str);
             int dow = get_dow_from_str(day_str);
 
             int hour_start, mins_start;
@@ -89,10 +94,10 @@ int prompt_user_input(void) {
             break;
         }
         case remove_event_rule: {
-            char day_str[10];
-            char time_str[6];
+            char day_str[DAY_LEN];
+            char time_str[TIME_LEN];
 
-            sscanf(user_input + 12, "%s %s", day_str, time_str);
+            sscanf(user_input, "%*[^:]: %s %s", day_str, time_str);
 
             int dow = get_dow_from_str(day_str);
             int hour, mins;
@@ -106,19 +111,17 @@ int prompt_user_input(void) {
         }
         case add_assignment_rule: {
             char assignment_str[TITLE_LENGTH];
-            char day_str[10];
-            char deadline_str[6];
+            char day_str[DAY_LEN];
+            char deadline_str[TIME_LEN];
             float expexted_time;
             float elapsed_time;
 
-            sscanf(user_input + 16, " %15[^'] %*[^']' %s %s %f %f", assignment_str, day_str, deadline_str, &expexted_time, &elapsed_time);
+            sscanf(user_input, "%*[^:]: '%[^']' %s %s %f %f", assignment_str, day_str, deadline_str, &expexted_time, &elapsed_time);
 
             int dow = get_dow_from_str(day_str);
             int hour, mins;
             sscanf(deadline_str, "%d:%d", &hour, &mins);
             time_t time_deadline = digi_time_to_time_t(current_cal.days[dow].time, hour, mins);
-
-            printf("\nhowdy '%s'\n", deadline_str);
 
             add_assignemnt(assignment_str, time_deadline, expexted_time, elapsed_time);
 
@@ -126,10 +129,10 @@ int prompt_user_input(void) {
             break;
         }
         case remove_assignment_rule: {
-            char day_str[10];
-            char time_str[6];
+            char day_str[DAY_LEN];
+            char time_str[TIME_LEN];
 
-            sscanf(user_input + 17, "%s %s", day_str, time_str);
+            sscanf(user_input, "%*[^:]: %s %s", day_str, time_str);
 
             int dow = get_dow_from_str(day_str);
             int hour, mins;
@@ -142,9 +145,9 @@ int prompt_user_input(void) {
             break;
         }
         case print_day_rule: {
-            char day_str[10];
+            char day_str[DAY_LEN];
 
-            sscanf(user_input + 5, " %s", day_str);
+            sscanf(user_input, "%*[^:]: %s", day_str);
 
             int dow = get_dow_from_str(day_str);
             prn_day_content(current_cal.days[dow].time);
@@ -181,21 +184,21 @@ static void prn_help(void) {
         "\n"
         "-----------------------------------------------------------------------------------------------------------\n"
         "\n"
-        "open week <week> <year>\n"
+        "open week: <week> <year>\n"
         "clear week\n\n"
 
         "next week\n"
         "previous week\n\n"
 
-        "clear day <day>\n\n"
+        "clear: <day>\n\n"
 
-        "add event '<event name>' <day> <time start> <time end>\n"
-        "remove event '<event name>' <day>\n\n"
+        "add event: '<event name>' <day> <time start> <time end>\n"
+        "remove event: '<event name>' <day>\n\n"
 
-        "add assignment '<assingment name>' <day> <deadline> <duration>\n"
-        "remove assignment '<assingment name>' <day>\n\n"
+        "add assignment: '<assingment name>' <day> <deadline> <duration>\n"
+        "remove assignment: '<assingment name>' <day>\n\n"
 
-        "print <day>\n\n"
+        "print: <day>\n\n"
 
         "import ICS\n"
         "export ICS\n\n"
@@ -207,7 +210,7 @@ static void prn_help(void) {
         "-----------------------------------------------------------------------------------------------------------\n");
 }
 
-static int get_dow_from_str(char *str) {
+static int get_dow_from_str(char* str) {
     int dow = -1;
     if (tolower(str[0]) == 'm') {
         dow = 0;
@@ -239,6 +242,8 @@ static void prn_day_content(time_t day_time) {
             day = cal.days[i];
         }
     }
+    sort_content(&day);
+
     printf("\n-----------------------------------------------------------------------------------------------------------\n");
     printf("\nEvents:\n");
     for (i = 0; i < HOURS_IN_DAY * 2; i++) {
@@ -266,4 +271,23 @@ static void prn_day_content(time_t day_time) {
         }
     }
     printf("\n-----------------------------------------------------------------------------------------------------------\n");
+}
+
+static void sort_content(day* day) {
+    qsort(day->events, HOURS_IN_DAY * 2, sizeof(event), cmp_events);
+    qsort(day->assignments, HOURS_IN_DAY * 2, sizeof(assignment), cmp_assignments);
+}
+
+static int cmp_events(const void* a_, const void* b_) {
+    event a = *(event*)a_;
+    event b = *(event*)b_;
+
+    return a.start_time - b.start_time;
+}
+
+static int cmp_assignments(const void* a_, const void* b_) {
+    assignment a = *(assignment*)a_;
+    assignment b = *(assignment*)b_;
+
+    return a.deadline - b.deadline;
 }
