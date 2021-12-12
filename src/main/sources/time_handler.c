@@ -99,6 +99,11 @@ void load_dow_string(char *str, int dow) {
     }
 }
 
+int calc_in_week(time_t cal_time, time_t current_time) {
+    time_t current_cal_time = get_cal_time_from_day_time(current_time);
+    return cal_time - current_cal_time;
+}
+
 static int get_year(struct tm *tm) {
     mktime(tm);
     int DayOfTheWeek = (tm->tm_wday + (DAYS_IN_WEEK - 1)) % DAYS_IN_WEEK;

@@ -12,25 +12,14 @@
 #define HOURS_IN_WEEK HOURS_IN_DAY *DAYS_IN_WEEK
 #define SECS_IN_DAY HOURS_IN_DAY *MINS_IN_HOUR *SECS_IN_MIN
 
-static void load_free_time_arr(int *secs_free, int *secs_non_events, calendar *cal, time_t current_time);
-static void prn_hour_use(time_t current_time);
-static void prn_free_hour_use(time_t current_time, float left, float total);
+static void load_free_time_arr(int *secs_free, int *secs_non_events, calendar *cal, time_t current_time, int in_week);
+static void prn_hour_use(time_t current_time, int in_week);
+static void prn_free_hour_use(calendar *cal, time_t current_time, int in_week);
 static void prn_loading_bar(float used, float total);
-static void prn_assignments_status(calendar *cal, time_t current_time);
+static void prn_assignments_status(calendar *cal, time_t current_time, int in_week);
 
 void analyze(calendar *cal) {
     time_t current_time = time(NULL);
-    int secs_free[DAYS_IN_WEEK], secs_non_events[DAYS_IN_WEEK];
-    load_free_time_arr(secs_free, secs_non_events, cal, current_time);
-
-    float free_hours_left_across_week = 0;
-    float free_hours_across_week = 0;
-
-    int i;
-    for (i = 0; i < DAYS_IN_WEEK; i++) {
-        free_hours_left_across_week += (float)secs_free[i] / SECS_IN_HOUR;
-        free_hours_across_week += (float)secs_non_events[i] / SECS_IN_HOUR;
-    }
 
     printf("\n-----------------------------------------------------------------------------------------------------------\n\n");
     char day_str[4];
@@ -44,17 +33,15 @@ void analyze(calendar *cal) {
            get_t_data(current_time, t_week),
            get_t_data(current_time, t_year));
 
-    prn_hour_use(current_time);
-    prn_free_hour_use(current_time, free_hours_left_across_week, free_hours_across_week);
-    prn_assignments_status(cal, current_time);
+    int in_week = calc_in_week(cal->time, current_time);
+    prn_hour_use(current_time, in_week);
+    prn_free_hour_use(cal, current_time, in_week);
+    prn_assignments_status(cal, current_time, in_week);
 
     printf("\n-----------------------------------------------------------------------------------------------------------\n");
 }
 
-static void load_free_time_arr(int *secs_free, int *secs_non_events, calendar *cal, time_t current_time) {
-    time_t current_cal_time = get_cal_time_from_day_time(current_time);
-    int in_week = cal->time - current_cal_time;
-
+static void load_free_time_arr(int *secs_free, int *secs_non_events, calendar *cal, time_t current_time, int in_week) {
     int dow;
     if (in_week == 0) {
         dow = get_t_data(current_time, t_dow);
@@ -92,11 +79,18 @@ static void load_free_time_arr(int *secs_free, int *secs_non_events, calendar *c
     }
 }
 
-static void prn_hour_use(time_t current_time) {
-    float hours = get_t_data(current_time, t_hour);
-    int mins = get_t_data(current_time, t_min);
-    hours += (float)mins / MINS_IN_HOUR;
-    hours += get_t_data(current_time, t_dow) * HOURS_IN_DAY;
+static void prn_hour_use(time_t current_time, int in_week) {
+    float hours;
+    if (in_week == 0) {
+        hours = get_t_data(current_time, t_hour);
+        int mins = get_t_data(current_time, t_min);
+        hours += (float)mins / MINS_IN_HOUR;
+        hours += get_t_data(current_time, t_dow) * HOURS_IN_DAY;
+    } else if (in_week < 0) {
+        hours = HOURS_IN_WEEK;
+    } else {
+        hours = 0;
+    }
 
     printf("\nYou have spent %.1f hour(s) of %d total\n%.1f hour(s) remain\n",
            hours,
@@ -105,7 +99,18 @@ static void prn_hour_use(time_t current_time) {
     prn_loading_bar(hours, HOURS_IN_WEEK);
 }
 
-static void prn_free_hour_use(time_t current_time, float left, float total) {
+static void prn_free_hour_use(calendar *cal, time_t current_time, int in_week) {
+    int secs_free[DAYS_IN_WEEK], secs_non_events[DAYS_IN_WEEK];
+    load_free_time_arr(secs_free, secs_non_events, cal, current_time, in_week);
+
+    float left = 0;
+    float total = 0;
+
+    int i;
+    for (i = 0; i < DAYS_IN_WEEK; i++) {
+        left += (float)secs_free[i] / SECS_IN_HOUR;
+        total += (float)secs_non_events[i] / SECS_IN_HOUR;
+    }
     printf("\nYou have spent %.1f free hour(s) of %.1f total\n%.1f free hour(s) remain\n",
            total - left,
            total,
@@ -124,7 +129,7 @@ static void prn_loading_bar(float used, float total) {
     printf("[");
     int i;
     for (i = 0; i < num_tiles; i++) {
-        if (i <= used_tiles) {
+        if (i < used_tiles) {
             printf("#");
         } else {
             printf("-");
@@ -134,10 +139,19 @@ static void prn_loading_bar(float used, float total) {
     printf("] | %.0f:%.0f\n", ratio * 100, 100 - ratio * 100);
 }
 
-static void prn_assignments_status(calendar *cal, time_t current_time) {
+static void prn_assignments_status(calendar *cal, time_t current_time, int in_week) {
     int i, j, at_least_one = 0;
     for (i = 0; i < DAYS_IN_WEEK; i++) {
-        int days_to_deadline = get_t_data(cal->days[i].time, t_dow) - get_t_data(current_time, t_dow) + 1;
+        int days_to_deadline;
+        int deadline_dow = get_t_data(cal->days[i].time, t_dow);
+        if (in_week == 0) {
+            days_to_deadline = deadline_dow - get_t_data(current_time, t_dow) + 1;
+        } else if (in_week < 0) {
+            days_to_deadline = -1;
+        } else {
+            days_to_deadline = deadline_dow;
+        }
+
         void sort_content(day);
         for (j = 0; j < CONTENT_IN_DAY; j++) {
             assignment assignment = cal->days[i].assignments[j];
