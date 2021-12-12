@@ -13,7 +13,8 @@
 #include "../headers/time_handler.h"
 
 static void load_into_arr(char* location, char* str);
-static void prn_event_line(event* event, char* corner, int hour, int mins, int title_enabled);
+static void prn_event_line(char* title, char* corner, int hour, int mins, int title_enabled);
+static void prn_assignment(char* title, char* loc);
 
 #define CAL_W 108
 #define CAL_H 30
@@ -108,8 +109,8 @@ void prn_cal(calendar* current_cal) {
                 int end_mins = get_t_data(event.end_time, t_min);
                 int title_enabled = (end_hour * 60 + end_mins) - (start_hour * 60 + start_mins) >= 120;
 
-                prn_event_line(&event, day_corners[i], start_hour, start_mins, title_enabled);
-                prn_event_line(&event, day_corners[i], end_hour, end_mins, 0);
+                prn_event_line(event.title, day_corners[i], start_hour, start_mins, title_enabled);
+                prn_event_line(event.title, day_corners[i], end_hour, end_mins, 0);
             }
         }
 
@@ -118,18 +119,7 @@ void prn_cal(calendar* current_cal) {
             if (assignment.valid) {
                 int hour = get_t_data(assignment.deadline, t_hour);
                 char* loc = day_corners[i] + hour * CAL_W;
-
-                if (strlen(assignment.title) > COLUMN_W - 2) {
-                    char title_buf[COLUMN_W + 1];
-                    title_buf[0] = '{';
-                    strncpy(title_buf + 1, assignment.title, COLUMN_W - 5);
-                    sprintf(title_buf + COLUMN_W - 4, "%s", "...}");
-                    load_into_arr(loc + CAL_W, title_buf);
-                } else {
-                    char title_buf[COLUMN_W + 1];
-                    sprintf(title_buf, "{%s}", assignment.title);
-                    load_into_arr(loc + CAL_W, title_buf);
-                }
+                prn_assignment(assignment.title, loc);
             }
         }
     }
@@ -139,7 +129,7 @@ void prn_cal(calendar* current_cal) {
     }
 }
 
-static void prn_event_line(event* event, char* corner, int hour, int mins, int title_enabled) {
+static void prn_event_line(char* title, char* corner, int hour, int mins, int title_enabled) {
     int dashed = mins == 30;
     char* loc = corner + (hour + dashed) * CAL_W;
     char current = *(loc + 1);
@@ -155,14 +145,27 @@ static void prn_event_line(event* event, char* corner, int hour, int mins, int t
     }
 
     if (title_enabled) {
-        if (strlen(event->title) > COLUMN_W) {
+        if (strlen(title) > COLUMN_W) {
             char title_buf[COLUMN_W + 1];
-            strncpy(title_buf, event->title, COLUMN_W - 3);
+            strncpy(title_buf, title, COLUMN_W - 3);
             sprintf(title_buf + COLUMN_W - 3, "%s", "...");
             load_into_arr(loc + CAL_W, title_buf);
         } else {
-            load_into_arr(loc + CAL_W, event->title);
+            load_into_arr(loc + CAL_W, title);
         }
+    }
+}
+
+static void prn_assignment(char* title, char* loc) {
+    char title_buf[20];
+    if (strlen(title) > COLUMN_W - 2) {
+        title_buf[0] = '{';
+        strncpy(title_buf + 1, title, COLUMN_W - 5);
+        sprintf(title_buf + COLUMN_W - 4, "...}");
+        load_into_arr(loc + CAL_W, title_buf);
+    } else {
+        sprintf(title_buf, "{%s}", title);
+        load_into_arr(loc + CAL_W, title_buf);
     }
 }
 
