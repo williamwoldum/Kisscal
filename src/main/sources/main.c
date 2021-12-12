@@ -16,7 +16,7 @@ int main() {
 
     setup_regex();
 
-    clr_file();
+    /*clr_file();*/
     /*Courser segfault hvis over clr_file()*/
     time_t cal_time = get_cal_time_from_day_time(time(NULL));
     calendar current_cal = get_cal(cal_time);

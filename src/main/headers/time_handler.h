@@ -13,7 +13,6 @@ enum t_type { t_year,
 };
 
 int get_t_data(time_t time, int t_type);
-void get_week_year(time_t time, int *year, int *week);
 time_t get_day_time_from_cal_time(int dow, time_t time);
 time_t get_cal_time_from_day_time(time_t day_time);
 time_t get_cal_time_from_week_and_year(int week, int year);
