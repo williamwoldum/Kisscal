@@ -117,8 +117,10 @@ static void prn_free_hour_use(calendar *cal, time_t current_time, int in_week) {
            left);
     prn_loading_bar(total - left, total);
 
-    float sleep_time_left = (DAYS_IN_WEEK - (get_t_data(current_time, t_dow) + 1)) * 8 + 4;
-    printf("Assuming you sleep 8 hours a night, you really have %.1f free hour(s) left\n", left - sleep_time_left);
+    if (in_week >= 0) {
+        float sleep_time_left = (DAYS_IN_WEEK - (get_t_data(current_time, t_dow) + 1)) * 8 + 4;
+        printf("Assuming you sleep 8 hours a night, you really have %.1f free hour(s) left\n", left - sleep_time_left);
+    }
 }
 
 static void prn_loading_bar(float used, float total) {
