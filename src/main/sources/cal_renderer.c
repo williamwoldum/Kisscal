@@ -20,8 +20,6 @@ static void prn_assignment(char* title, char* loc);
 #define CAL_H 30
 #define COLUMN_W 13
 
-char day_strs[DAYS_IN_WEEK][4] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-
 void prn_cal(calendar* current_cal) {
     /*     system("clear");
      */
@@ -94,7 +92,10 @@ void prn_cal(calendar* current_cal) {
 
     char date_buf[30];
     for (i = 0; i < DAYS_IN_WEEK; i++) {
-        sprintf(date_buf, "%s %2d/%-2d", day_strs[i], get_t_data(current_cal->days[i].time, t_dom), get_t_data(current_cal->days[i].time, t_mon));
+        char day_str[4];
+        load_dow_string(day_str, i);
+
+        sprintf(date_buf, "%s %2d/%-2d", day_str, get_t_data(current_cal->days[i].time, t_dom), get_t_data(current_cal->days[i].time, t_mon));
         load_into_arr(date_locs[i], date_buf);
     }
 

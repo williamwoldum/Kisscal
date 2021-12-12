@@ -9,9 +9,10 @@
 
 #define DAYS_IN_WEEK 7
 #define HOURS_IN_DAY 24
-#define CONTENT_IN_DAY HOURS_IN_DAY * 2
+#define CONTENT_IN_DAY (HOURS_IN_DAY * 2)
 #define MINS_IN_HOUR 60
-#define SECS_IN_MINS 60
+#define SECS_IN_MIN 60
+#define SECS_IN_HOUR (MINS_IN_HOUR * SECS_IN_MIN)
 #define TITLE_LENGTH 16
 
 /************************************************************/

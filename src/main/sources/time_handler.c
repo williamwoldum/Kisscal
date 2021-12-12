@@ -1,5 +1,6 @@
 #include "../headers/time_handler.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -78,6 +79,24 @@ time_t digi_time_to_time_t(time_t time, int hour, int mins) {
     tm->tm_hour = hour;
     tm->tm_min = mins;
     return mktime(tm);
+}
+
+void load_dow_string(char *str, int dow) {
+    if (dow == 0) {
+        sprintf(str, "Mon");
+    } else if (dow == 1) {
+        sprintf(str, "Tue");
+    } else if (dow == 2) {
+        sprintf(str, "Wed");
+    } else if (dow == 3) {
+        sprintf(str, "Thu");
+    } else if (dow == 4) {
+        sprintf(str, "Fri");
+    } else if (dow == 5) {
+        sprintf(str, "Sat");
+    } else if (dow == 6) {
+        sprintf(str, "Sun");
+    }
 }
 
 static int get_year(struct tm *tm) {
