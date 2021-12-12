@@ -7,6 +7,7 @@
 
 #include "./datatypes.h"
 
-int prompt_user_input(calendar *current_cal);
+int prompt_user_input(calendar* current_cal);
+void sort_content(day* day);
 
 #endif

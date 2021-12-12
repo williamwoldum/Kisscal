@@ -16,6 +16,7 @@ static void load_free_time_arr(int *secs_free, int *secs_non_events, calendar *c
 static void prn_hour_use(time_t current_time);
 static void prn_free_hour_use(time_t current_time, float left, float total);
 static void prn_loading_bar(float used, float total);
+static void prn_assignments_status(calendar *cal, time_t current_time);
 
 void analyze(calendar *cal) {
     time_t current_time = time(NULL);
@@ -45,6 +46,7 @@ void analyze(calendar *cal) {
 
     prn_hour_use(current_time);
     prn_free_hour_use(current_time, free_hours_left_across_week, free_hours_across_week);
+    prn_assignments_status(cal, current_time);
 
     printf("\n-----------------------------------------------------------------------------------------------------------\n");
 }
@@ -130,4 +132,25 @@ static void prn_loading_bar(float used, float total) {
     }
 
     printf("] | %.0f:%.0f\n", ratio * 100, 100 - ratio * 100);
+}
+
+static void prn_assignments_status(calendar *cal, time_t current_time) {
+    int i, j, at_least_one = 0;
+    for (i = 0; i < DAYS_IN_WEEK; i++) {
+        int days_to_deadline = get_t_data(cal->days[i].time, t_dow) - get_t_data(current_time, t_dow) + 1;
+        void sort_content(day);
+        for (j = 0; j < CONTENT_IN_DAY; j++) {
+            assignment assignment = cal->days[i].assignments[j];
+            if (assignment.valid && days_to_deadline >= 0) {
+                at_least_one = 1;
+                float avg_work_time = (assignment.expected_time - assignment.elapsed_time) / days_to_deadline;
+                printf("\nTo finish your '%s' assignment, work on it for %.1f hour(s) every day until deadline",
+                       assignment.title,
+                       avg_work_time);
+            }
+        }
+    }
+    if (at_least_one) {
+        printf("\n");
+    }
 }

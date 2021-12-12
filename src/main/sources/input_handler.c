@@ -19,7 +19,6 @@
 static void prn_help(void);
 static int get_dow_from_str(char* str);
 static void prn_day_content(time_t day_time);
-static void sort_content(day* day);
 static int cmp_events(const void* a_, const void* b_);
 static int cmp_assignments(const void* a_, const void* b_);
 
@@ -279,7 +278,7 @@ static void prn_day_content(time_t day_time) {
     printf("\n-----------------------------------------------------------------------------------------------------------\n");
 }
 
-static void sort_content(day* day) {
+void sort_content(day* day) {
     qsort(day->events, CONTENT_IN_DAY, sizeof(event), cmp_events);
     qsort(day->assignments, CONTENT_IN_DAY, sizeof(assignment), cmp_assignments);
 }
