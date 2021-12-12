@@ -23,6 +23,20 @@ static int get_num_cals(FILE *file);
 
 /************************************************************************* Global functions  */
 
+void prepare_file(int state) {
+    if (state == 0) {
+        fclose(fopen(STORAGE_PATH, "wb"));
+    } else {
+        FILE *file = fopen(STORAGE_PATH, "rb");
+        if (file == NULL) {
+            printf("\nHIW\n");
+            fclose(fopen(STORAGE_PATH, "wb"));
+        } else {
+            fclose(file);
+        }
+    }
+}
+
 calendar get_cal(time_t cal_time) {
     FILE *file = fopen(STORAGE_PATH, "rb");
 
@@ -277,10 +291,6 @@ static int get_num_cals(FILE *file) {
 }
 
 /************************************************************************* Debug functions */
-
-void clr_file(void) {
-    fclose(fopen(STORAGE_PATH, "wb"));
-}
 
 void prn_file_content(void) {
     FILE *file = fopen(STORAGE_PATH, "rb");
