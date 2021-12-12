@@ -25,7 +25,7 @@ void convert_cal_to_ics(calendar *cal) {
 
     for (day = 0; day < DAYS_IN_WEEK; day++) {
         int hour;
-        for (hour = 0; hour < HOURS_IN_DAY * 2; hour++) {
+        for (hour = 0; hour < CONTENT_IN_DAY; hour++) {
             if (cal->days[day].events[hour].valid == 1) {
                 create_event(cal_file, *cal, day, hour);
             }

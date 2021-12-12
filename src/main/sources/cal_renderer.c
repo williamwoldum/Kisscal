@@ -100,21 +100,21 @@ void prn_cal(calendar* current_cal) {
 
     int j;
     for (i = 0; i < DAYS_IN_WEEK; i++) {
-        for (j = 0; j < HOURS_IN_DAY * 2; j++) {
+        for (j = 0; j < CONTENT_IN_DAY; j++) {
             event event = current_cal->days[i].events[j];
             if (event.valid) {
                 int start_hour = get_t_data(event.start_time, t_hour);
                 int start_mins = get_t_data(event.start_time, t_min);
                 int end_hour = get_t_data(event.end_time, t_hour);
                 int end_mins = get_t_data(event.end_time, t_min);
-                int title_enabled = (end_hour * 60 + end_mins) - (start_hour * 60 + start_mins) >= 120;
+                int title_enabled = (end_hour * MINS_IN_HOUR + end_mins) - (start_hour * MINS_IN_HOUR + start_mins) >= 120;
 
                 prn_event_line(event.title, day_corners[i], start_hour, start_mins, title_enabled);
                 prn_event_line(event.title, day_corners[i], end_hour, end_mins, 0);
             }
         }
 
-        for (j = 0; j < HOURS_IN_DAY * 2; j++) {
+        for (j = 0; j < CONTENT_IN_DAY; j++) {
             assignment assignment = current_cal->days[i].assignments[j];
             if (assignment.valid) {
                 int hour = get_t_data(assignment.deadline, t_hour);

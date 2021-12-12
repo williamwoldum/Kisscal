@@ -251,7 +251,7 @@ static void prn_day_content(time_t day_time) {
 
     printf("\n-----------------------------------------------------------------------------------------------------------\n");
     printf("\nEvents:\n");
-    for (i = 0; i < HOURS_IN_DAY * 2; i++) {
+    for (i = 0; i < CONTENT_IN_DAY; i++) {
         event event = day.events[i];
         if (event.valid) {
             printf("%02d:%02d to %02d:%02d | '%s' %ld\n",
@@ -265,7 +265,7 @@ static void prn_day_content(time_t day_time) {
     }
 
     printf("\nAssignments:\n");
-    for (i = 0; i < HOURS_IN_DAY * 2; i++) {
+    for (i = 0; i < CONTENT_IN_DAY; i++) {
         assignment assignment = day.assignments[i];
         if (assignment.valid) {
             printf("Deadline: %02d:%02d, expected time: %.1lf hour(s), used time: %.1lf hour(s) | '%s'\n",
@@ -280,8 +280,8 @@ static void prn_day_content(time_t day_time) {
 }
 
 static void sort_content(day* day) {
-    qsort(day->events, HOURS_IN_DAY * 2, sizeof(event), cmp_events);
-    qsort(day->assignments, HOURS_IN_DAY * 2, sizeof(assignment), cmp_assignments);
+    qsort(day->events, CONTENT_IN_DAY, sizeof(event), cmp_events);
+    qsort(day->assignments, CONTENT_IN_DAY, sizeof(assignment), cmp_assignments);
 }
 
 static int cmp_events(const void* a_, const void* b_) {
