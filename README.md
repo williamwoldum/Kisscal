@@ -1,11 +1,4 @@
-<code>&nbsp;
-____  __.__                _________        .__   <br>
-|    |/ _|__| ______ ______ \_   ___ \_____  |  |  <br>
-|      < |  |/  ___//  ___/ /    \  \/\__  \ |  |  <br>
-|    |  \|  |\___ \ \___ \  \     \____/ __ \|  |__<br>
-|____|__ \__/____  >____  >  \______  (____  /____/<br>
-        \/       \/     \/          \/     \/      <br>
-</code>
+![image](https://user-images.githubusercontent.com/41169797/145729180-e72287f2-6698-4746-88ce-1da9728d4b42.png)
 # Kisscal (Keep it simple stupid calendar)
 
 A simple time management app with specified features to help get a better overview of one's time and reduce stress.
