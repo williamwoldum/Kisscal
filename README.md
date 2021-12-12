@@ -1,3 +1,10 @@
+ ____  __.__                _________        .__   
+|    |/ _|__| ______ ______ \_   ___ \_____  |  |  
+|      < |  |/  ___//  ___/ /    \  \/\__  \ |  |  
+|    |  \|  |\___ \ \___ \  \     \____/ __ \|  |__
+|____|__ \__/____  >____  >  \______  (____  /____/
+        \/       \/     \/          \/     \/      
+
 # Kisscal (Keep it simple stupid calendar)
 
 A simple time management app with specified features to help get a better overview of one's time and reduce stress.
