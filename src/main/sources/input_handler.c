@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../headers/analyzer.h"
 #include "../headers/cal_renderer.h"
 #include "../headers/datatypes.h"
 #include "../headers/file_handler.h"
@@ -164,6 +165,7 @@ int prompt_user_input(calendar* current_cal) {
             break;
         }
         case analyze_rule: {
+            analyze(current_cal);
             break;
         }
         case help_rule: {
