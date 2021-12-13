@@ -48,7 +48,7 @@ void analyze(calendar *cal) {
 
 /**
  * @brief  Calculates free time left of week
- * @note   
+ * @note
  * @param  secs_free: Seconds left of week
  * @param  secs_non_events: Seconds left of non_events of week
  * @param  cal: Current calender
@@ -96,7 +96,7 @@ static void load_free_time_arr(int *secs_free, int *secs_non_events, calendar *c
 
 /**
  * @brief  Prints hours used of week
- * @note   
+ * @note
  * @param  current_time: Current time
  * @param  in_week: Checks if in week is valid
  * @retval None
@@ -123,8 +123,8 @@ static void prn_hour_use(time_t current_time, int in_week) {
 
 /**
  * @brief  Prints how many free hours used of week
- * @note   
- * @param  cal: Current calender 
+ * @note
+ * @param  cal: Current calender
  * @param  current_time: Current time
  * @param  in_week: Checks if in week is valid
  * @retval None
@@ -155,7 +155,7 @@ static void prn_free_hour_use(calendar *cal, time_t current_time, int in_week) {
 
 /**
  * @brief  Prints loading bar visually
- * @note   
+ * @note
  * @param  used: How many used hours
  * @param  total: How many hours in total
  * @retval None
@@ -180,8 +180,8 @@ static void prn_loading_bar(float used, float total) {
 
 /**
  * @brief  Prints the status of assignments in week
- * @note   
- * @param  cal: Current calender 
+ * @note
+ * @param  cal: Current calender
  * @param  current_time: Current time
  * @param  in_week: Checks if in week is valid
  * @retval None

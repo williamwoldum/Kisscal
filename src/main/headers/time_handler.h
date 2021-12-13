@@ -3,8 +3,7 @@
 
 #include <time.h>
 
-enum t_type
-{
+enum t_type {
     t_year,
     t_yday,
     t_mon,

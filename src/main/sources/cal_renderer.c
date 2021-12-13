@@ -176,7 +176,7 @@ static void prn_event_line(char* title, char* corner, int hour, int mins, int ti
 /**
  * @brief Prints assignment in current cal
  * @note
- * @param title: Current title 
+ * @param title: Current title
  * @param loc: Location of calender
  * @retval None
  */
