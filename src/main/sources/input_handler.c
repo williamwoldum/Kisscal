@@ -21,7 +21,12 @@ static int get_dow_from_str(char *str);
 static void prn_day_content(time_t day_time);
 static int cmp_events(const void *a_, const void *b_);
 static int cmp_assignments(const void *a_, const void *b_);
-
+/**
+ * @brief controle program funktions through user input, until close_rule is executed  (run = 0)
+ * @note  in switch - default print error
+ * @param  *current_cal: points to current cal
+ * @retval int (run)
+ */
 int prompt_user_input(calendar *current_cal) {
     printf("\n>> ");
 
@@ -183,7 +188,11 @@ int prompt_user_input(calendar *current_cal) {
 
     return run;
 }
-
+/**
+ * @brief intuitively prints the help funktions for the user.
+ * @note
+ * @retval None
+ */
 static void prn_help(void) {
     printf(
         "\n"
@@ -214,7 +223,12 @@ static void prn_help(void) {
         "\n"
         "-----------------------------------------------------------------------------------------------------------\n");
 }
-
+/**
+ * @brief  returns the day of week from input string after possible conversion af first index 0 to lower case (tolower)
+ * @note  case insensitive
+ * @param  *str:
+ * @retval int (dow)
+ */
 static int get_dow_from_str(char *str) {
     int dow = -1;
     if (tolower(str[0]) == 'm') {
@@ -234,7 +248,12 @@ static int get_dow_from_str(char *str) {
     }
     return dow;
 }
-
+/**
+ * @brief  prints content (events and assignments) in a time sortet list from specific/chosen day
+ * @note day_time as ID
+ * @param  day_time: 12 am
+ * @retval None
+ */
 static void prn_day_content(time_t day_time) {
     time_t cal_time = get_cal_time_from_day_time(day_time);
 
@@ -278,19 +297,36 @@ static void prn_day_content(time_t day_time) {
     }
     printf("\n-----------------------------------------------------------------------------------------------------------\n");
 }
-
+/**
+ * @brief Sort the content (events and assignments) from specific day
+ * @note
+ * @param  *day: points to specific day
+ * @retval None
+ */
 void sort_content(day *day) {
     qsort(day->events, CONTENT_IN_DAY, sizeof(event), cmp_events);
     qsort(day->assignments, CONTENT_IN_DAY, sizeof(assignment), cmp_assignments);
 }
-
+/**
+ * @brief compare events by start_time
+ * @note
+ * @param  *a_: points to element(event) a to comparement
+ * @param  *b_: points to element(event) b to comparement
+ * @retval int (return differens in time)
+ */
 static int cmp_events(const void *a_, const void *b_) {
     event a = *(event *)a_;
     event b = *(event *)b_;
 
     return a.start_time - b.start_time;
 }
-
+/**
+ * @brief compare assignments by deadline
+ * @note
+ * @param  *a_: points to element(assignment) a to comparement
+ * @param  *b_: points to element(assignment) b to comparement
+ * @retval int (return differens in time)
+ */
 static int cmp_assignments(const void *a_, const void *b_) {
     assignment a = *(assignment *)a_;
     assignment b = *(assignment *)b_;
