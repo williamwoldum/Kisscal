@@ -24,9 +24,9 @@ static int get_num_cals(FILE *file);
 /************************************************************************* Global functions  */
 
 /**
- * @brief  Funktion
+ * @brief  Makes file if none exist, user can choose to clear file.
  * @note
- * @param  state:
+ * @param  state: clears file if 0
  * @retval None
  */
 void prepare_file(int state) {
@@ -35,7 +35,6 @@ void prepare_file(int state) {
     } else {
         FILE *file = fopen(STORAGE_PATH, "rb");
         if (file == NULL) {
-            printf("\nHIW\n");
             fclose(fopen(STORAGE_PATH, "wb"));
         } else {
             fclose(file);
@@ -44,10 +43,10 @@ void prepare_file(int state) {
 }
 
 /**
- * @brief
- * @note
- * @param  cal_time:
- * @retval
+ * @brief  looks in file and returns stored cal if found else blank cal.
+ * @note  cal_time: ID
+ * @param  cal_time: monday 12am
+ * @retval calendar
  */
 calendar get_cal(time_t cal_time) {
     FILE *file = fopen(STORAGE_PATH, "rb");
@@ -68,9 +67,9 @@ calendar get_cal(time_t cal_time) {
     return cal;
 }
 /**
- * @brief
+ * @brief  looks through stored files, if cal found overwrites with invalid cal.
  * @note
- * @param  cal_time:
+ * @param  cal_time: monday 12 am
  * @retval None
  */
 void delete_cal(time_t cal_time) {
@@ -110,7 +109,12 @@ void clear_day(time_t day_time) {
  */
 void add_event(char *title, time_t start_time, time_t end_time) {
     if (start_time > end_time) {
-        printf("Event '%s' must end after it starts", title);
+        printf("Event '%s' must end after it starts\n", title);
+        return;
+    }
+
+    if (get_t_data(start_time, t_year) != get_t_data(end_time, t_year) || get_t_data(start_time, t_yday) != get_t_data(end_time, t_yday)) {
+        printf("Event '%s' spreads through multiple days\n", title);
         return;
     }
 
