@@ -3,37 +3,29 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "../headers/cal_renderer.h"
 #include "../headers/datatypes.h"
 #include "../headers/file_handler.h"
 #include "../headers/ics_handler.h"
 #include "../headers/input_handler.h"
 #include "../headers/regex_handler.h"
+#include "../headers/time_handler.h"
 
 int main() {
     srand(time(NULL));
 
-    regex_t regexs[num_input_rules];
-    setup_regex(regexs);
+    setup_regex();
+    prepare_file(0);
 
-    clr_file();
-    calendar cal = get_cal(47, 2021);
+    time_t cal_time = get_cal_time_from_day_time(time(NULL));
+    calendar current_cal = get_cal(cal_time);
 
-    cal = get_cal(49, 2021);
+    prn_cal(&current_cal);
 
-    cal = get_cal(50, 2021);
+    int run = 1;
+    while (run) {
+        run = prompt_user_input(&current_cal);
+    }
 
-    cal = get_cal(50, 2021);
-
-    convert_cal_to_ics(get_cal(45, 2021));
-
-    cal = get_cal(51, 2021);
-
-    cal = get_cal(51, -2021);
-
-    printf("\nSize of cal: %ld\n", sizeof(cal));
-    prn_file_content();
-
-    prompt_user_input(regexs);
-
-    return (0);
+    return EXIT_SUCCESS;
 }

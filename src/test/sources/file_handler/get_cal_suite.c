@@ -1,19 +1,20 @@
 #include "../../headers/file_handler/get_cal_suite.h"
 
+#include "../../../main/headers/datatypes.h"
 #include "../../../main/sources/file_handler.c"
+#include "../../../main/sources/time_handler.c"
 #include "../../headers/CuTest.h"
 #include "../../headers/file_handler/compare_helper.h"
 
 void get_cal_test_week_45(CuTest* tc) {
-    clr_file();
+    prepare_file(0);
 
-    calendar actual = get_cal(45, 2021);
+    calendar actual = get_cal(time(NULL));
 
-    calendar expected = {.year = 2021, .week = 45, .valid = 1};
+    calendar expected = {.time = time(NULL)};
     int dow, hod;
     for (dow = 0; dow < DAYS_IN_WEEK; dow++) {
-        expected.days[dow].dom = dow + 8;
-        expected.days[dow].month = 11;
+        expected.days[dow].time = time(NULL);
 
         for (hod = 0; hod < HOURS_IN_DAY; hod++) {
             expected.days[dow].events[hod].title[0] = '\0';

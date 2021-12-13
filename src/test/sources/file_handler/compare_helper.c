@@ -6,8 +6,7 @@
 
 int cmp_cals(calendar cal1, calendar cal2) {
     int failed = 0;
-    failed += cal1.year != cal2.year;
-    failed += cal1.week != cal2.week;
+    failed += cal1.time == cal2.time;
     failed += cal1.valid != cal2.valid;
 
     int i;
@@ -20,8 +19,7 @@ int cmp_cals(calendar cal1, calendar cal2) {
 
 int cmp_days(day day1, day day2) {
     int failed = 0;
-    failed += day1.month != day2.month;
-    failed += day1.dom != day2.dom;
+    failed += day1.time == day2.time;
 
     int i;
     for (i = 0; i < HOURS_IN_DAY; i++) {

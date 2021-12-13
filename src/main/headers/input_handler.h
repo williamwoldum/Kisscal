@@ -5,7 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void show_help(void);
-void prompt_user_input(regex_t *regexs);
+#include "./datatypes.h"
+
+int prompt_user_input(calendar* current_cal);
+void sort_content(day* day);
 
 #endif
