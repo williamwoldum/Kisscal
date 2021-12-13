@@ -23,13 +23,18 @@ static int get_num_cals(FILE *file);
 
 /************************************************************************* Global functions  */
 
+/**
+ * @brief  Makes file if none exist, user can choose to clear file.
+ * @note
+ * @param  state: clears file if 0
+ * @retval None
+ */
 void prepare_file(int state) {
     if (state == 0) {
         fclose(fopen(STORAGE_PATH, "wb"));
     } else {
         FILE *file = fopen(STORAGE_PATH, "rb");
         if (file == NULL) {
-            printf("\nHIW\n");
             fclose(fopen(STORAGE_PATH, "wb"));
         } else {
             fclose(file);
@@ -37,6 +42,12 @@ void prepare_file(int state) {
     }
 }
 
+/**
+ * @brief  looks in file and returns stored cal if found else blank cal.
+ * @note  cal_time: ID
+ * @param  cal_time: monday 12am
+ * @retval calendar
+ */
 calendar get_cal(time_t cal_time) {
     FILE *file = fopen(STORAGE_PATH, "rb");
 
@@ -55,7 +66,12 @@ calendar get_cal(time_t cal_time) {
 
     return cal;
 }
-
+/**
+ * @brief  looks through stored files, if cal found overwrites with invalid cal.
+ * @note
+ * @param  cal_time: monday 12 am
+ * @retval None
+ */
 void delete_cal(time_t cal_time) {
     FILE *file = fopen(STORAGE_PATH, "rb+");
 
@@ -69,6 +85,12 @@ void delete_cal(time_t cal_time) {
     fclose(file);
 }
 
+/**
+ * @brief
+ * @note
+ * @param  day_time:
+ * @retval None
+ */
 void clear_day(time_t day_time) {
     time_t cal_time = get_cal_time_from_day_time(day_time);
     calendar cal = get_cal(cal_time);
@@ -77,9 +99,22 @@ void clear_day(time_t day_time) {
     save_cal(&cal);
 }
 
+/**
+ * @brief
+ * @note
+ * @param  *title:
+ * @param  start_time:
+ * @param  end_time:
+ * @retval None
+ */
 void add_event(char *title, time_t start_time, time_t end_time) {
     if (start_time > end_time) {
-        printf("Event '%s' must end after it starts", title);
+        printf("Event '%s' must end after it starts\n", title);
+        return;
+    }
+
+    if (get_t_data(start_time, t_year) != get_t_data(end_time, t_year) || get_t_data(start_time, t_yday) != get_t_data(end_time, t_yday)) {
+        printf("Event '%s' spreads through multiple days\n", title);
         return;
     }
 
@@ -119,6 +154,12 @@ void add_event(char *title, time_t start_time, time_t end_time) {
     }
 }
 
+/**
+ * @brief
+ * @note
+ * @param  start_time:
+ * @retval None
+ */
 void delete_event(time_t start_time) {
     calendar cal = get_cal(get_cal_time_from_day_time(start_time));
     int dow = get_t_data(start_time, t_dow);
@@ -139,7 +180,15 @@ void delete_event(time_t start_time) {
         save_cal(&cal);
     }
 }
-
+/**
+ * @brief
+ * @note
+ * @param  *title:
+ * @param  deadline:
+ * @param  expected_time:
+ * @param  elapsed_time:
+ * @retval None
+ */
 void add_assignemnt(char *title, time_t deadline, float expected_time, float elapsed_time) {
     calendar cal = get_cal(get_cal_time_from_day_time(deadline));
     int dow = get_t_data(deadline, t_dow);
@@ -161,7 +210,12 @@ void add_assignemnt(char *title, time_t deadline, float expected_time, float ela
         save_cal(&cal);
     }
 }
-
+/**
+ * @brief
+ * @note
+ * @param  deadline:
+ * @retval None
+ */
 void delete_assignment(time_t deadline) {
     calendar cal = get_cal(get_cal_time_from_day_time(deadline));
     int dow = get_t_data(deadline, t_dow);
@@ -184,7 +238,12 @@ void delete_assignment(time_t deadline) {
 }
 
 /************************************************************************* Static functions */
-
+/**
+ * @brief
+ * @note
+ * @param  *cal:
+ * @retval
+ */
 static int check_cal_has_content(calendar *cal) {
     int day_index = 0, content_index = 0, found = 0;
 
@@ -202,7 +261,12 @@ static int check_cal_has_content(calendar *cal) {
     }
     return found;
 }
-
+/**
+ * @brief
+ * @note
+ * @param  *cal:
+ * @retval None
+ */
 static void save_cal(calendar *cal) {
     if (cal->valid) {
         FILE *file = fopen(STORAGE_PATH, "rb+");
@@ -219,7 +283,13 @@ static void save_cal(calendar *cal) {
         fclose(file);
     }
 }
-
+/**
+ * @brief
+ * @note
+ * @param  cal_time:
+ * @param  *file:
+ * @retval
+ */
 static int get_cal_index(time_t cal_time, FILE *file) {
     int length = get_num_cals(file);
 
@@ -237,7 +307,12 @@ static int get_cal_index(time_t cal_time, FILE *file) {
 
     return index == length ? -1 : index;
 }
-
+/**
+ * @brief
+ * @note
+ * @param  *file:
+ * @retval
+ */
 static int get_free_index(FILE *file) {
     int length = get_num_cals(file);
 
@@ -255,7 +330,13 @@ static int get_free_index(FILE *file) {
 
     return index;
 }
-
+/**
+ * @brief
+ * @note
+ * @param  *cal:
+ * @param  cal_time:
+ * @retval None
+ */
 static void load_fresh_cal(calendar *cal, time_t cal_time) {
     cal->time = cal_time;
     cal->valid = 0;
@@ -266,7 +347,13 @@ static void load_fresh_cal(calendar *cal, time_t cal_time) {
         load_fresh_day(&cal->days[dow], day_time);
     }
 }
-
+/**
+ * @brief
+ * @note
+ * @param  *day:
+ * @param  day_time:
+ * @retval None
+ */
 static void load_fresh_day(day *day, time_t day_time) {
     day->time = day_time;
 
@@ -284,14 +371,23 @@ static void load_fresh_day(day *day, time_t day_time) {
         day->assignments[hod].valid = 0;
     }
 }
-
+/**
+ * @brief
+ * @note
+ * @param  *file:
+ * @retval
+ */
 static int get_num_cals(FILE *file) {
     fseek(file, 0, SEEK_END);
     return ftell(file) / sizeof(calendar);
 }
 
 /************************************************************************* Debug functions */
-
+/**
+ * @brief
+ * @note
+ * @retval None
+ */
 void prn_file_content(void) {
     FILE *file = fopen(STORAGE_PATH, "rb");
     int length = get_num_cals(file);

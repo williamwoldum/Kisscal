@@ -1,16 +1,18 @@
-#include <regex.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
 #include "../headers/cal_renderer.h"
 #include "../headers/datatypes.h"
 #include "../headers/file_handler.h"
-#include "../headers/ics_handler.h"
 #include "../headers/input_handler.h"
 #include "../headers/regex_handler.h"
 #include "../headers/time_handler.h"
 
+/**
+ * @brief  Run the code from all src
+ * @note   NONE
+ * @retval int
+ */
 int main() {
     srand(time(NULL));
 

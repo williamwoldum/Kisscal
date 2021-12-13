@@ -3,13 +3,16 @@
 
 #include <time.h>
 
-enum t_type { t_year,
-              t_mon,
-              t_week,
-              t_dom,
-              t_dow,
-              t_hour,
-              t_min,
+enum t_type
+{
+    t_year,
+    t_yday,
+    t_mon,
+    t_week,
+    t_dom,
+    t_dow,
+    t_hour,
+    t_min,
 };
 
 int get_t_data(time_t time, int t_type);
