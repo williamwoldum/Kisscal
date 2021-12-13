@@ -85,10 +85,10 @@ time_t get_cal_time_from_day_time(time_t day_time)
 }
 
 /**
- * @brief  
- * @note   
- * @param  week: 
- * @param  year: 
+ * @brief  allows you to put a calendar in a year. caluclated how many seconds has gone from 1970 for a correct time convertion. 
+ * @note   This is a measure used for converting the time depending on diffrent timezones.
+ * @param  week: Week   
+ * @param  year: Year
  * @retval tm
  */
 time_t get_cal_time_from_week_and_year(int week, int year)
@@ -170,11 +170,12 @@ void load_dow_string(char *str, int dow)
 }
 
 /**
- * @brief  
+ * @brief  Function for getting a real time value in the value
  * @note   
  * @param  cal_time: Calendar time
  * @param  current_time: Current_time
- * @retval 
+ * @retval cal_time - current_cal_time;
+}
  */
 int calc_in_week(time_t cal_time, time_t current_time)
 {
@@ -183,10 +184,10 @@ int calc_in_week(time_t cal_time, time_t current_time)
 }
 
 /**
- * @brief  
+ * @brief  returns true year of given time.
  * @note   
  * @param  *tm: 
- * @retval 
+ * @retval tm->tm_year + 1900;
  */
 static int get_year(struct tm *tm)
 {
@@ -199,10 +200,10 @@ static int get_year(struct tm *tm)
 }
 
 /**
- * @brief  
+ * @brief  returns true week of given time.
  * @note   
  * @param  *tm: 
- * @retval 
+ * @retval tm->tm_yday / DAYS_IN_WEEK + 1;
  */
 static int get_week(struct tm *tm)
 {
