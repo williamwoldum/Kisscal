@@ -12,6 +12,9 @@
 
 #define ICS_OUTPUT_PATH "./ics_output.ics"
 #define ICS_INPUT_DIR_PATH "./Importfiles"
+#define DT_BUFFER_SIZE 48
+#define PATH_BUFFER_SIZE 300
+#define LINE_BUFFER_SIZE 100
 
 /************************************************************************* Static function prototypes */
 
@@ -22,7 +25,7 @@ static int get_uid(void);
 /************************************************************************* Global functions  */
 
 /**
- * @brief  Outputs a ics file with data loaded from given calendar
+ * @brief  Outputs an ics file with data loaded from given calendar
  * @note
  * @param  *cal: Calendar to be converted to ics
  * @retval None
@@ -34,9 +37,8 @@ void convert_cal_to_ics(calendar *cal) {
             "VERSION:2.0\n"
             "PRODID:wtf\n");
 
-    int day;
+    int day, i;
     for (day = 0; day < DAYS_IN_WEEK; day++) {
-        int i;
         for (i = 0; i < CONTENT_IN_DAY; i++) {
             if (cal->days[day].events[i].valid == 1) {
                 event_to_ics(ics_file, &cal->days[day].events[i]);
@@ -68,7 +70,7 @@ void import_ics(void) {
         name = dir->d_name;
     }
 
-    char path[300];
+    char path[PATH_BUFFER_SIZE];
 
     sprintf(path, "./Importfiles/%s", name);
     printf("path %s\n", path);
@@ -80,7 +82,7 @@ void import_ics(void) {
         return;
     }
 
-    char line[100];
+    char line[LINE_BUFFER_SIZE];
 
     char c;
     int linecount = 0;
@@ -96,25 +98,13 @@ void import_ics(void) {
     time_t start_time = 0;
     time_t end_time = 0;
     char *title;
-    struct tm time;
-    int year1 = 0, month1 = 0;
 
     /*lorte kode til at sætte en standard værdi åbenbart*/
-    sscanf("20211005T123410", "%4d%2d%2dT%2d%2d",
-           &year1,
-           &month1,
-           &time.tm_mday,
-           &time.tm_hour,
-           &time.tm_min);
-    time.tm_year = year1 - 1900;
-    time.tm_mon = month1 - 1;
-    start_time = mktime(&time);
+    start_time = utc_to_epoch("20211005T123410");
     /*------------------------------------*/
 
-    time.tm_isdst = 0;
-
     for (i = 0; i < linecount; i++) {
-        fgets(line, 100, file);
+        fgets(line, LINE_BUFFER_SIZE, file);
 
         if (strstr(line, "BEGIN:VEVENT")) {
             title = (char *)calloc(1, 100);
@@ -132,44 +122,21 @@ void import_ics(void) {
         }
 
         if (eventstatus) {
-            /*time.tm_isdst = 0;*/
-
-            char *buffer = (char *)calloc(1, 100);
+            char *buffer = (char *)calloc(1, LINE_BUFFER_SIZE);
 
             if (strstr(line, "DTSTART")) {
                 sscanf(line, "%*[^:]:%s", buffer);
-
-                int year = 0, month = 0;
-                sscanf(buffer, "%4d%2d%2dT%2d%2d",
-                       &year,
-                       &month,
-                       &time.tm_mday,
-                       &time.tm_hour,
-                       &time.tm_min);
-                time.tm_year = year - 1900;
-                time.tm_mon = month - 1;
                 printf("START %s\n", buffer);
-                start_time = mktime(&time);
+                start_time = utc_to_epoch(buffer);
                 printf("actualtime: %ld\n", start_time);
             } else if (strstr(line, "DTEND")) {
                 sscanf(line, "%*[^:]:%s", buffer);
                 printf("SLUT %s\n", buffer);
-                int year, month;
-                sscanf(buffer, "%4d%2d%2dT%2d%2d",
-                       &year,
-                       &month,
-                       &time.tm_mday,
-                       &time.tm_hour,
-                       &time.tm_min);
-                time.tm_year = year - 1900;
-                time.tm_mon = month - 1;
-
-                end_time = mktime(&time);
+                end_time = utc_to_epoch(buffer);
                 printf("actualtime: %ld\n", end_time);
             } else if (strstr(line, "SUMMARY")) {
                 char buf[100];
                 sscanf(line, "%[^:]:%s", buf, title);
-
                 printf("TITEL %s\n", title);
             }
         }
@@ -186,8 +153,8 @@ void import_ics(void) {
  * @retval None
  */
 static void event_to_ics(FILE *ics_file, event *event) {
-    char dtstart[48];
-    char dtend[48];
+    char dtstart[DT_BUFFER_SIZE];
+    char dtend[DT_BUFFER_SIZE];
     load_epoch_to_utc(dtstart, "DTSTART;TZID=Europe/Copenhagen:", event->start_time);
     load_epoch_to_utc(dtstart, "DTEND;TZID=Europe/Copenhagen:", event->end_time);
 
@@ -207,7 +174,7 @@ static void event_to_ics(FILE *ics_file, event *event) {
  * @retval None
  */
 static void assignment_to_ics(FILE *ics_file, assignment *assignment) {
-    char dtstart_dtend[48];
+    char dtstart_dtend[DT_BUFFER_SIZE];
     load_epoch_to_utc(dtstart_dtend, "TZID=Europe/Copenhagen:", assignment->deadline);
 
     fprintf(ics_file, "BEGIN:VEVENT\n");

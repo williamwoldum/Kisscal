@@ -97,11 +97,11 @@ int prompt_user_input(calendar *current_cal) {
 
             int hour_start, mins_start;
             sscanf(time_start_str, "%d:%d", &hour_start, &mins_start);
-            time_t time_start = digi_time_to_time_t(current_cal->days[dow].time, hour_start, mins_start);
+            time_t time_start = digi_time_to_epoch(current_cal->days[dow].time, hour_start, mins_start);
 
             int hour_end, mins_end;
             sscanf(time_end_str, "%d:%d", &hour_end, &mins_end);
-            time_t time_end = digi_time_to_time_t(current_cal->days[dow].time, hour_end, mins_end);
+            time_t time_end = digi_time_to_epoch(current_cal->days[dow].time, hour_end, mins_end);
 
             add_event(event_str, time_start, time_end);
             prn_cal(current_cal);
@@ -116,7 +116,7 @@ int prompt_user_input(calendar *current_cal) {
             int dow = get_dow_from_str(day_str);
             int hour, mins;
             sscanf(time_str, "%d:%d", &hour, &mins);
-            time_t time_start = digi_time_to_time_t(current_cal->days[dow].time, hour, mins);
+            time_t time_start = digi_time_to_epoch(current_cal->days[dow].time, hour, mins);
 
             delete_event(time_start);
 
@@ -135,7 +135,7 @@ int prompt_user_input(calendar *current_cal) {
             int dow = get_dow_from_str(day_str);
             int hour, mins;
             sscanf(deadline_str, "%d:%d", &hour, &mins);
-            time_t time_deadline = digi_time_to_time_t(current_cal->days[dow].time, hour, mins);
+            time_t time_deadline = digi_time_to_epoch(current_cal->days[dow].time, hour, mins);
 
             add_assignemnt(assignment_str, time_deadline, expexted_time, elapsed_time);
 
@@ -151,7 +151,7 @@ int prompt_user_input(calendar *current_cal) {
             int dow = get_dow_from_str(day_str);
             int hour, mins;
             sscanf(time_str, "%d:%d", &hour, &mins);
-            time_t time_start = digi_time_to_time_t(current_cal->days[dow].time, hour, mins);
+            time_t time_start = digi_time_to_epoch(current_cal->days[dow].time, hour, mins);
 
             delete_assignment(time_start);
 

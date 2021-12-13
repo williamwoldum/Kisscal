@@ -108,7 +108,7 @@ time_t get_cal_time_from_week_and_year(int week, int year) {
  * @param  mins: Current minutes of time
  * @retval time_t
  */
-time_t digi_time_to_time_t(time_t time, int hour, int mins) {
+time_t digi_time_to_epoch(time_t time, int hour, int mins) {
     if (mins >= 45) {
         mins = 0;
         hour++;
@@ -180,6 +180,26 @@ void load_epoch_to_utc(char *buf, char *pre_str, time_t time) {
             tm->tm_hour,
             tm->tm_min,
             tm->tm_sec);
+}
+
+/**
+ * @brief  Converts utc string to epoch time_t
+ * @note
+ * @param  *utc_str:
+ * @retval time_t
+ */
+time_t utc_to_epoch(char *utc_str) {
+    struct tm tm;
+    int year, month;
+    sscanf(utc_str, "%4d%2d%2dT%2d%2d",
+           &year,
+           &month,
+           &tm.tm_mday,
+           &tm.tm_hour,
+           &tm.tm_min);
+    tm.tm_year = year - 1900;
+    tm.tm_mon = month - 1;
+    return mktime(&tm);
 }
 
 /************************************************************************* Static functions */
