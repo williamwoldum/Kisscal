@@ -44,7 +44,7 @@ void prepare_file(int state) {
 
 /**
  * @brief  looks in file and returns stored cal if found else blank cal.
- * @note  cal_time: ID
+ * @note  cal_time as ID
  * @param  cal_time: monday 12am
  * @retval calendar
  */
@@ -68,7 +68,7 @@ calendar get_cal(time_t cal_time) {
 }
 /**
  * @brief  looks through stored files, if cal found overwrites with invalid cal.
- * @note
+ * @note   cal_time as ID
  * @param  cal_time: monday 12 am
  * @retval None
  */
@@ -86,9 +86,9 @@ void delete_cal(time_t cal_time) {
 }
 
 /**
- * @brief
- * @note
- * @param  day_time:
+ * @brief  Overwrites seached day with an empty day
+ * @note   day_time as index
+ * @param  day_time: 12:00 am
  * @retval None
  */
 void clear_day(time_t day_time) {
@@ -100,11 +100,11 @@ void clear_day(time_t day_time) {
 }
 
 /**
- * @brief
+ * @brief  fetches cal and adds event if possible
  * @note
- * @param  *title:
- * @param  start_time:
- * @param  end_time:
+ * @param  *title: points to the title/name of event
+ * @param  start_time: holds start time from input
+ * @param  end_time:  holds end time from input
  * @retval None
  */
 void add_event(char *title, time_t start_time, time_t end_time) {
@@ -155,9 +155,9 @@ void add_event(char *title, time_t start_time, time_t end_time) {
 }
 
 /**
- * @brief
+ * @brief  fetches cal and make wanted event invalid if possible/found
  * @note
- * @param  start_time:
+ * @param  start_time: holds start time from input
  * @retval None
  */
 void delete_event(time_t start_time) {
@@ -181,12 +181,12 @@ void delete_event(time_t start_time) {
     }
 }
 /**
- * @brief
+ * @brief  fetches cal and add assignment if possible
  * @note
- * @param  *title:
- * @param  deadline:
- * @param  expected_time:
- * @param  elapsed_time:
+ * @param  *title: points to the assignment title
+ * @param  deadline: holds the deadline from input
+ * @param  expected_time: holds the expected time from input
+ * @param  elapsed_time: holds the time used on assignment
  * @retval None
  */
 void add_assignemnt(char *title, time_t deadline, float expected_time, float elapsed_time) {
@@ -211,9 +211,9 @@ void add_assignemnt(char *title, time_t deadline, float expected_time, float ela
     }
 }
 /**
- * @brief
+ * @brief fetches cal and make wanted assignment invalid if possible/found
  * @note
- * @param  deadline:
+ * @param  deadline: holds the deadline the deadline from input
  * @retval None
  */
 void delete_assignment(time_t deadline) {
@@ -239,10 +239,10 @@ void delete_assignment(time_t deadline) {
 
 /************************************************************************* Static functions */
 /**
- * @brief
+ * @brief  Checks for (content event/assignment) in fetched cal
  * @note
- * @param  *cal:
- * @retval
+ * @param  *cal: points to a specific cal
+ * @retval int (bool)
  */
 static int check_cal_has_content(calendar *cal) {
     int day_index = 0, content_index = 0, found = 0;
@@ -262,9 +262,9 @@ static int check_cal_has_content(calendar *cal) {
     return found;
 }
 /**
- * @brief
+ * @brief  If given cal is valid, save cal at free index
  * @note
- * @param  *cal:
+ * @param  *cal: points to a specific cal
  * @retval None
  */
 static void save_cal(calendar *cal) {
@@ -284,11 +284,11 @@ static void save_cal(calendar *cal) {
     }
 }
 /**
- * @brief
- * @note
- * @param  cal_time:
- * @param  *file:
- * @retval
+ * @brief  returns index of cal in file, returns -1 if not found.
+ * @note   cal_time as ID
+ * @param  cal_time: monday 12 am
+ * @param  *file: points to the cal storage file
+ * @retval  int
  */
 static int get_cal_index(time_t cal_time, FILE *file) {
     int length = get_num_cals(file);
@@ -308,10 +308,10 @@ static int get_cal_index(time_t cal_time, FILE *file) {
     return index == length ? -1 : index;
 }
 /**
- * @brief
+ * @brief  returns index with invalid cal or retun idex bottom of file
  * @note
- * @param  *file:
- * @retval
+ * @param  *file: points to the cal storage file
+ * @retval int
  */
 static int get_free_index(FILE *file) {
     int length = get_num_cals(file);
@@ -331,10 +331,10 @@ static int get_free_index(FILE *file) {
     return index;
 }
 /**
- * @brief
- * @note
- * @param  *cal:
- * @param  cal_time:
+ * @brief  loads empty/nonvalid cal
+ * @note    cal_time as ID
+ * @param  *cal: points to a specific cal
+ * @param  cal_time: monday 12 am
  * @retval None
  */
 static void load_fresh_cal(calendar *cal, time_t cal_time) {
@@ -348,10 +348,10 @@ static void load_fresh_cal(calendar *cal, time_t cal_time) {
     }
 }
 /**
- * @brief
- * @note
- * @param  *day:
- * @param  day_time:
+ * @brief  loads empty/nonvalid day with no title
+ * @note  day_time as ID
+ * @param  *day: point to the specific day
+ * @param  day_time: 12 am
  * @retval None
  */
 static void load_fresh_day(day *day, time_t day_time) {
@@ -372,10 +372,10 @@ static void load_fresh_day(day *day, time_t day_time) {
     }
 }
 /**
- * @brief
- * @note
- * @param  *file:
- * @retval
+ * @brief return number of cals found in file (valid & nonvalid)
+ * @note  calc for return val (bytes file/bytes cal)
+ * @param  *file: points to the cal storage file
+ * @retval int
  */
 static int get_num_cals(FILE *file) {
     fseek(file, 0, SEEK_END);
@@ -384,7 +384,7 @@ static int get_num_cals(FILE *file) {
 
 /************************************************************************* Debug functions */
 /**
- * @brief
+ * @brief prints content in storage file for debug purposes
  * @note
  * @retval None
  */

@@ -9,8 +9,8 @@
 #include "../headers/time_handler.h"
 
 /**
- * @brief  Run the code from all src
- * @note   NONE
+ * @brief  runs the program from all src files
+ * @note
  * @retval int
  */
 int main() {
