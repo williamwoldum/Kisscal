@@ -7,7 +7,7 @@
 #include "../../headers/file_handler/compare_helper.h"
 
 void get_cal_test_week_45(CuTest* tc) {
-    clr_file();
+    prepare_file(0);
 
     calendar actual = get_cal(time(NULL));
 

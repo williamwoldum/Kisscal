@@ -12,7 +12,7 @@ static void create_event(FILE *, calendar, int, int);
 static void create_assignment(FILE *, calendar, int, int);
 static char *get_deadline(assignment);
 
-void convert_cal_to_ics(calendar cal) {
+void convert_cal_to_ics(calendar *cal) {
     FILE *cal_file = fopen("./ics_output.ics", "w");
     fprintf(cal_file,
             "BEGIN:VCALENDAR\n"
@@ -25,13 +25,13 @@ void convert_cal_to_ics(calendar cal) {
 
     for (day = 0; day < DAYS_IN_WEEK; day++) {
         int hour;
-        for (hour = 0; hour < HOURS_IN_DAY * 2; hour++) {
-            if (cal.days[day].events[hour].valid == 1) {
-                create_event(cal_file, cal, day, hour);
+        for (hour = 0; hour < CONTENT_IN_DAY; hour++) {
+            if (cal->days[day].events[hour].valid == 1) {
+                create_event(cal_file, *cal, day, hour);
             }
 
-            if (cal.days[day].assignments[hour].valid == 1) {
-                create_assignment(cal_file, cal, day, hour);
+            if (cal->days[day].assignments[hour].valid == 1) {
+                create_assignment(cal_file, *cal, day, hour);
             }
         }
     }

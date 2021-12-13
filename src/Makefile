@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -std=c89 -Wall
+CFLAGS := -std=c89 -Wall -lm
 
 MOUT := Kisscal.out
 TOUT := Tester.out

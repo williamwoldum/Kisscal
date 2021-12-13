@@ -13,26 +13,18 @@
 #include "../headers/time_handler.h"
 
 static void load_into_arr(char* location, char* str);
-static void prn_event_line(event* event, char* corner, int hour, int mins, int title_enabled);
+static void prn_event_line(char* title, char* corner, int hour, int mins, int title_enabled);
+static void prn_assignment(char* title, char* loc);
 
 #define CAL_W 108
 #define CAL_H 30
 #define COLUMN_W 13
 
-calendar current_cal;
-
-char day_strs[DAYS_IN_WEEK][4] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-
-void setup_renderer(void) {
-    time_t cal_time = get_cal_time_from_day_time(time(NULL));
-    current_cal = get_cal(cal_time);
-}
-
-void prn_cal(void) {
+void prn_cal(calendar* current_cal) {
     /*     system("clear");
      */
 
-    current_cal = get_cal(current_cal.time);
+    *current_cal = get_cal(current_cal->time);
 
     char pixel_arr[CAL_H][CAL_W] = {
         /*0         1         2         3         4         5         6         7         8         9         10     */
@@ -89,8 +81,8 @@ void prn_cal(void) {
         &pixel_arr[4][93],
     };
 
-    int year = get_t_data(current_cal.time, t_year);
-    int week = get_t_data(current_cal.time, t_week);
+    int year = get_t_data(current_cal->time, t_year);
+    int week = get_t_data(current_cal->time, t_week);
 
     char cal_header_buf[20];
     sprintf(cal_header_buf, "Week %-2d year %d", week, year);
@@ -100,43 +92,35 @@ void prn_cal(void) {
 
     char date_buf[30];
     for (i = 0; i < DAYS_IN_WEEK; i++) {
-        sprintf(date_buf, "%s %2d/%-2d", day_strs[i], get_t_data(current_cal.days[i].time, t_dom), get_t_data(current_cal.days[i].time, t_mon));
+        char day_str[4];
+        load_dow_string(day_str, i);
+
+        sprintf(date_buf, "%s %2d/%-2d", day_str, get_t_data(current_cal->days[i].time, t_dom), get_t_data(current_cal->days[i].time, t_mon));
         load_into_arr(date_locs[i], date_buf);
     }
 
     int j;
     for (i = 0; i < DAYS_IN_WEEK; i++) {
-        for (j = 0; j < HOURS_IN_DAY * 2; j++) {
-            event event = current_cal.days[i].events[j];
+        for (j = 0; j < CONTENT_IN_DAY; j++) {
+            event event = current_cal->days[i].events[j];
             if (event.valid) {
                 int start_hour = get_t_data(event.start_time, t_hour);
                 int start_mins = get_t_data(event.start_time, t_min);
                 int end_hour = get_t_data(event.end_time, t_hour);
                 int end_mins = get_t_data(event.end_time, t_min);
-                int title_enabled = (end_hour * 60 + end_mins) - (start_hour * 60 + start_mins) >= 120;
+                int title_enabled = (end_hour * MINS_IN_HOUR + end_mins) - (start_hour * MINS_IN_HOUR + start_mins) >= 120;
 
-                prn_event_line(&event, day_corners[i], start_hour, start_mins, title_enabled);
-                prn_event_line(&event, day_corners[i], end_hour, end_mins, 0);
+                prn_event_line(event.title, day_corners[i], start_hour, start_mins, title_enabled);
+                prn_event_line(event.title, day_corners[i], end_hour, end_mins, 0);
             }
         }
 
-        for (j = 0; j < HOURS_IN_DAY * 2; j++) {
-            assignment assignment = current_cal.days[i].assignments[j];
+        for (j = 0; j < CONTENT_IN_DAY; j++) {
+            assignment assignment = current_cal->days[i].assignments[j];
             if (assignment.valid) {
                 int hour = get_t_data(assignment.deadline, t_hour);
                 char* loc = day_corners[i] + hour * CAL_W;
-
-                if (strlen(assignment.title) > COLUMN_W - 2) {
-                    char title_buf[COLUMN_W + 1];
-                    title_buf[0] = '{';
-                    strncpy(title_buf + 1, assignment.title, COLUMN_W - 5);
-                    sprintf(title_buf + COLUMN_W - 4, "%s", "...}");
-                    load_into_arr(loc + CAL_W, title_buf);
-                } else {
-                    char title_buf[COLUMN_W + 1];
-                    sprintf(title_buf, "{%s}", assignment.title);
-                    load_into_arr(loc + CAL_W, title_buf);
-                }
+                prn_assignment(assignment.title, loc);
             }
         }
     }
@@ -146,7 +130,7 @@ void prn_cal(void) {
     }
 }
 
-static void prn_event_line(event* event, char* corner, int hour, int mins, int title_enabled) {
+static void prn_event_line(char* title, char* corner, int hour, int mins, int title_enabled) {
     int dashed = mins == 30;
     char* loc = corner + (hour + dashed) * CAL_W;
     char current = *(loc + 1);
@@ -162,14 +146,27 @@ static void prn_event_line(event* event, char* corner, int hour, int mins, int t
     }
 
     if (title_enabled) {
-        if (strlen(event->title) > COLUMN_W) {
+        if (strlen(title) > COLUMN_W) {
             char title_buf[COLUMN_W + 1];
-            strncpy(title_buf, event->title, COLUMN_W - 3);
+            strncpy(title_buf, title, COLUMN_W - 3);
             sprintf(title_buf + COLUMN_W - 3, "%s", "...");
             load_into_arr(loc + CAL_W, title_buf);
         } else {
-            load_into_arr(loc + CAL_W, event->title);
+            load_into_arr(loc + CAL_W, title);
         }
+    }
+}
+
+static void prn_assignment(char* title, char* loc) {
+    char title_buf[20];
+    if (strlen(title) > COLUMN_W - 2) {
+        title_buf[0] = '{';
+        strncpy(title_buf + 1, title, COLUMN_W - 5);
+        sprintf(title_buf + COLUMN_W - 4, "...}");
+        load_into_arr(loc + CAL_W, title_buf);
+    } else {
+        sprintf(title_buf, "{%s}", title);
+        load_into_arr(loc + CAL_W, title_buf);
     }
 }
 

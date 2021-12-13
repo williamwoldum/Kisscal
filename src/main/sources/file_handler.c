@@ -23,6 +23,20 @@ static int get_num_cals(FILE *file);
 
 /************************************************************************* Global functions  */
 
+void prepare_file(int state) {
+    if (state == 0) {
+        fclose(fopen(STORAGE_PATH, "wb"));
+    } else {
+        FILE *file = fopen(STORAGE_PATH, "rb");
+        if (file == NULL) {
+            printf("\nHIW\n");
+            fclose(fopen(STORAGE_PATH, "wb"));
+        } else {
+            fclose(file);
+        }
+    }
+}
+
 calendar get_cal(time_t cal_time) {
     FILE *file = fopen(STORAGE_PATH, "rb");
 
@@ -74,7 +88,7 @@ void add_event(char *title, time_t start_time, time_t end_time) {
 
     int is_before, is_after, overlaps = 0;
     int index = 0, search = 1;
-    while (search && index < HOURS_IN_DAY * 2) {
+    while (search && index < CONTENT_IN_DAY) {
         is_before = (start_time <= cal.days[dow].events[index].start_time && end_time <= cal.days[dow].events[index].start_time);
         is_after = (start_time >= cal.days[dow].events[index].end_time && end_time >= cal.days[dow].events[index].end_time);
         if (!(is_before || is_after)) {
@@ -86,7 +100,7 @@ void add_event(char *title, time_t start_time, time_t end_time) {
 
     if (!overlaps) {
         index = 0, search = 1;
-        while (search && index < HOURS_IN_DAY * 2) {
+        while (search && index < CONTENT_IN_DAY) {
             if (!cal.days[dow].events[index].valid) {
                 sprintf(cal.days[dow].events[index].title, "%s", title);
                 cal.days[dow].events[index].start_time = start_time;
@@ -110,7 +124,7 @@ void delete_event(time_t start_time) {
     int dow = get_t_data(start_time, t_dow);
 
     int index = 0, found = 0;
-    while (!found && index < HOURS_IN_DAY * 2) {
+    while (!found && index < CONTENT_IN_DAY) {
         if (cal.days[dow].events[index].start_time == start_time) {
             cal.days[dow].events[index].valid = 0;
             found = 1;
@@ -131,7 +145,7 @@ void add_assignemnt(char *title, time_t deadline, float expected_time, float ela
     int dow = get_t_data(deadline, t_dow);
 
     int index = 0, found = 0;
-    while (!found && index < HOURS_IN_DAY * 2) {
+    while (!found && index < CONTENT_IN_DAY) {
         if (!cal.days[dow].assignments[index].valid) {
             sprintf(cal.days[dow].assignments[index].title, "%s", title);
             cal.days[dow].assignments[index].deadline = deadline;
@@ -153,7 +167,7 @@ void delete_assignment(time_t deadline) {
     int dow = get_t_data(deadline, t_dow);
 
     int index = 0, found = 0;
-    while (!found && index < HOURS_IN_DAY * 2) {
+    while (!found && index < CONTENT_IN_DAY) {
         if (cal.days[dow].assignments[index].deadline == deadline) {
             cal.days[dow].assignments[index].valid = 0;
             found = 1;
@@ -175,7 +189,7 @@ static int check_cal_has_content(calendar *cal) {
     int day_index = 0, content_index = 0, found = 0;
 
     while (!found && day_index < DAYS_IN_WEEK) {
-        while (!found && content_index < HOURS_IN_DAY * 2) {
+        while (!found && content_index < CONTENT_IN_DAY) {
             if (cal->days[day_index].events[content_index].valid) {
                 found = 1;
             } else if (cal->days[day_index].assignments[content_index].valid) {
@@ -257,7 +271,7 @@ static void load_fresh_day(day *day, time_t day_time) {
     day->time = day_time;
 
     int hod;
-    for (hod = 0; hod < HOURS_IN_DAY * 2; hod++) {
+    for (hod = 0; hod < CONTENT_IN_DAY; hod++) {
         day->events[hod].title[0] = '\0';
         day->events[hod].start_time = -1;
         day->events[hod].end_time = -1;
@@ -277,10 +291,6 @@ static int get_num_cals(FILE *file) {
 }
 
 /************************************************************************* Debug functions */
-
-void clr_file(void) {
-    fclose(fopen(STORAGE_PATH, "wb"));
-}
 
 void prn_file_content(void) {
     FILE *file = fopen(STORAGE_PATH, "rb");
