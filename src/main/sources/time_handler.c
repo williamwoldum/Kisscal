@@ -9,6 +9,14 @@
 static int get_year(struct tm *tm);
 static int get_week(struct tm *tm);
 
+/**
+ * @brief  Returns given value from time_t
+ * @note   
+ * @param  time: defines the time.
+ * @param  t_type: 
+ * @retval data
+ */
+
 int get_t_data(time_t time, int t_type)
 {
     struct tm *tm = localtime(&time);
@@ -46,6 +54,13 @@ int get_t_data(time_t time, int t_type)
     return data;
 }
 
+/**
+ * @brief  Returns and converts time values, along with that controls whether its summer or winter time.
+ * @note   if tm_isdst is set to : 0, it means that its basicly always summer and winter time for a correct convertion of time.
+ * @param  dow: is a abbreviation for (Day of week).
+ * @param  cal_time: calendar time control
+ * @retval tm
+ */
 time_t get_day_time_from_cal_time(int dow, time_t cal_time)
 {
     struct tm *tm = localtime(&cal_time);
@@ -58,12 +73,24 @@ time_t get_day_time_from_cal_time(int dow, time_t cal_time)
     tm->tm_mday += dow - DaysSinceMonday;
     return mktime(tm);
 }
-
+/**
+ * @brief  Gets the calendar time from day time. 
+ * @note   returns day_time.
+ * @param  day_time: 
+ * @retval day_time
+ */
 time_t get_cal_time_from_day_time(time_t day_time)
 {
     return get_day_time_from_cal_time(0, day_time);
 }
 
+/**
+ * @brief  
+ * @note   
+ * @param  week: 
+ * @param  year: 
+ * @retval tm
+ */
 time_t get_cal_time_from_week_and_year(int week, int year)
 {
     struct tm tm = {.tm_year = year - 1900, .tm_mon = 0, .tm_mday = 4, .tm_hour = 12};
@@ -73,7 +100,15 @@ time_t get_cal_time_from_week_and_year(int week, int year)
     return mktime(&tm);
 }
 
-time_t digi_time_to_time_t(time_t time, int hour, int mins)
+/**
+ * @brief  
+ * @note   
+ * @param  time: Time
+ * @param  hour: Hours
+ * @param  mins: Minutes
+ * @retval tm
+ */
+time_t digi_time_to_time_t(time_t time, int hour, int mins) /* TAG ET EKSTRA KIG PÅ DENNE DER ER FEJL MBY HEHE */
 {
     if (mins >= 39)
     {
@@ -95,6 +130,13 @@ time_t digi_time_to_time_t(time_t time, int hour, int mins)
     return mktime(tm);
 }
 
+/**
+ * @brief  defines the days of the week.
+ * @note   
+ * @param  *str: Defines a string
+ * @param  dow: day of week
+ * @retval None
+ */
 void load_dow_string(char *str, int dow)
 {
     if (dow == 0)
@@ -127,12 +169,25 @@ void load_dow_string(char *str, int dow)
     }
 }
 
+/**
+ * @brief  
+ * @note   
+ * @param  cal_time: Calendar time
+ * @param  current_time: Current_time
+ * @retval 
+ */
 int calc_in_week(time_t cal_time, time_t current_time)
 {
     time_t current_cal_time = get_cal_time_from_day_time(current_time);
     return cal_time - current_cal_time;
 }
 
+/**
+ * @brief  
+ * @note   
+ * @param  *tm: 
+ * @retval 
+ */
 static int get_year(struct tm *tm)
 {
     mktime(tm);
@@ -143,6 +198,12 @@ static int get_year(struct tm *tm)
     return tm->tm_year + 1900;
 }
 
+/**
+ * @brief  
+ * @note   
+ * @param  *tm: 
+ * @retval 
+ */
 static int get_week(struct tm *tm)
 {
     mktime(tm);
