@@ -28,10 +28,10 @@ static int cmp_assignments(const void *a_, const void *b_);
 
 /************************************************************************* Global functions  */
 /**
- * @brief controle program funktions through user input, until close_rule is executed  (run = 0)
- * @note  in switch - default print error
- * @param  *current_cal: points to current cal
- * @retval int (run)
+ * @brief Promts the user for input, evaluates it and executes proper action
+ * @note
+ * @param  *current_cal: Calendar currently shown to user
+ * @retval int
  */
 int prompt_user_input(calendar *current_cal) {
     printf("\n>> ");
@@ -168,7 +168,7 @@ int prompt_user_input(calendar *current_cal) {
             break;
         }
         case import_ics_rule: {
-            import_ics(*current_cal);
+            import_ics();
             break;
         }
         case export_ics_rule: {
@@ -196,9 +196,9 @@ int prompt_user_input(calendar *current_cal) {
 }
 
 /**
- * @brief Sort the content (events and assignments) from specific day
+ * @brief Sorts content by time (events and assignments) in specific day
  * @note
- * @param  *day: points to specific day
+ * @param  *day: Day of content to be sorted
  * @retval None
  */
 void sort_content(day *day) {
@@ -209,7 +209,7 @@ void sort_content(day *day) {
 /************************************************************************* Static functions */
 
 /**
- * @brief intuitively prints the help funktions for the user.
+ * @brief Prints help guide for user
  * @note
  * @retval None
  */
@@ -244,10 +244,10 @@ static void prn_help(void) {
         "-----------------------------------------------------------------------------------------------------------\n");
 }
 /**
- * @brief  returns the day of week from input string after possible conversion af first index 0 to lower case (tolower)
- * @note  case insensitive
- * @param  *str:
- * @retval int (dow)
+ * @brief  Returns day index of the week from day string
+ * @note  Case insensitive
+ * @param  *str: String to be considered
+ * @retval int 0-6
  */
 static int get_dow_from_str(char *str) {
     int dow = -1;
@@ -268,10 +268,11 @@ static int get_dow_from_str(char *str) {
     }
     return dow;
 }
+
 /**
- * @brief  prints content (events and assignments) in a time sortet list from specific/chosen day
- * @note day_time as ID
- * @param  day_time: 12 am
+ * @brief  Prints content (events and assignments) in a time sortet list from specific/chosen day
+ * @note
+ * @param  day_time: 12:00 am on day, acts as id
  * @retval None
  */
 static void prn_day_content(time_t day_time) {
@@ -319,10 +320,10 @@ static void prn_day_content(time_t day_time) {
 }
 
 /**
- * @brief compare events by start_time
+ * @brief Compare events by start time
  * @note
- * @param  *a_: points to element(event) a to comparement
- * @param  *b_: points to element(event) b to comparement
+ * @param  *a_: Points to element(event) a to comparement
+ * @param  *b_: Points to element(event) b to comparement
  * @retval int (return differens in time)
  */
 static int cmp_events(const void *a_, const void *b_) {
@@ -332,10 +333,10 @@ static int cmp_events(const void *a_, const void *b_) {
     return a.start_time - b.start_time;
 }
 /**
- * @brief compare assignments by deadline
+ * @brief Compare assignments by deadline time
  * @note
- * @param  *a_: points to element(assignment) a to comparement
- * @param  *b_: points to element(assignment) b to comparement
+ * @param  *a_: Points to element(assignment) a to comparement
+ * @param  *b_: Points to element(assignment) b to comparement
  * @retval int (return differens in time)
  */
 static int cmp_assignments(const void *a_, const void *b_) {

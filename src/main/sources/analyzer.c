@@ -19,9 +19,9 @@ static void prn_assignments_status(calendar *cal, time_t current_time, int in_we
 /************************************************************************* Global functions  */
 
 /**
- * @brief Prints visual of analyze
+ * @brief Analyzes calendar events and prints output
  * @note
- * @param cal: Current calender
+ * @param cal: Calender to analyze
  * @retval None
  */
 void analyze(calendar *cal) {
@@ -50,13 +50,13 @@ void analyze(calendar *cal) {
 /************************************************************************* Static functions */
 
 /**
- * @brief  Calculates free time left of week
+ * @brief  Loads total free time in week and free time left of week into given arrays
  * @note
- * @param  secs_free: Seconds left of week
- * @param  secs_non_events: Seconds left of non_events of week
- * @param  cal: Current calender
+ * @param  secs_free: Array representing free senconds every day. Accounts for current time in week
+ * @param  secs_non_events: Array representing free senconds every day
+ * @param  cal: Calender to analyze
  * @param  current_time: Current time
- * @param  in_week: Checks if in week is valid
+ * @param  in_week: If negative the cal is before the current week, positive after, 0 the same week
  * @retval None
  */
 static void load_free_time_arr(int *secs_free, int *secs_non_events, calendar *cal, time_t current_time, int in_week) {
@@ -98,10 +98,10 @@ static void load_free_time_arr(int *secs_free, int *secs_non_events, calendar *c
 }
 
 /**
- * @brief  Prints hours used of week
+ * @brief  Calculates hours used and left of week and prints visuals
  * @note
  * @param  current_time: Current time
- * @param  in_week: Checks if in week is valid
+ * @param  in_week: If negative the cal is before the current week, positive after, 0 the same week
  * @retval None
  */
 static void prn_hour_use(time_t current_time, int in_week) {
@@ -125,11 +125,11 @@ static void prn_hour_use(time_t current_time, int in_week) {
 }
 
 /**
- * @brief  Prints how many free hours used of week
+ * @brief  Calculates free hours used and left of week and prints visuals
  * @note
- * @param  cal: Current calender
+ * @param  cal: Calender to analyze
  * @param  current_time: Current time
- * @param  in_week: Checks if in week is valid
+ * @param  in_week: If negative the cal is before the current week, positive after, 0 the same week
  * @retval None
  */
 static void prn_free_hour_use(calendar *cal, time_t current_time, int in_week) {
@@ -157,10 +157,10 @@ static void prn_free_hour_use(calendar *cal, time_t current_time, int in_week) {
 }
 
 /**
- * @brief  Prints loading bar visually
+ * @brief  Prints loading bar
  * @note
- * @param  used: How many used hours
- * @param  total: How many hours in total
+ * @param  used: units used
+ * @param  total: total units
  * @retval None
  */
 static void prn_loading_bar(float used, float total) {
@@ -182,11 +182,11 @@ static void prn_loading_bar(float used, float total) {
 }
 
 /**
- * @brief  Prints the status of assignments in week
+ * @brief  Calculates average time to spend on assignment before deadline and print the info
  * @note
- * @param  cal: Current calender
+ * @param  cal: Calender to analyze
  * @param  current_time: Current time
- * @param  in_week: Checks if in week is valid
+ * @param  in_week: If negative the cal is before the current week, positive after, 0 the same week
  * @retval None
  */
 static void prn_assignments_status(calendar *cal, time_t current_time, int in_week) {

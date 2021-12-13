@@ -24,9 +24,9 @@ static int get_num_cals(FILE *file);
 /************************************************************************* Global functions  */
 
 /**
- * @brief  Makes file if none exist, user can choose to clear file.
+ * @brief  Makes calendar storage file if none exist, ability to clear file existing storage file
  * @note
- * @param  state: clears file if 0
+ * @param  state: File is cleared if 0
  * @retval None
  */
 void prepare_file(int state) {
@@ -43,9 +43,9 @@ void prepare_file(int state) {
 }
 
 /**
- * @brief  looks in file and returns stored cal if found else blank cal.
- * @note  cal_time as ID
- * @param  cal_time: monday 12am
+ * @brief  Looks in storage file and returns stored cal if found else blank cal
+ * @note
+ * @param  cal_time: Monday 12am in week, acts as id
  * @retval calendar
  */
 calendar get_cal(time_t cal_time) {
@@ -68,9 +68,9 @@ calendar get_cal(time_t cal_time) {
 }
 
 /**
- * @brief  looks through stored files, if cal found overwrites with invalid cal.
- * @note   cal_time as ID
- * @param  cal_time: monday 12 am
+ * @brief  Looks through stored calendars, if cal found it is overwriten with invalid cal
+ * @note
+ * @param  cal_time: Monday 12am in week, acts as id
  * @retval None
  */
 void delete_cal(time_t cal_time) {
@@ -87,9 +87,9 @@ void delete_cal(time_t cal_time) {
 }
 
 /**
- * @brief  Overwrites seached day with an empty day
- * @note   day_time as index
- * @param  day_time: 12:00 am
+ * @brief  Gets appropiate calendar and overwrites given day with an empty day
+ * @note
+ * @param  day_time: 12:00 am on day, acts as id
  * @retval None
  */
 void clear_day(time_t day_time) {
@@ -101,11 +101,11 @@ void clear_day(time_t day_time) {
 }
 
 /**
- * @brief  fetches cal and adds event if possible
+ * @brief  Gets appropiate calendar and adds event if possible
  * @note
- * @param  *title: points to the title/name of event
- * @param  start_time: holds start time from input
- * @param  end_time:  holds end time from input
+ * @param  *title: Title/name of event
+ * @param  start_time: Start time of event, acts as id
+ * @param  end_time: End time of event
  * @retval None
  */
 void add_event(char *title, time_t start_time, time_t end_time) {
@@ -156,9 +156,9 @@ void add_event(char *title, time_t start_time, time_t end_time) {
 }
 
 /**
- * @brief  fetches cal and make wanted event invalid if possible/found
+ * @brief  Gets appropiate calendar and overwrites given event with an invalid event
  * @note
- * @param  start_time: holds start time from input
+ * @param  start_time: Start time of event, acts as id
  * @retval None
  */
 void delete_event(time_t start_time) {
@@ -183,12 +183,12 @@ void delete_event(time_t start_time) {
 }
 
 /**
- * @brief  fetches cal and add assignment if possible
+ * @brief  Gets appropiate calendar and assignment
  * @note
- * @param  *title: points to the assignment title
- * @param  deadline: holds the deadline from input
- * @param  expected_time: holds the expected time from input
- * @param  elapsed_time: holds the time used on assignment
+ * @param  *title: Title/name of assignment
+ * @param  deadline: Deadline time of assignment, acts as id
+ * @param  expected_time: Expected hours to be used on assignment
+ * @param  elapsed_time: Hour currently used in assignment
  * @retval None
  */
 void add_assignemnt(char *title, time_t deadline, float expected_time, float elapsed_time) {
@@ -214,9 +214,9 @@ void add_assignemnt(char *title, time_t deadline, float expected_time, float ela
 }
 
 /**
- * @brief fetches cal and make wanted assignment invalid if possible/found
+ * @brief Gets appropiate calendar and overwrites given assignment with an invalid assignment
  * @note
- * @param  deadline: holds the deadline the deadline from input
+ * @param  deadline: Deadline time of assignment, acts as id
  * @retval None
  */
 void delete_assignment(time_t deadline) {
@@ -243,9 +243,9 @@ void delete_assignment(time_t deadline) {
 /************************************************************************* Static functions */
 
 /**
- * @brief  Checks for (content event/assignment) in fetched cal
+ * @brief  Returns true if given calendar has any events or assignments
  * @note
- * @param  *cal: points to a specific cal
+ * @param  *cal: Calendar to check for content
  * @retval int (bool)
  */
 static int check_cal_has_content(calendar *cal) {
@@ -267,9 +267,9 @@ static int check_cal_has_content(calendar *cal) {
 }
 
 /**
- * @brief  If given cal is valid, save cal at free index
+ * @brief  Saves given calendar in storage at first possition pissble if valid
  * @note
- * @param  *cal: points to a specific cal
+ * @param  *cal: Calendar to be saved
  * @retval None
  */
 static void save_cal(calendar *cal) {
@@ -290,10 +290,10 @@ static void save_cal(calendar *cal) {
 }
 
 /**
- * @brief  returns index of cal in file, returns -1 if not found.
- * @note   cal_time as ID
- * @param  cal_time: monday 12 am
- * @param  *file: points to the cal storage file
+ * @brief  Returns index of calendar in storage file, returns -1 if not found
+ * @note
+ * @param  cal_time: Monday 12am in week, acts as id
+ * @param  *file: Points to the calendar storage file
  * @retval  int
  */
 static int get_cal_index(time_t cal_time, FILE *file) {
@@ -315,9 +315,9 @@ static int get_cal_index(time_t cal_time, FILE *file) {
 }
 
 /**
- * @brief  returns index with invalid cal or retun idex bottom of file
+ * @brief  returns index of first possible location to save calendar in storage file
  * @note
- * @param  *file: points to the cal storage file
+ * @param  *file: Points to the calendar storage file
  * @retval int
  */
 static int get_free_index(FILE *file) {
@@ -339,10 +339,10 @@ static int get_free_index(FILE *file) {
 }
 
 /**
- * @brief  loads empty/nonvalid cal
- * @note    cal_time as ID
- * @param  *cal: points to a specific cal
- * @param  cal_time: monday 12 am
+ * @brief  Loads empty/nonvalid calendar
+ * @note
+ * @param  *cal: Calendar to be loaded
+ * @param  cal_time: Monday 12am in week, acts as id
  * @retval None
  */
 static void load_fresh_cal(calendar *cal, time_t cal_time) {
@@ -357,10 +357,10 @@ static void load_fresh_cal(calendar *cal, time_t cal_time) {
 }
 
 /**
- * @brief  loads empty/nonvalid day with no title
- * @note  day_time as ID
- * @param  *day: point to the specific day
- * @param  day_time: 12 am
+ * @brief  Loads empty/nonvalid day
+ * @note
+ * @param  *day: Day to be loaded
+ * @param  day_time: 12:00 am on day, acts as id
  * @retval None
  */
 static void load_fresh_day(day *day, time_t day_time) {
@@ -382,9 +382,9 @@ static void load_fresh_day(day *day, time_t day_time) {
 }
 
 /**
- * @brief return number of cals found in file (valid & nonvalid)
- * @note  calc for return val (bytes file/bytes cal)
- * @param  *file: points to the cal storage file
+ * @brief Returns number of calendars found in storage file (valid & nonvalid)
+ * @note
+ * @param  *file: Points to the calendar storage file
  * @retval int
  */
 static int get_num_cals(FILE *file) {
@@ -395,8 +395,8 @@ static int get_num_cals(FILE *file) {
 /************************************************************************* Debug functions */
 
 /**
- * @brief prints content in storage file
- * @note only for debug purposes
+ * @brief Prints small overview if content in storage file
+ * @note Only for debug purposes
  * @retval None
  */
 void prn_file_content(void) {

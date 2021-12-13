@@ -10,7 +10,7 @@ regex_t regexs[num_input_rules];
 /************************************************************************* Global functions  */
 
 /**
- * @brief  setup regex for input validation through expressions according to input rules
+ * @brief  Precompiles defined regexs
  * @note
  * @retval None
  */
@@ -41,10 +41,10 @@ void setup_regex() {
 }
 
 /**
- * @brief   Validates if the input matches any of the definded rules, and returns the matched rule.
+ * @brief   Validates if the input matches any of the definded rules, and returns the index of the matched rule
  * @note
- * @param  *in: points to the user input
- * @retval int (matched_rule)
+ * @param  *in: User input
+ * @retval int (index of matched_rule)
  */
 int checkregex(char *in) {
     int matched, matched_rule;

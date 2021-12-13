@@ -6,49 +6,62 @@
 
 #include "../headers/datatypes.h"
 #include "../headers/file_handler.h"
+#include "../headers/time_handler.h"
+
+/************************************************************************* Symbolic constants */
+
+#define ICS_OUTPUT_PATH "./ics_output.ics"
+#define ICS_INPUT_DIR_PATH "./Importfiles"
 
 /************************************************************************* Static function prototypes */
 
-static char *get_dtstart_dtend(event, int);
-static int get_uid();
-static void create_event(FILE *, calendar, int, int);
-static void create_assignment(FILE *, calendar, int, int);
-static char *get_deadline(assignment);
+static void event_to_ics(FILE *ics_file, event *event);
+static void assignment_to_ics(FILE *ics_file, assignment *assignment);
+static int get_uid(void);
 
 /************************************************************************* Global functions  */
 
+/**
+ * @brief  Outputs a ics file with data loaded from given calendar
+ * @note
+ * @param  *cal: Calendar to be converted to ics
+ * @retval None
+ */
 void convert_cal_to_ics(calendar *cal) {
-    FILE *cal_file = fopen("./ics_output.ics", "w");
-    fprintf(cal_file,
+    FILE *ics_file = fopen(ICS_OUTPUT_PATH, "w");
+    fprintf(ics_file,
             "BEGIN:VCALENDAR\n"
             "VERSION:2.0\n"
             "PRODID:wtf\n");
 
     int day;
-
     for (day = 0; day < DAYS_IN_WEEK; day++) {
-        int hour;
-        for (hour = 0; hour < CONTENT_IN_DAY; hour++) {
-            if (cal->days[day].events[hour].valid == 1) {
-                create_event(cal_file, *cal, day, hour);
+        int i;
+        for (i = 0; i < CONTENT_IN_DAY; i++) {
+            if (cal->days[day].events[i].valid == 1) {
+                event_to_ics(ics_file, &cal->days[day].events[i]);
             }
 
-            if (cal->days[day].assignments[hour].valid == 1) {
-                create_assignment(cal_file, *cal, day, hour);
+            if (cal->days[day].assignments[i].valid == 1) {
+                assignment_to_ics(ics_file, &cal->days[day].assignments[i]);
             }
         }
     }
 
-    fprintf(cal_file, "END:VCALENDAR\n");
-    fclose(cal_file);
-    /*cal.days[0].events[0].*/
+    fprintf(ics_file, "END:VCALENDAR\n");
+    fclose(ics_file);
 }
 
-void import_ics(calendar cal) {
+/**
+ * @brief  Reads ics files and saves data into the calendar storage file
+ * @note
+ * @retval None
+ */
+void import_ics(void) {
     DIR *folder;
     struct dirent *dir;
     char *name;
-    folder = opendir("./Importfiles");
+    folder = opendir(ICS_INPUT_DIR_PATH);
 
     while ((dir = readdir(folder)) != NULL) {
         printf("name %s\n", dir->d_name);
@@ -165,79 +178,52 @@ void import_ics(calendar cal) {
 
 /************************************************************************* Static functions */
 
-static void create_event(FILE *cal_file, calendar cal, int day, int hour) {
-    char *dtstart = get_dtstart_dtend(cal.days[day].events[hour], 1);
+/**
+ * @brief  Converts calendar event to ics and writes it to ics file
+ * @note
+ * @param  *ics_file: Points to ics output file
+ * @param  *event: Event to be converted
+ * @retval None
+ */
+static void event_to_ics(FILE *ics_file, event *event) {
+    char dtstart[48];
+    char dtend[48];
+    load_epoch_to_utc(dtstart, "DTSTART;TZID=Europe/Copenhagen:", event->start_time);
+    load_epoch_to_utc(dtstart, "DTEND;TZID=Europe/Copenhagen:", event->end_time);
 
-    char *dtend = get_dtstart_dtend(cal.days[day].events[hour], 0);
-
-    fprintf(cal_file,
-            "BEGIN:VEVENT\n"
-            "UID:%d\n",
-            get_uid());
-
-    fprintf(cal_file, "%s\n",
-            dtstart);
-    free(dtstart);
-
-    fprintf(cal_file, "%s\n",
-            dtend);
-    free(dtend);
-
-    fprintf(cal_file, "SUMMARY:%s\n", cal.days[day].events[hour].title);
-
-    fprintf(cal_file, "END:VEVENT\n");
+    fprintf(ics_file, "BEGIN:VEVENT\n");
+    fprintf(ics_file, "UID:%d\n", get_uid());
+    fprintf(ics_file, "%s\n", dtstart);
+    fprintf(ics_file, "%s\n", dtend);
+    fprintf(ics_file, "SUMMARY:%s\n", event->title);
+    fprintf(ics_file, "END:VEVENT\n");
 }
 
-static void create_assignment(FILE *cal_file, calendar cal, int day, int hour) {
-    char *dtstart = get_deadline(cal.days[day].assignments[hour]);
+/**
+ * @brief  Converts calendar assignment to ics and writes it to ics file
+ * @note
+ * @param  *ics_file: Points to ics output file
+ * @param  *event: Assignment to be converted
+ * @retval None
+ */
+static void assignment_to_ics(FILE *ics_file, assignment *assignment) {
+    char dtstart_dtend[48];
+    load_epoch_to_utc(dtstart_dtend, "TZID=Europe/Copenhagen:", assignment->deadline);
 
-    char *dtend = get_deadline(cal.days[day].assignments[hour]);
-
-    fprintf(cal_file,
-            "BEGIN:VEVENT\n"
-            "UID:%d\n",
-            get_uid());
-
-    fprintf(cal_file, "DTSTART;%s\n",
-            dtstart);
-    free(dtstart);
-
-    fprintf(cal_file, "DTEND;%s\n",
-            dtend);
-    free(dtend);
-
-    fprintf(cal_file, "SUMMARY:%s\n", cal.days[day].assignments[hour].title);
-
-    fprintf(cal_file, "END:VEVENT\n");
+    fprintf(ics_file, "BEGIN:VEVENT\n");
+    fprintf(ics_file, "UID:%d\n", get_uid());
+    fprintf(ics_file, "DTSTART;%s\n", dtstart_dtend);
+    fprintf(ics_file, "DTEND;%s\n", dtstart_dtend);
+    fprintf(ics_file, "SUMMARY:%s\n", assignment->title);
+    fprintf(ics_file, "END:VEVENT\n");
 }
 
-static char *get_dtstart_dtend(event event, int isStart) {
-    char *final = (char *)malloc(48 * sizeof(char));
-
-    if (isStart) {
-        time_t start_time = event.start_time;
-        struct tm *start = localtime(&start_time);
-        sprintf(final, "DTSTART;TZID=Europe/Copenhagen:%02d%02d%02dT%02d%02d%02d", start->tm_year + 1900, start->tm_mon + 1, start->tm_mday, start->tm_hour, start->tm_min, start->tm_sec);
-    } else {
-        time_t end_time = event.end_time;
-        struct tm *end = localtime(&end_time);
-        sprintf(final, "DTEND;TZID=Europe/Copenhagen:%02d%02d%02dT%02d%02d%02d", end->tm_year + 1900, end->tm_mon + 1, end->tm_mday, end->tm_hour, end->tm_min, end->tm_sec);
-    }
-
-    return final;
-}
-
-static char *get_deadline(assignment assignment) {
-    char *final = (char *)malloc(48 * sizeof(char));
-    time_t deadline_time = assignment.deadline;
-    struct tm *time = localtime(&deadline_time);
-
-    sprintf(final, "TZID=Europe/Copenhagen:%02d%02d%02dT%02d%02d%02d", time->tm_year + 1900, time->tm_mon + 1, time->tm_mday, time->tm_hour, time->tm_min, time->tm_sec);
-
-    return final;
-}
-
-static int get_uid() {
+/**
+ * @brief  Generates pseudo random id for ics event
+ * @note
+ * @retval int
+ */
+static int get_uid(void) {
     int r = rand() % 1000000000;
     return r;
 }

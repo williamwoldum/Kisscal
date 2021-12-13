@@ -29,7 +29,7 @@ static void prn_assignment(char* title, char* loc);
 /**
  * @brief Prints calender complete with inputted events and assignments
  * @note
- * @param  current_cal: Current calender
+ * @param  current_cal: Calendar to be shown
  * @retval None
  */
 void prn_cal(calendar* current_cal) {
@@ -142,14 +142,16 @@ void prn_cal(calendar* current_cal) {
     }
 }
 
+/************************************************************************* Static functions */
+
 /**
- * @brief Checks wether to insert line above or under inputted start time and end time of event
+ * @brief Determines which event outline to use and loads it into calendar pixel array
  * @note Only inserts line at :30 or :00
  * @param  title: Title of event
- * @param  corner: Corners in cal
- * @param  hour: Hour of input
- * @param  mins: Minutes of input
- * @param  title_enabled: Checks if event is valid
+ * @param  corner: Pointer to pixel array day column top left corner
+ * @param  hour: Hour of outline
+ * @param  mins: Minutes of outline
+ * @param  title_enabled: True if event is longer then two hours and has room for title
  * @retval None
  */
 static void prn_event_line(char* title, char* corner, int hour, int mins, int title_enabled) {
@@ -180,10 +182,10 @@ static void prn_event_line(char* title, char* corner, int hour, int mins, int ti
 }
 
 /**
- * @brief Prints assignment in current cal
+ * @brief Loads assignments into calendar pixel array
  * @note
- * @param title: Current title
- * @param loc: Location of calender
+ * @param title: Title of assignment
+ * @param loc: Pointer to loading position in calendar pixel array
  * @retval None
  */
 static void prn_assignment(char* title, char* loc) {
@@ -200,10 +202,10 @@ static void prn_assignment(char* title, char* loc) {
 }
 
 /**
- * @brief Function to load array into cal
- * @note Makes sure name isn't longer than cal column width
- * @param location: Position of string
- * @param str: Length of string
+ * @brief Loads/overwrites string into calendar pixel array
+ * @note
+ * @param location: Pointer postion in calendar pixel array
+ * @param str: String to be loaded
  * @retval None
  */
 
