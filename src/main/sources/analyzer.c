@@ -8,9 +8,6 @@
 #include "../headers/file_handler.h"
 #include "../headers/time_handler.h"
 
-#define HOURS_IN_WEEK HOURS_IN_DAY *DAYS_IN_WEEK
-#define SECS_IN_DAY HOURS_IN_DAY *MINS_IN_HOUR *SECS_IN_MIN
-
 static void load_free_time_arr(int *secs_free, int *secs_non_events, calendar *cal, time_t current_time, int in_week);
 static void prn_hour_use(time_t current_time, int in_week);
 static void prn_free_hour_use(calendar *cal, time_t current_time, int in_week);

@@ -1,7 +1,11 @@
 #ifndef REGEX_HANDLER_H
 #define REGEX_HANDLER_H
 
+/************************************************************/
+
 #include <regex.h>
+
+/************************************************************/
 
 enum rules { invalid_input_rule = -1,
              open_week_rule,
@@ -21,7 +25,11 @@ enum rules { invalid_input_rule = -1,
              close_rule,
              num_input_rules };
 
+/************************************************************/
+
 void setup_regex();
 int checkregex(char *in);
+
+/************************************************************/
 
 #endif
