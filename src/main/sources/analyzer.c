@@ -12,8 +12,8 @@
 
 static void load_free_time_arr(int *secs_free, int *secs_non_events, calendar *cal, time_t current_time, int in_week);
 static void prn_hour_use(time_t current_time, int in_week);
-static void prn_free_hour_use(calendar *cal, time_t current_time, int in_week);
 static void prn_loading_bar(float used, float total);
+static void prn_free_hour_use(calendar *cal, time_t current_time, int in_week);
 static void prn_assignments_status(calendar *cal, time_t current_time, int in_week);
 
 /************************************************************************* Global functions  */
@@ -125,6 +125,31 @@ static void prn_hour_use(time_t current_time, int in_week) {
 }
 
 /**
+ * @brief  Prints loading bar
+ * @note
+ * @param  used: units used
+ * @param  total: total units
+ * @retval None
+ */
+static void prn_loading_bar(float used, float total) {
+    int num_tiles = 50;
+    float ratio = (float)used / total;
+    int used_tiles = (float)num_tiles * ratio;
+
+    printf("[");
+    int i;
+    for (i = 0; i < num_tiles; i++) {
+        if (i < used_tiles) {
+            printf("#");
+        } else {
+            printf("-");
+        }
+    }
+
+    printf("] | %.0f:%.0f\n", ratio * 100, 100 - ratio * 100);
+}
+
+/**
  * @brief  Calculates free hours used and left of week and prints visuals
  * @note
  * @param  cal: Calender to analyze
@@ -154,31 +179,6 @@ static void prn_free_hour_use(calendar *cal, time_t current_time, int in_week) {
         float sleep_time_left = (DAYS_IN_WEEK - (get_t_data(current_time, t_dow) + 1)) * 8 + 4;
         printf("Assuming you sleep 8 hours a night, you really have %.1f free hour(s) left\n", left - sleep_time_left);
     }
-}
-
-/**
- * @brief  Prints loading bar
- * @note
- * @param  used: units used
- * @param  total: total units
- * @retval None
- */
-static void prn_loading_bar(float used, float total) {
-    int num_tiles = 50;
-    float ratio = (float)used / total;
-    int used_tiles = (float)num_tiles * ratio;
-
-    printf("[");
-    int i;
-    for (i = 0; i < num_tiles; i++) {
-        if (i < used_tiles) {
-            printf("#");
-        } else {
-            printf("-");
-        }
-    }
-
-    printf("] | %.0f:%.0f\n", ratio * 100, 100 - ratio * 100);
 }
 
 /**

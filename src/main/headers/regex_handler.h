@@ -27,7 +27,7 @@ enum rules { invalid_input_rule = -1,
 
 /************************************************************/
 
-void setup_regex();
+void setup_regex(void);
 int checkregex(char *in);
 
 /************************************************************/

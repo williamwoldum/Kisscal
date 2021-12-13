@@ -14,7 +14,7 @@ regex_t regexs[num_input_rules];
  * @note
  * @retval None
  */
-void setup_regex() {
+void setup_regex(void) {
     const char *expressions[num_input_rules] = {
         "^open week: [0-9]{1,2} [0-9]{4}\n",
         "^clear week\n",

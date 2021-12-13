@@ -20,9 +20,9 @@
 
 /************************************************************************* Static function prototypes */
 
-static void prn_help(void);
 static int get_dow_from_str(char *str);
 static void prn_day_content(time_t day_time);
+static void prn_help(void);
 static int cmp_events(const void *a_, const void *b_);
 static int cmp_assignments(const void *a_, const void *b_);
 
@@ -209,41 +209,6 @@ void sort_content(day *day) {
 /************************************************************************* Static functions */
 
 /**
- * @brief Prints help guide for user
- * @note
- * @retval None
- */
-static void prn_help(void) {
-    printf(
-        "\n"
-        "-----------------------------------------------------------------------------------------------------------\n"
-        "\n"
-        "open week: <week> <year>\n"
-        "clear week\n\n"
-
-        "next week\n"
-        "previous week\n\n"
-
-        "clear: <day>\n\n"
-
-        "add event: '<event name>' <day> <time start> <time end>\n"
-        "remove event: <day> <time start>\n\n"
-
-        "add assignment: '<assingment name>' <day> <deadline> <expected time> <used time>\n"
-        "remove assignment: <day> <deadline>\n\n"
-
-        "print: <day>\n\n"
-
-        "import ICS: <path>\n"
-        "export ICS\n\n"
-
-        "analyze\n\n"
-
-        "close\n"
-        "\n"
-        "-----------------------------------------------------------------------------------------------------------\n");
-}
-/**
  * @brief  Returns day index of the week from day string
  * @note  Case insensitive
  * @param  *str: String to be considered
@@ -317,6 +282,42 @@ static void prn_day_content(time_t day_time) {
         }
     }
     printf("\n-----------------------------------------------------------------------------------------------------------\n");
+}
+
+/**
+ * @brief Prints help guide for user
+ * @note
+ * @retval None
+ */
+static void prn_help(void) {
+    printf(
+        "\n"
+        "-----------------------------------------------------------------------------------------------------------\n"
+        "\n"
+        "open week: <week> <year>\n"
+        "clear week\n\n"
+
+        "next week\n"
+        "previous week\n\n"
+
+        "clear: <day>\n\n"
+
+        "add event: '<event name>' <day> <time start> <time end>\n"
+        "remove event: <day> <time start>\n\n"
+
+        "add assignment: '<assingment name>' <day> <deadline> <expected time> <used time>\n"
+        "remove assignment: <day> <deadline>\n\n"
+
+        "print: <day>\n\n"
+
+        "import ICS: <path>\n"
+        "export ICS\n\n"
+
+        "analyze\n\n"
+
+        "close\n"
+        "\n"
+        "-----------------------------------------------------------------------------------------------------------\n");
 }
 
 /**

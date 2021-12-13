@@ -13,13 +13,13 @@
 
 /************************************************************************* Static function prototypes */
 
-static int check_cal_has_content(calendar *cal);
-static void save_cal(calendar *cal);
 static int get_cal_index(time_t cal_time, FILE *file);
-static int get_free_index(FILE *file);
 static void load_fresh_cal(calendar *cal, time_t cal_time);
 static void load_fresh_day(day *day, time_t day_time);
+static void save_cal(calendar *cal);
+static int check_cal_has_content(calendar *cal);
 static int get_num_cals(FILE *file);
+static int get_free_index(FILE *file);
 
 /************************************************************************* Global functions  */
 
@@ -175,7 +175,6 @@ void delete_event(time_t start_time) {
     }
 
     if (!check_cal_has_content(&cal)) {
-        ;
         delete_cal(cal.time);
     } else {
         save_cal(&cal);
@@ -233,7 +232,6 @@ void delete_assignment(time_t deadline) {
     }
 
     if (!check_cal_has_content(&cal)) {
-        ;
         delete_cal(cal.time);
     } else {
         save_cal(&cal);
@@ -241,53 +239,6 @@ void delete_assignment(time_t deadline) {
 }
 
 /************************************************************************* Static functions */
-
-/**
- * @brief  Returns true if given calendar has any events or assignments
- * @note
- * @param  *cal: Calendar to check for content
- * @retval int (bool)
- */
-static int check_cal_has_content(calendar *cal) {
-    int day_index = 0, content_index = 0, found = 0;
-
-    while (!found && day_index < DAYS_IN_WEEK) {
-        while (!found && content_index < CONTENT_IN_DAY) {
-            if (cal->days[day_index].events[content_index].valid) {
-                found = 1;
-            } else if (cal->days[day_index].assignments[content_index].valid) {
-                found = 1;
-            }
-            content_index++;
-        }
-        day_index++;
-        content_index = 0;
-    }
-    return found;
-}
-
-/**
- * @brief  Saves given calendar in storage at first possition pissble if valid
- * @note
- * @param  *cal: Calendar to be saved
- * @retval None
- */
-static void save_cal(calendar *cal) {
-    if (cal->valid) {
-        FILE *file = fopen(STORAGE_PATH, "rb+");
-
-        int index = get_cal_index(cal->time, file);
-
-        if (index == -1) {
-            index = get_free_index(file);
-        }
-
-        fseek(file, index * sizeof(calendar), SEEK_SET);
-        fwrite(cal, sizeof(calendar), 1, file);
-
-        fclose(file);
-    }
-}
 
 /**
  * @brief  Returns index of calendar in storage file, returns -1 if not found
@@ -312,30 +263,6 @@ static int get_cal_index(time_t cal_time, FILE *file) {
     }
 
     return index == length ? -1 : index;
-}
-
-/**
- * @brief  returns index of first possible location to save calendar in storage file
- * @note
- * @param  *file: Points to the calendar storage file
- * @retval int
- */
-static int get_free_index(FILE *file) {
-    int length = get_num_cals(file);
-
-    fseek(file, 0, SEEK_SET);
-    calendar cal;
-    int index = 0, found = 0;
-    while (!found && index < length) {
-        fread(&cal, sizeof(calendar), 1, file);
-        if (!cal.valid) {
-            found = 1;
-        } else {
-            index++;
-        }
-    }
-
-    return index;
 }
 
 /**
@@ -382,6 +309,53 @@ static void load_fresh_day(day *day, time_t day_time) {
 }
 
 /**
+ * @brief  Saves given calendar in storage at first possition pissble if valid
+ * @note
+ * @param  *cal: Calendar to be saved
+ * @retval None
+ */
+static void save_cal(calendar *cal) {
+    if (cal->valid) {
+        FILE *file = fopen(STORAGE_PATH, "rb+");
+
+        int index = get_cal_index(cal->time, file);
+
+        if (index == -1) {
+            index = get_free_index(file);
+        }
+
+        fseek(file, index * sizeof(calendar), SEEK_SET);
+        fwrite(cal, sizeof(calendar), 1, file);
+
+        fclose(file);
+    }
+}
+
+/**
+ * @brief  Returns true if given calendar has any events or assignments
+ * @note
+ * @param  *cal: Calendar to check for content
+ * @retval int (bool)
+ */
+static int check_cal_has_content(calendar *cal) {
+    int day_index = 0, content_index = 0, found = 0;
+
+    while (!found && day_index < DAYS_IN_WEEK) {
+        while (!found && content_index < CONTENT_IN_DAY) {
+            if (cal->days[day_index].events[content_index].valid) {
+                found = 1;
+            } else if (cal->days[day_index].assignments[content_index].valid) {
+                found = 1;
+            }
+            content_index++;
+        }
+        day_index++;
+        content_index = 0;
+    }
+    return found;
+}
+
+/**
  * @brief Returns number of calendars found in storage file (valid & nonvalid)
  * @note
  * @param  *file: Points to the calendar storage file
@@ -390,6 +364,30 @@ static void load_fresh_day(day *day, time_t day_time) {
 static int get_num_cals(FILE *file) {
     fseek(file, 0, SEEK_END);
     return ftell(file) / sizeof(calendar);
+}
+
+/**
+ * @brief  returns index of first possible location to save calendar in storage file
+ * @note
+ * @param  *file: Points to the calendar storage file
+ * @retval int
+ */
+static int get_free_index(FILE *file) {
+    int length = get_num_cals(file);
+
+    fseek(file, 0, SEEK_SET);
+    calendar cal;
+    int index = 0, found = 0;
+    while (!found && index < length) {
+        fread(&cal, sizeof(calendar), 1, file);
+        if (!cal.valid) {
+            found = 1;
+        } else {
+            index++;
+        }
+    }
+
+    return index;
 }
 
 /************************************************************************* Debug functions */

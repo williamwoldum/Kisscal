@@ -145,6 +145,21 @@ void prn_cal(calendar* current_cal) {
 /************************************************************************* Static functions */
 
 /**
+ * @brief Loads/overwrites string into calendar pixel array
+ * @note
+ * @param location: Pointer postion in calendar pixel array
+ * @param str: String to be loaded
+ * @retval None
+ */
+
+static void load_into_arr(char* location, char* str) {
+    int i;
+    for (i = 0; i < strlen(str); i++) {
+        location[i] = str[i];
+    }
+}
+
+/**
  * @brief Determines which event outline to use and loads it into calendar pixel array
  * @note Only inserts line at :30 or :00
  * @param  title: Title of event
@@ -198,20 +213,5 @@ static void prn_assignment(char* title, char* loc) {
     } else {
         sprintf(title_buf, "{%s}", title);
         load_into_arr(loc + CAL_W, title_buf);
-    }
-}
-
-/**
- * @brief Loads/overwrites string into calendar pixel array
- * @note
- * @param location: Pointer postion in calendar pixel array
- * @param str: String to be loaded
- * @retval None
- */
-
-static void load_into_arr(char* location, char* str) {
-    int i;
-    for (i = 0; i < strlen(str); i++) {
-        location[i] = str[i];
     }
 }
