@@ -8,6 +8,11 @@
 #include "../headers/regex_handler.h"
 #include "../headers/time_handler.h"
 
+/**
+ * @brief  Run the code from all src
+ * @note   NONE
+ * @retval int
+ */
 int main() {
     srand(time(NULL));
 

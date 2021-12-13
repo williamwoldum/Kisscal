@@ -17,6 +17,12 @@ static void prn_free_hour_use(calendar *cal, time_t current_time, int in_week);
 static void prn_loading_bar(float used, float total);
 static void prn_assignments_status(calendar *cal, time_t current_time, int in_week);
 
+/**
+ * @brief
+ * @note
+ * @param  *cal:
+ * @retval None
+ */
 void analyze(calendar *cal) {
     time_t current_time = time(NULL);
 
