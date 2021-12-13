@@ -3,7 +3,12 @@
 #include <regex.h>
 #include <stdio.h>
 
+/************************************************************************* Global variables  */
+
 regex_t regexs[num_input_rules];
+
+/************************************************************************* Global functions  */
+
 /**
  * @brief  setup regex for input validation through expressions according to input rules
  * @note
@@ -34,6 +39,7 @@ void setup_regex() {
         }
     }
 }
+
 /**
  * @brief   Validates if the input matches any of the definded rules, and returns the matched rule.
  * @note

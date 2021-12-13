@@ -6,8 +6,12 @@
 
 #include "../headers/datatypes.h"
 
+/************************************************************************* Static function prototypes */
+
 static int get_year(struct tm *tm);
 static int get_week(struct tm *tm);
+
+/************************************************************************* Global functions  */
 
 /**
  * @brief  Returns given value from time_t
@@ -70,6 +74,7 @@ time_t get_day_time_from_cal_time(int dow, time_t cal_time) {
     tm->tm_mday += dow - DaysSinceMonday;
     return mktime(tm);
 }
+
 /**
  * @brief  Gets the calendar time from day time.
  * @note   returns day_time.
@@ -156,6 +161,8 @@ int calc_in_week(time_t cal_time, time_t current_time) {
     time_t current_cal_time = get_cal_time_from_day_time(current_time);
     return cal_time - current_cal_time;
 }
+
+/************************************************************************* Static functions */
 
 /**
  * @brief  returns true year of given time.

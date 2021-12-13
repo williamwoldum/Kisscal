@@ -8,11 +8,15 @@
 #include "../headers/file_handler.h"
 #include "../headers/time_handler.h"
 
+/************************************************************************* Static function prototypes */
+
 static void load_free_time_arr(int *secs_free, int *secs_non_events, calendar *cal, time_t current_time, int in_week);
 static void prn_hour_use(time_t current_time, int in_week);
 static void prn_free_hour_use(calendar *cal, time_t current_time, int in_week);
 static void prn_loading_bar(float used, float total);
 static void prn_assignments_status(calendar *cal, time_t current_time, int in_week);
+
+/************************************************************************* Global functions  */
 
 /**
  * @brief Prints visual of analyze
@@ -42,6 +46,8 @@ void analyze(calendar *cal) {
 
     printf("\n-----------------------------------------------------------------------------------------------------------\n");
 }
+
+/************************************************************************* Static functions */
 
 /**
  * @brief  Calculates free time left of week

@@ -12,15 +12,21 @@
 #include "../headers/regex_handler.h"
 #include "../headers/time_handler.h"
 
+/************************************************************************* Symbolic constants */
+
 #define INPUT_BUFF_SIZE 100
 #define TIME_LEN 6
 #define DAY_LEN 10
+
+/************************************************************************* Static function prototypes */
 
 static void prn_help(void);
 static int get_dow_from_str(char *str);
 static void prn_day_content(time_t day_time);
 static int cmp_events(const void *a_, const void *b_);
 static int cmp_assignments(const void *a_, const void *b_);
+
+/************************************************************************* Global functions  */
 /**
  * @brief controle program funktions through user input, until close_rule is executed  (run = 0)
  * @note  in switch - default print error
@@ -188,6 +194,20 @@ int prompt_user_input(calendar *current_cal) {
 
     return run;
 }
+
+/**
+ * @brief Sort the content (events and assignments) from specific day
+ * @note
+ * @param  *day: points to specific day
+ * @retval None
+ */
+void sort_content(day *day) {
+    qsort(day->events, CONTENT_IN_DAY, sizeof(event), cmp_events);
+    qsort(day->assignments, CONTENT_IN_DAY, sizeof(assignment), cmp_assignments);
+}
+
+/************************************************************************* Static functions */
+
 /**
  * @brief intuitively prints the help funktions for the user.
  * @note
@@ -297,16 +317,7 @@ static void prn_day_content(time_t day_time) {
     }
     printf("\n-----------------------------------------------------------------------------------------------------------\n");
 }
-/**
- * @brief Sort the content (events and assignments) from specific day
- * @note
- * @param  *day: points to specific day
- * @retval None
- */
-void sort_content(day *day) {
-    qsort(day->events, CONTENT_IN_DAY, sizeof(event), cmp_events);
-    qsort(day->assignments, CONTENT_IN_DAY, sizeof(assignment), cmp_assignments);
-}
+
 /**
  * @brief compare events by start_time
  * @note

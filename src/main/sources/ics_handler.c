@@ -7,20 +7,22 @@
 #include "../headers/datatypes.h"
 #include "../headers/file_handler.h"
 
+/************************************************************************* Static function prototypes */
+
 static char *get_dtstart_dtend(event, int);
 static int get_uid();
 static void create_event(FILE *, calendar, int, int);
 static void create_assignment(FILE *, calendar, int, int);
 static char *get_deadline(assignment);
 
+/************************************************************************* Global functions  */
+
 void convert_cal_to_ics(calendar *cal) {
     FILE *cal_file = fopen("./ics_output.ics", "w");
     fprintf(cal_file,
             "BEGIN:VCALENDAR\n"
             "VERSION:2.0\n"
-            "PRODID:wtf\n"
-
-    );
+            "PRODID:wtf\n");
 
     int day;
 
@@ -40,83 +42,6 @@ void convert_cal_to_ics(calendar *cal) {
     fprintf(cal_file, "END:VCALENDAR\n");
     fclose(cal_file);
     /*cal.days[0].events[0].*/
-}
-
-static void create_event(FILE *cal_file, calendar cal, int day, int hour) {
-    char *dtstart = get_dtstart_dtend(cal.days[day].events[hour], 1);
-
-    char *dtend = get_dtstart_dtend(cal.days[day].events[hour], 0);
-
-    fprintf(cal_file,
-            "BEGIN:VEVENT\n"
-            "UID:%d\n",
-            get_uid());
-
-    fprintf(cal_file, "%s\n",
-            dtstart);
-    free(dtstart);
-
-    fprintf(cal_file, "%s\n",
-            dtend);
-    free(dtend);
-
-    fprintf(cal_file, "SUMMARY:%s\n", cal.days[day].events[hour].title);
-
-    fprintf(cal_file, "END:VEVENT\n");
-}
-
-static void create_assignment(FILE *cal_file, calendar cal, int day, int hour) {
-    char *dtstart = get_deadline(cal.days[day].assignments[hour]);
-
-    char *dtend = get_deadline(cal.days[day].assignments[hour]);
-
-    fprintf(cal_file,
-            "BEGIN:VEVENT\n"
-            "UID:%d\n",
-            get_uid());
-
-    fprintf(cal_file, "DTSTART;%s\n",
-            dtstart);
-    free(dtstart);
-
-    fprintf(cal_file, "DTEND;%s\n",
-            dtend);
-    free(dtend);
-
-    fprintf(cal_file, "SUMMARY:%s\n", cal.days[day].assignments[hour].title);
-
-    fprintf(cal_file, "END:VEVENT\n");
-}
-
-static char *get_dtstart_dtend(event event, int isStart) {
-    char *final = (char *)malloc(48 * sizeof(char));
-
-    if (isStart) {
-        time_t start_time = event.start_time;
-        struct tm *start = localtime(&start_time);
-        sprintf(final, "DTSTART;TZID=Europe/Copenhagen:%02d%02d%02dT%02d%02d%02d", start->tm_year + 1900, start->tm_mon + 1, start->tm_mday, start->tm_hour, start->tm_min, start->tm_sec);
-    } else {
-        time_t end_time = event.end_time;
-        struct tm *end = localtime(&end_time);
-        sprintf(final, "DTEND;TZID=Europe/Copenhagen:%02d%02d%02dT%02d%02d%02d", end->tm_year + 1900, end->tm_mon + 1, end->tm_mday, end->tm_hour, end->tm_min, end->tm_sec);
-    }
-
-    return final;
-}
-
-static char *get_deadline(assignment assignment) {
-    char *final = (char *)malloc(48 * sizeof(char));
-    time_t deadline_time = assignment.deadline;
-    struct tm *time = localtime(&deadline_time);
-
-    sprintf(final, "TZID=Europe/Copenhagen:%02d%02d%02dT%02d%02d%02d", time->tm_year + 1900, time->tm_mon + 1, time->tm_mday, time->tm_hour, time->tm_min, time->tm_sec);
-
-    return final;
-}
-
-static int get_uid() {
-    int r = rand() % 1000000000;
-    return r;
 }
 
 void import_ics(calendar cal) {
@@ -236,4 +161,83 @@ void import_ics(calendar cal) {
             }
         }
     }
+}
+
+/************************************************************************* Static functions */
+
+static void create_event(FILE *cal_file, calendar cal, int day, int hour) {
+    char *dtstart = get_dtstart_dtend(cal.days[day].events[hour], 1);
+
+    char *dtend = get_dtstart_dtend(cal.days[day].events[hour], 0);
+
+    fprintf(cal_file,
+            "BEGIN:VEVENT\n"
+            "UID:%d\n",
+            get_uid());
+
+    fprintf(cal_file, "%s\n",
+            dtstart);
+    free(dtstart);
+
+    fprintf(cal_file, "%s\n",
+            dtend);
+    free(dtend);
+
+    fprintf(cal_file, "SUMMARY:%s\n", cal.days[day].events[hour].title);
+
+    fprintf(cal_file, "END:VEVENT\n");
+}
+
+static void create_assignment(FILE *cal_file, calendar cal, int day, int hour) {
+    char *dtstart = get_deadline(cal.days[day].assignments[hour]);
+
+    char *dtend = get_deadline(cal.days[day].assignments[hour]);
+
+    fprintf(cal_file,
+            "BEGIN:VEVENT\n"
+            "UID:%d\n",
+            get_uid());
+
+    fprintf(cal_file, "DTSTART;%s\n",
+            dtstart);
+    free(dtstart);
+
+    fprintf(cal_file, "DTEND;%s\n",
+            dtend);
+    free(dtend);
+
+    fprintf(cal_file, "SUMMARY:%s\n", cal.days[day].assignments[hour].title);
+
+    fprintf(cal_file, "END:VEVENT\n");
+}
+
+static char *get_dtstart_dtend(event event, int isStart) {
+    char *final = (char *)malloc(48 * sizeof(char));
+
+    if (isStart) {
+        time_t start_time = event.start_time;
+        struct tm *start = localtime(&start_time);
+        sprintf(final, "DTSTART;TZID=Europe/Copenhagen:%02d%02d%02dT%02d%02d%02d", start->tm_year + 1900, start->tm_mon + 1, start->tm_mday, start->tm_hour, start->tm_min, start->tm_sec);
+    } else {
+        time_t end_time = event.end_time;
+        struct tm *end = localtime(&end_time);
+        sprintf(final, "DTEND;TZID=Europe/Copenhagen:%02d%02d%02dT%02d%02d%02d", end->tm_year + 1900, end->tm_mon + 1, end->tm_mday, end->tm_hour, end->tm_min, end->tm_sec);
+    }
+
+    return final;
+}
+
+static char *get_deadline(assignment assignment) {
+    char *final = (char *)malloc(48 * sizeof(char));
+    time_t deadline_time = assignment.deadline;
+    struct tm *time = localtime(&deadline_time);
+
+    sprintf(final, "TZID=Europe/Copenhagen:%02d%02d%02dT%02d%02d%02d", time->tm_year + 1900, time->tm_mon + 1, time->tm_mday, time->tm_hour, time->tm_min, time->tm_sec);
+
+    return final;
+}
+
+static int get_uid() {
+    int r = rand() % 1000000000;
+    return r;
 }

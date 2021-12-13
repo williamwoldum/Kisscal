@@ -12,13 +12,19 @@
 #include "../headers/regex_handler.h"
 #include "../headers/time_handler.h"
 
-static void load_into_arr(char* location, char* str);
-static void prn_event_line(char* title, char* corner, int hour, int mins, int title_enabled);
-static void prn_assignment(char* title, char* loc);
+/************************************************************************* Symbolic constants */
 
 #define CAL_W 108
 #define CAL_H 30
 #define COLUMN_W 13
+
+/************************************************************************* Static function prototypes */
+
+static void load_into_arr(char* location, char* str);
+static void prn_event_line(char* title, char* corner, int hour, int mins, int title_enabled);
+static void prn_assignment(char* title, char* loc);
+
+/************************************************************************* Global functions  */
 
 /**
  * @brief Prints calender complete with inputted events and assignments

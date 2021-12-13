@@ -66,6 +66,7 @@ calendar get_cal(time_t cal_time) {
 
     return cal;
 }
+
 /**
  * @brief  looks through stored files, if cal found overwrites with invalid cal.
  * @note   cal_time as ID
@@ -180,6 +181,7 @@ void delete_event(time_t start_time) {
         save_cal(&cal);
     }
 }
+
 /**
  * @brief  fetches cal and add assignment if possible
  * @note
@@ -210,6 +212,7 @@ void add_assignemnt(char *title, time_t deadline, float expected_time, float ela
         save_cal(&cal);
     }
 }
+
 /**
  * @brief fetches cal and make wanted assignment invalid if possible/found
  * @note
@@ -238,6 +241,7 @@ void delete_assignment(time_t deadline) {
 }
 
 /************************************************************************* Static functions */
+
 /**
  * @brief  Checks for (content event/assignment) in fetched cal
  * @note
@@ -261,6 +265,7 @@ static int check_cal_has_content(calendar *cal) {
     }
     return found;
 }
+
 /**
  * @brief  If given cal is valid, save cal at free index
  * @note
@@ -283,6 +288,7 @@ static void save_cal(calendar *cal) {
         fclose(file);
     }
 }
+
 /**
  * @brief  returns index of cal in file, returns -1 if not found.
  * @note   cal_time as ID
@@ -307,6 +313,7 @@ static int get_cal_index(time_t cal_time, FILE *file) {
 
     return index == length ? -1 : index;
 }
+
 /**
  * @brief  returns index with invalid cal or retun idex bottom of file
  * @note
@@ -330,6 +337,7 @@ static int get_free_index(FILE *file) {
 
     return index;
 }
+
 /**
  * @brief  loads empty/nonvalid cal
  * @note    cal_time as ID
@@ -347,6 +355,7 @@ static void load_fresh_cal(calendar *cal, time_t cal_time) {
         load_fresh_day(&cal->days[dow], day_time);
     }
 }
+
 /**
  * @brief  loads empty/nonvalid day with no title
  * @note  day_time as ID
@@ -371,6 +380,7 @@ static void load_fresh_day(day *day, time_t day_time) {
         day->assignments[hod].valid = 0;
     }
 }
+
 /**
  * @brief return number of cals found in file (valid & nonvalid)
  * @note  calc for return val (bytes file/bytes cal)
@@ -383,9 +393,10 @@ static int get_num_cals(FILE *file) {
 }
 
 /************************************************************************* Debug functions */
+
 /**
- * @brief prints content in storage file for debug purposes
- * @note
+ * @brief prints content in storage file
+ * @note only for debug purposes
  * @retval None
  */
 void prn_file_content(void) {
