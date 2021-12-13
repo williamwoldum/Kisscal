@@ -18,9 +18,9 @@ static void prn_loading_bar(float used, float total);
 static void prn_assignments_status(calendar *cal, time_t current_time, int in_week);
 
 /**
- * @brief
+ * @brief Prints visual of analyze
  * @note
- * @param  *cal:
+ * @param cal: Current calender
  * @retval None
  */
 void analyze(calendar *cal) {
@@ -46,6 +46,16 @@ void analyze(calendar *cal) {
     printf("\n-----------------------------------------------------------------------------------------------------------\n");
 }
 
+/**
+ * @brief  Calculates free time left of week
+ * @note   
+ * @param  secs_free: Seconds left of week
+ * @param  secs_non_events: Seconds left of non_events of week
+ * @param  cal: Current calender
+ * @param  current_time: Current time
+ * @param  in_week: Checks if in week is valid
+ * @retval None
+ */
 static void load_free_time_arr(int *secs_free, int *secs_non_events, calendar *cal, time_t current_time, int in_week) {
     int dow;
     if (in_week == 0) {
@@ -84,6 +94,13 @@ static void load_free_time_arr(int *secs_free, int *secs_non_events, calendar *c
     }
 }
 
+/**
+ * @brief  Prints hours used of week
+ * @note   
+ * @param  current_time: Current time
+ * @param  in_week: Checks if in week is valid
+ * @retval None
+ */
 static void prn_hour_use(time_t current_time, int in_week) {
     float hours;
     if (in_week == 0) {
@@ -104,6 +121,14 @@ static void prn_hour_use(time_t current_time, int in_week) {
     prn_loading_bar(hours, HOURS_IN_WEEK);
 }
 
+/**
+ * @brief  Prints how many free hours used of week
+ * @note   
+ * @param  cal: Current calender 
+ * @param  current_time: Current time
+ * @param  in_week: Checks if in week is valid
+ * @retval None
+ */
 static void prn_free_hour_use(calendar *cal, time_t current_time, int in_week) {
     int secs_free[DAYS_IN_WEEK], secs_non_events[DAYS_IN_WEEK];
     load_free_time_arr(secs_free, secs_non_events, cal, current_time, in_week);
@@ -128,6 +153,13 @@ static void prn_free_hour_use(calendar *cal, time_t current_time, int in_week) {
     }
 }
 
+/**
+ * @brief  Prints loading bar visually
+ * @note   
+ * @param  used: How many used hours
+ * @param  total: How many hours in total
+ * @retval None
+ */
 static void prn_loading_bar(float used, float total) {
     int num_tiles = 50;
     float ratio = (float)used / total;
@@ -146,6 +178,14 @@ static void prn_loading_bar(float used, float total) {
     printf("] | %.0f:%.0f\n", ratio * 100, 100 - ratio * 100);
 }
 
+/**
+ * @brief  Prints the status of assignments in week
+ * @note   
+ * @param  cal: Current calender 
+ * @param  current_time: Current time
+ * @param  in_week: Checks if in week is valid
+ * @retval None
+ */
 static void prn_assignments_status(calendar *cal, time_t current_time, int in_week) {
     int i, j, at_least_one = 0;
     for (i = 0; i < DAYS_IN_WEEK; i++) {
