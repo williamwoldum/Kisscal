@@ -157,6 +157,7 @@ int prompt_user_input(calendar* current_cal) {
             break;
         }
         case import_ics_rule: {
+            prn_cal(current_cal);
             break;
         }
         case export_ics_rule: {
