@@ -17,12 +17,12 @@
 #define DAY_LEN 10
 
 static void prn_help(void);
-static int get_dow_from_str(char* str);
+static int get_dow_from_str(char *str);
 static void prn_day_content(time_t day_time);
-static int cmp_events(const void* a_, const void* b_);
-static int cmp_assignments(const void* a_, const void* b_);
+static int cmp_events(const void *a_, const void *b_);
+static int cmp_assignments(const void *a_, const void *b_);
 
-int prompt_user_input(calendar* current_cal) {
+int prompt_user_input(calendar *current_cal) {
     printf("\n>> ");
 
     char user_input[INPUT_BUFF_SIZE];
@@ -157,7 +157,7 @@ int prompt_user_input(calendar* current_cal) {
             break;
         }
         case import_ics_rule: {
-            prn_cal(current_cal);
+            import_ics(*current_cal);
             break;
         }
         case export_ics_rule: {
@@ -215,7 +215,7 @@ static void prn_help(void) {
         "-----------------------------------------------------------------------------------------------------------\n");
 }
 
-static int get_dow_from_str(char* str) {
+static int get_dow_from_str(char *str) {
     int dow = -1;
     if (tolower(str[0]) == 'm') {
         dow = 0;
@@ -279,21 +279,21 @@ static void prn_day_content(time_t day_time) {
     printf("\n-----------------------------------------------------------------------------------------------------------\n");
 }
 
-void sort_content(day* day) {
+void sort_content(day *day) {
     qsort(day->events, CONTENT_IN_DAY, sizeof(event), cmp_events);
     qsort(day->assignments, CONTENT_IN_DAY, sizeof(assignment), cmp_assignments);
 }
 
-static int cmp_events(const void* a_, const void* b_) {
-    event a = *(event*)a_;
-    event b = *(event*)b_;
+static int cmp_events(const void *a_, const void *b_) {
+    event a = *(event *)a_;
+    event b = *(event *)b_;
 
     return a.start_time - b.start_time;
 }
 
-static int cmp_assignments(const void* a_, const void* b_) {
-    assignment a = *(assignment*)a_;
-    assignment b = *(assignment*)b_;
+static int cmp_assignments(const void *a_, const void *b_) {
+    assignment a = *(assignment *)a_;
+    assignment b = *(assignment *)b_;
 
     return a.deadline - b.deadline;
 }
