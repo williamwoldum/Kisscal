@@ -4,7 +4,11 @@
 #include <stdio.h>
 
 regex_t regexs[num_input_rules];
-
+/**
+ * @brief  setup regex for input validation through expressions according to input rules
+ * @note
+ * @retval None
+ */
 void setup_regex() {
     const char *expressions[num_input_rules] = {
         "^open week: [0-9]{1,2} [0-9]{4}\n",
@@ -30,7 +34,12 @@ void setup_regex() {
         }
     }
 }
-
+/**
+ * @brief   Validates if the input matches any of the definded rules, and returns the matched rule.
+ * @note
+ * @param  *in: points to the user input
+ * @retval int (matched_rule)
+ */
 int checkregex(char *in) {
     int matched, matched_rule;
 
