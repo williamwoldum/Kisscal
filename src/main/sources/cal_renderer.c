@@ -20,6 +20,12 @@ static void prn_assignment(char* title, char* loc);
 #define CAL_H 30
 #define COLUMN_W 13
 
+/**
+ * @brief Prints calender complete with inputted events and assignments
+ * @note
+ * @param  current_cal: Current calender
+ * @retval None
+ */
 void prn_cal(calendar* current_cal) {
     /*     system("clear");
      */
@@ -130,6 +136,16 @@ void prn_cal(calendar* current_cal) {
     }
 }
 
+/**
+ * @brief Checks wether to insert line above or under inputted start time and end time of event
+ * @note Only inserts line at :30 or :00
+ * @param  title: Title of event
+ * @param  corner: Corners in cal
+ * @param  hour: Hour of input
+ * @param  mins: Minutes of input
+ * @param  title_enabled: Checks if event is valid
+ * @retval None
+ */
 static void prn_event_line(char* title, char* corner, int hour, int mins, int title_enabled) {
     int dashed = mins == 30;
     char* loc = corner + (hour + dashed) * CAL_W;
@@ -157,6 +173,13 @@ static void prn_event_line(char* title, char* corner, int hour, int mins, int ti
     }
 }
 
+/**
+ * @brief Prints assignment in current cal
+ * @note
+ * @param title: Current title 
+ * @param loc: Location of calender
+ * @retval None
+ */
 static void prn_assignment(char* title, char* loc) {
     char title_buf[20];
     if (strlen(title) > COLUMN_W - 2) {
@@ -169,6 +192,14 @@ static void prn_assignment(char* title, char* loc) {
         load_into_arr(loc + CAL_W, title_buf);
     }
 }
+
+/**
+ * @brief Function to load array into cal
+ * @note Makes sure name isn't longer than cal column width
+ * @param location: Position of string
+ * @param str: Length of string
+ * @retval None
+ */
 
 static void load_into_arr(char* location, char* str) {
     int i;
