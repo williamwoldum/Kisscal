@@ -264,7 +264,7 @@ static void prn_day_content(time_t day_time) {
                    get_t_data(event.start_time, t_min),
                    get_t_data(event.end_time, t_hour),
                    get_t_data(event.end_time, t_min),
-                   event.title, );
+                   event.title);
         }
     }
 
