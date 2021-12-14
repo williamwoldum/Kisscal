@@ -61,19 +61,17 @@ void convert_cal_to_ics(calendar *cal) {
  */
 void import_ics(void) {
     DIR *folder;
-    struct dirent *dir;
-    char *name;
     folder = opendir(ICS_INPUT_DIR_PATH);
 
+    struct dirent *dir;
+    char *name;
+
     while ((dir = readdir(folder)) != NULL) {
-        printf("name %s\n", dir->d_name);
         name = dir->d_name;
     }
-
     char path[PATH_BUFFER_SIZE];
 
     sprintf(path, "./Importfiles/%s", name);
-    printf("path %s\n", path);
     closedir(folder);
 
     FILE *file = fopen(path, "r");
@@ -81,8 +79,6 @@ void import_ics(void) {
         printf("File not found");
         return;
     }
-
-    char line[LINE_BUFFER_SIZE];
 
     char c;
     int linecount = 0;
@@ -94,27 +90,25 @@ void import_ics(void) {
     fseek(file, 0, SEEK_SET);
 
     int eventstatus = 0;
-    int i = 0;
-    time_t start_time = 0;
-    time_t end_time = 0;
+    time_t start_time, end_time;
     char *title;
     int found_starttime = 0;
     int found_endtime = 0;
     int found_summary = 0;
+    char line[LINE_BUFFER_SIZE];
 
+    int i = 0;
     for (i = 0; i < linecount; i++) {
         fgets(line, LINE_BUFFER_SIZE, file);
 
         if (strstr(line, "BEGIN:VEVENT")) {
-            title = (char *)calloc(1, 100);
+            title = (char *)calloc(1, LINE_BUFFER_SIZE);
             found_starttime = 0;
             found_endtime = 0;
             eventstatus = 1;
         } else if (strstr(line, "END:VEVENT")) {
             eventstatus = 0;
             if (found_endtime == 1 && found_starttime == 1) {
-                printf("starttime: %ld\n", start_time);
-                printf("endtime: %ld\n", end_time);
                 add_event(title, start_time, end_time);
             } else {
                 printf("invalid event");
@@ -124,28 +118,22 @@ void import_ics(void) {
             end_time = 0;
 
             free(title);
-            /* add_event(title, start_time, end_time);*/
         }
 
         if (eventstatus) {
-            char *buffer = (char *)calloc(1, LINE_BUFFER_SIZE);
+            char buffer[LINE_BUFFER_SIZE];
 
             if (strstr(line, "DTSTART")) {
                 sscanf(line, "%*[^:]:%s", buffer);
-                printf("START %s\n", buffer);
                 start_time = utc_to_epoch(buffer);
-                printf("actualtime: %ld\n", start_time);
                 found_starttime = 1;
             } else if (strstr(line, "DTEND")) {
                 sscanf(line, "%*[^:]:%s", buffer);
-                printf("SLUT %s\n", buffer);
                 end_time = utc_to_epoch(buffer);
                 found_endtime = 1;
-                printf("actualtime: %ld\n", end_time);
             } else if (strstr(line, "SUMMARY")) {
-                char buf[100];
+                char buf[LINE_BUFFER_SIZE];
                 sscanf(line, "%[^:]:%s", buf, title);
-                printf("TITEL %s\n", title);
                 found_summary = 1;
             }
         }

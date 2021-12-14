@@ -310,7 +310,7 @@ static void prn_help(void) {
 
         "print: <day>\n\n"
 
-        "import ICS: <path>\n"
+        "import ICS\n"
         "export ICS\n\n"
 
         "analyze\n\n"
