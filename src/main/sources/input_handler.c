@@ -259,13 +259,12 @@ static void prn_day_content(time_t day_time) {
     for (i = 0; i < CONTENT_IN_DAY; i++) {
         event event = day.events[i];
         if (event.valid) {
-            printf("%02d:%02d to %02d:%02d | '%s' %ld\n",
+            printf("%02d:%02d to %02d:%02d | '%s'\n",
                    get_t_data(event.start_time, t_hour),
                    get_t_data(event.start_time, t_min),
                    get_t_data(event.end_time, t_hour),
                    get_t_data(event.end_time, t_min),
-                   event.title,
-                   event.start_time);
+                   event.title, );
         }
     }
 
