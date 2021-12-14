@@ -138,7 +138,7 @@ void import_ics(void) {
 
 /**
  * @brief  Converts calendar event to ics and writes it to ics file
- * @note
+ * @notegit
  * @param  *ics_file: Points to ics output file
  * @param  *event: Event to be converted
  * @retval None
