@@ -172,7 +172,7 @@ int calc_in_week(time_t cal_time, time_t current_time) {
  */
 void load_epoch_to_utc(char *buf, char *pre_str, time_t time) {
     struct tm *tm = localtime(&time);
-    sprintf(buf, "%s%02d%02d%02dT%02d%02d%02d",
+    sprintf(buf, "%s%04d%02d%02dT%02d%02d%02d",
             pre_str,
             tm->tm_year + 1900,
             tm->tm_mon + 1,
@@ -199,6 +199,7 @@ time_t utc_to_epoch(char *utc_str) {
            &tm.tm_min);
     tm.tm_year = year - 1900;
     tm.tm_mon = month - 1;
+    tm.tm_isdst = 0;
     return mktime(&tm);
 }
 

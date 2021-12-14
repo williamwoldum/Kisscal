@@ -12,7 +12,7 @@
 
 #define ICS_OUTPUT_PATH "./ics_output.ics"
 #define ICS_INPUT_DIR_PATH "./Importfiles"
-#define DT_BUFFER_SIZE 48
+#define DT_BUFFER_SIZE 100
 #define PATH_BUFFER_SIZE 300
 #define LINE_BUFFER_SIZE 100
 
@@ -99,10 +99,6 @@ void import_ics(void) {
     time_t end_time = 0;
     char *title;
 
-    /*lorte kode til at sætte en standard værdi åbenbart*/
-    start_time = utc_to_epoch("20211005T123410");
-    /*------------------------------------*/
-
     for (i = 0; i < linecount; i++) {
         fgets(line, LINE_BUFFER_SIZE, file);
 
@@ -156,7 +152,7 @@ static void event_to_ics(FILE *ics_file, event *event) {
     char dtstart[DT_BUFFER_SIZE];
     char dtend[DT_BUFFER_SIZE];
     load_epoch_to_utc(dtstart, "DTSTART;TZID=Europe/Copenhagen:", event->start_time);
-    load_epoch_to_utc(dtstart, "DTEND;TZID=Europe/Copenhagen:", event->end_time);
+    load_epoch_to_utc(dtend, "DTEND;TZID=Europe/Copenhagen:", event->end_time);
 
     fprintf(ics_file, "BEGIN:VEVENT\n");
     fprintf(ics_file, "UID:%d\n", get_uid());
