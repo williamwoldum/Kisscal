@@ -35,7 +35,7 @@ void convert_cal_to_ics(calendar *cal) {
     fprintf(ics_file,
             "BEGIN:VCALENDAR\n"
             "VERSION:2.0\n"
-            "PRODID:wtf\n");
+            "PRODID:kisscal.org\n");
 
     int day, i;
     for (day = 0; day < DAYS_IN_WEEK; day++) {
@@ -90,7 +90,7 @@ void import_ics(void) {
     fseek(file, 0, SEEK_SET);
 
     int eventstatus = 0;
-    time_t start_time, end_time;
+    time_t start_time = 0, end_time = 0;
     char *title;
     char line[LINE_BUFFER_SIZE];
 
@@ -100,10 +100,20 @@ void import_ics(void) {
 
         if (strstr(line, "BEGIN:VEVENT")) {
             title = (char *)calloc(1, LINE_BUFFER_SIZE);
+            start_time = 0;
+            end_time = 0;
             eventstatus = 1;
         } else if (strstr(line, "END:VEVENT")) {
-            add_event(title, start_time, end_time);
             eventstatus = 0;
+            if (start_time > 0 && end_time > 0) {
+                add_event(title, start_time, end_time);
+            } else {
+                printf("invalid event");
+            }
+
+            start_time = 0;
+            end_time = 0;
+
             free(title);
         }
 
@@ -113,9 +123,11 @@ void import_ics(void) {
             if (strstr(line, "DTSTART")) {
                 sscanf(line, "%*[^:]:%s", buffer);
                 start_time = utc_to_epoch(buffer);
+
             } else if (strstr(line, "DTEND")) {
                 sscanf(line, "%*[^:]:%s", buffer);
                 end_time = utc_to_epoch(buffer);
+
             } else if (strstr(line, "SUMMARY")) {
                 char buf[LINE_BUFFER_SIZE];
                 sscanf(line, "%[^:]:%s", buf, title);
@@ -168,7 +180,7 @@ static void assignment_to_ics(FILE *ics_file, assignment *assignment) {
 
 /**
  * @brief  Generates pseudo random id for ics event
- * @note
+ * @note uid needs to be unique for the calender to handle different events
  * @retval int
  */
 static int get_uid(void) {
