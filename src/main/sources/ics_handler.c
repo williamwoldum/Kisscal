@@ -141,6 +141,9 @@ void import_ics(void) {
             }
         }
     }
+
+    /*test if works*/
+    fclose(file);
 }
 
 /************************************************************************* Static functions */
