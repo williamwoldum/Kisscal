@@ -90,11 +90,8 @@ void import_ics(void) {
     fseek(file, 0, SEEK_SET);
 
     int eventstatus = 0;
-    time_t start_time, end_time;
+    time_t start_time = 0, end_time = 0;
     char *title;
-    int found_starttime = 0;
-    int found_endtime = 0;
-    int found_summary = 0;
     char line[LINE_BUFFER_SIZE];
 
     int i = 0;
@@ -103,12 +100,12 @@ void import_ics(void) {
 
         if (strstr(line, "BEGIN:VEVENT")) {
             title = (char *)calloc(1, LINE_BUFFER_SIZE);
-            found_starttime = 0;
-            found_endtime = 0;
+            start_time = 0;
+            end_time = 0;
             eventstatus = 1;
         } else if (strstr(line, "END:VEVENT")) {
             eventstatus = 0;
-            if (found_endtime == 1 && found_starttime == 1) {
+            if (start_time > 0 && end_time > 0) {
                 add_event(title, start_time, end_time);
             } else {
                 printf("invalid event");
@@ -126,15 +123,14 @@ void import_ics(void) {
             if (strstr(line, "DTSTART")) {
                 sscanf(line, "%*[^:]:%s", buffer);
                 start_time = utc_to_epoch(buffer);
-                found_starttime = 1;
+
             } else if (strstr(line, "DTEND")) {
                 sscanf(line, "%*[^:]:%s", buffer);
                 end_time = utc_to_epoch(buffer);
-                found_endtime = 1;
+
             } else if (strstr(line, "SUMMARY")) {
                 char buf[LINE_BUFFER_SIZE];
                 sscanf(line, "%[^:]:%s", buf, title);
-                found_summary = 1;
             }
         }
     }
