@@ -61,19 +61,17 @@ void convert_cal_to_ics(calendar *cal) {
  */
 void import_ics(void) {
     DIR *folder;
-    struct dirent *dir;
-    char *name;
     folder = opendir(ICS_INPUT_DIR_PATH);
 
+    struct dirent *dir;
+    char *name;
+
     while ((dir = readdir(folder)) != NULL) {
-        printf("name %s\n", dir->d_name);
         name = dir->d_name;
     }
-
     char path[PATH_BUFFER_SIZE];
 
     sprintf(path, "./Importfiles/%s", name);
-    printf("path %s\n", path);
     closedir(folder);
 
     FILE *file = fopen(path, "r");
