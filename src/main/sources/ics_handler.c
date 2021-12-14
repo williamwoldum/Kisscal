@@ -82,8 +82,6 @@ void import_ics(void) {
         return;
     }
 
-    char line[LINE_BUFFER_SIZE];
-
     char c;
     int linecount = 0;
     while ((c = fgetc(file)) != EOF) {
@@ -94,46 +92,35 @@ void import_ics(void) {
     fseek(file, 0, SEEK_SET);
 
     int eventstatus = 0;
-    int i = 0;
-    time_t start_time = 0;
-    time_t end_time = 0;
+    time_t start_time, end_time;
     char *title;
+    char line[LINE_BUFFER_SIZE];
 
+    int i = 0;
     for (i = 0; i < linecount; i++) {
         fgets(line, LINE_BUFFER_SIZE, file);
 
         if (strstr(line, "BEGIN:VEVENT")) {
-            title = (char *)calloc(1, 100);
+            title = (char *)calloc(1, LINE_BUFFER_SIZE);
             eventstatus = 1;
         } else if (strstr(line, "END:VEVENT")) {
-            eventstatus = 0;
-            printf("starttime: %ld\n", start_time);
-            printf("endtime: %ld\n", end_time);
             add_event(title, start_time, end_time);
-            start_time = 0;
-            end_time = 0;
-
+            eventstatus = 0;
             free(title);
-            /* add_event(title, start_time, end_time);*/
         }
 
         if (eventstatus) {
-            char *buffer = (char *)calloc(1, LINE_BUFFER_SIZE);
+            char buffer[LINE_BUFFER_SIZE];
 
             if (strstr(line, "DTSTART")) {
                 sscanf(line, "%*[^:]:%s", buffer);
-                printf("START %s\n", buffer);
                 start_time = utc_to_epoch(buffer);
-                printf("actualtime: %ld\n", start_time);
             } else if (strstr(line, "DTEND")) {
                 sscanf(line, "%*[^:]:%s", buffer);
-                printf("SLUT %s\n", buffer);
                 end_time = utc_to_epoch(buffer);
-                printf("actualtime: %ld\n", end_time);
             } else if (strstr(line, "SUMMARY")) {
-                char buf[100];
+                char buf[LINE_BUFFER_SIZE];
                 sscanf(line, "%[^:]:%s", buf, title);
-                printf("TITEL %s\n", title);
             }
         }
     }
