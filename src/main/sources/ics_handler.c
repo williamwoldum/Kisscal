@@ -91,7 +91,7 @@ void import_ics(void) {
 
     int eventstatus = 0;
     time_t start_time = 0, end_time = 0;
-    char *title;
+    char title[TITLE_LENGTH];
     char line[LINE_BUFFER_SIZE];
 
     int i = 0;
@@ -99,7 +99,6 @@ void import_ics(void) {
         fgets(line, LINE_BUFFER_SIZE, file);
 
         if (strstr(line, "BEGIN:VEVENT")) {
-            title = (char *)calloc(1, LINE_BUFFER_SIZE);
             start_time = 0;
             end_time = 0;
             eventstatus = 1;
@@ -110,11 +109,8 @@ void import_ics(void) {
             } else {
                 printf("invalid event");
             }
-
             start_time = 0;
             end_time = 0;
-
-            free(title);
         }
 
         if (eventstatus) {
@@ -130,7 +126,18 @@ void import_ics(void) {
 
             } else if (strstr(line, "SUMMARY")) {
                 char buf[LINE_BUFFER_SIZE];
-                sscanf(line, "%[^:]:%s", buf, title);
+                sscanf(line, "%*[^:]:%[ a-zA-Z0-9\n]", buf);
+
+                int i = 0, scan = 1;
+                while (scan) {
+                    if (i == TITLE_LENGTH - 1 || buf[i] == '\n') {
+                        title[i] = '\0';
+                        scan = 0;
+                    } else {
+                        title[i] = buf[i];
+                    }
+                    i++;
+                }
             }
         }
     }

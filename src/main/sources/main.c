@@ -12,7 +12,7 @@ int main() {
     srand(time(NULL));
 
     setup_regex();
-    prepare_file(1);
+    prepare_file(0);
 
     time_t cal_time = get_cal_time_from_day_time(time(NULL));
     calendar current_cal = get_cal(cal_time);
