@@ -35,7 +35,7 @@ void convert_cal_to_ics(calendar *cal) {
     fprintf(ics_file,
             "BEGIN:VCALENDAR\n"
             "VERSION:2.0\n"
-            "PRODID:wtf\n");
+            "PRODID:kisscal.org\n");
 
     int day, i;
     for (day = 0; day < DAYS_IN_WEEK; day++) {
@@ -98,18 +98,28 @@ void import_ics(void) {
     time_t start_time = 0;
     time_t end_time = 0;
     char *title;
+    int found_starttime = 0;
+    int found_endtime = 0;
+    int found_summary = 0;
 
     for (i = 0; i < linecount; i++) {
         fgets(line, LINE_BUFFER_SIZE, file);
 
         if (strstr(line, "BEGIN:VEVENT")) {
             title = (char *)calloc(1, 100);
+            found_starttime = 0;
+            found_endtime = 0;
             eventstatus = 1;
         } else if (strstr(line, "END:VEVENT")) {
             eventstatus = 0;
-            printf("starttime: %ld\n", start_time);
-            printf("endtime: %ld\n", end_time);
-            add_event(title, start_time, end_time);
+            if (found_endtime == 1 && found_starttime == 1) {
+                printf("starttime: %ld\n", start_time);
+                printf("endtime: %ld\n", end_time);
+                add_event(title, start_time, end_time);
+            } else {
+                printf("invalid event");
+            }
+
             start_time = 0;
             end_time = 0;
 
@@ -125,15 +135,18 @@ void import_ics(void) {
                 printf("START %s\n", buffer);
                 start_time = utc_to_epoch(buffer);
                 printf("actualtime: %ld\n", start_time);
+                found_starttime = 1;
             } else if (strstr(line, "DTEND")) {
                 sscanf(line, "%*[^:]:%s", buffer);
                 printf("SLUT %s\n", buffer);
                 end_time = utc_to_epoch(buffer);
+                found_endtime = 1;
                 printf("actualtime: %ld\n", end_time);
             } else if (strstr(line, "SUMMARY")) {
                 char buf[100];
                 sscanf(line, "%[^:]:%s", buf, title);
                 printf("TITEL %s\n", title);
+                found_summary = 1;
             }
         }
     }
@@ -183,7 +196,7 @@ static void assignment_to_ics(FILE *ics_file, assignment *assignment) {
 
 /**
  * @brief  Generates pseudo random id for ics event
- * @note
+ * @note uid needs to be unique for the calender to handle different events
  * @retval int
  */
 static int get_uid(void) {
