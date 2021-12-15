@@ -92,7 +92,7 @@ int prompt_user_input(calendar *current_cal) {
             char time_end_str[TIME_LEN];
 
             sscanf(user_input, "%*[^']'%*[^']'  %s %s %s", day_str, time_start_str, time_end_str);
-            load_capped_title(user_input, title, '\'', '\'');
+            load_capped_title(user_input, title, '\'', '\'', 0);
             int dow = get_dow_from_str(day_str);
 
             int hour_start, mins_start;
@@ -131,7 +131,7 @@ int prompt_user_input(calendar *current_cal) {
             float elapsed_time;
 
             sscanf(user_input, "%*[^']'%*[^']' %s %s %f %f", day_str, deadline_str, &expexted_time, &elapsed_time);
-            load_capped_title(user_input, title, '\'', '\'');
+            load_capped_title(user_input, title, '\'', '\'', 0);
 
             int dow = get_dow_from_str(day_str);
             int hour, mins;
@@ -217,7 +217,7 @@ void sort_content(day *day) {
  * @param  end_delim: Delimter of where the title ends
  * @retval None
  */
-void load_capped_title(char *str, char *dest, char start_delim, char end_delim) {
+void load_capped_title(char *str, char *dest, char start_delim, char end_delim, int ics_case) {
     char *title_start = strchr(str, start_delim) + 1;
     char *title_end = strchr(title_start, end_delim);
 
@@ -226,10 +226,13 @@ void load_capped_title(char *str, char *dest, char start_delim, char end_delim) 
         title_length = TITLE_LENGTH - 1;
     }
 
-    printf("|%d|\n", title_length);
-
     memcpy(dest, title_start, title_length);
-    dest[title_length] = '\0';
+
+    if (ics_case) {
+        dest[title_length - 1] = '\0';
+    } else {
+        dest[title_length] = '\0';
+    }
 }
 
 /************************************************************************* Static functions */

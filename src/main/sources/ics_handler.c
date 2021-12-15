@@ -127,7 +127,7 @@ void import_ics(void) {
                 end_time = utc_to_epoch(buffer);
 
             } else if (strstr(line, "SUMMARY")) {
-                load_capped_title(line, title, ':', '\n');
+                load_capped_title(line, title, ':', '\n', 1);
             }
         }
     }
