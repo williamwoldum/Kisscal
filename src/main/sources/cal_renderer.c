@@ -177,6 +177,8 @@ static void prn_event_line(char* title, char* corner, int hour, int mins, int ti
     if (hour != 0) {
         if (current == '-' && !dashed) {
             load_into_arr(loc, "=============");
+        } else if (current == '_' && dashed) {
+            load_into_arr(loc, "=============");
         } else if (dashed) {
             load_into_arr(loc, "-------------");
         } else {

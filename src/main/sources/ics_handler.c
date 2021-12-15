@@ -75,9 +75,9 @@ void import_ics(void) {
     sprintf(path, "./Importfiles/%s", name);
     closedir(folder);
 
-    FILE *file = fopen(path, "r");
+    FILE *file = fopen("./Importfiles/myevents.ics", "r");
     if (file == NULL) {
-        printf("File not found");
+        printf("\nFile not found\n");
         return;
     }
 
@@ -89,6 +89,7 @@ void import_ics(void) {
         }
     }
     fseek(file, 0, SEEK_SET);
+    printf("%d\n", linecount);
 
     int eventstatus = 0;
     time_t start_time = 0, end_time = 0;
