@@ -332,11 +332,11 @@ static void prn_help(void) {
 
         "clear: <day>\n\n"
 
-        "add event: '<event name>' <day> <time start> <time end>\n"
-        "remove event: <day> <time start>\n\n"
+        "add event: '<name>' <day> <time (start)> <time (end)>\n"
+        "remove event: <day> <time (start)>\n\n"
 
-        "add assignment: '<assignment name>' <day> <deadline> <expected time> <used time>\n"
-        "remove assignment: <day> <deadline>\n\n"
+        "add assignment: '<name>' <day> <time (deadline)> <hours (expected)> <hours (used)>\n"
+        "remove assignment: <day> <time (deadline)>\n\n"
 
         "print: <day>\n\n"
 
@@ -345,8 +345,16 @@ static void prn_help(void) {
 
         "analyze\n\n"
 
-        "close\n"
-        "\n"
+        "close\n\n"
+
+        "-----------------------------------------------------------------------------------------------------------\n\n"
+
+        "<week>  | Number from 1-53 eg. 45\n"
+        "<year>  | Number from 1000-9999 eg. 2021\n"
+        "<day>   | Day in week Monday-Sunday eg. Tuesday\n"
+        "<hours> | Number from 0-99 eg. 6.5\n"
+        "<time>  | Time in digital format eg. 08:00\n\n"
+
         "-----------------------------------------------------------------------------------------------------------\n");
 }
 

@@ -313,7 +313,7 @@ static void load_fresh_day(day *day, time_t day_time) {
 }
 
 /**
- * @brief  Saves given calendar in storage at first possition pissble if valid
+ * @brief  Saves given calendar in storage at first position possible if valid
  * @note
  * @param  *cal: Calendar to be saved
  * @retval None
