@@ -43,9 +43,6 @@ int prompt_user_input(calendar *current_cal) {
     int run = 1;
 
     switch (match) {
-        case invalid_input_rule:
-            printf("Invalid input (type 'help' to see commands)\n");
-            break;
         case open_week_rule: {
             int week, year;
             sscanf(user_input, "%*[^:]: %d %d", &week, &year);
@@ -188,9 +185,9 @@ int prompt_user_input(calendar *current_cal) {
             run = 0;
             break;
         }
-        default: {
-            printf("Error\n");
-        }
+        case invalid_input_rule:
+        default:
+            printf("Invalid input (type 'help' to see commands)\n");
     }
 
     return run;
