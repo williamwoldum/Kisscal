@@ -26,8 +26,8 @@ void setup_regex(void) {
         "^add assignment: '.{1,}' (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday) [0-9]{2}:[0-9]{2} ([0-9]{1,2}|[0-9]{1,2}.[0-9]) ([0-9]{1,2}|[0-9]{1,2}.[0-9])\n",
         "^remove assignment: (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday) [0-9]{2}:[0-9]{2}\n",
         "^print: (Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\n",
-        "^import ics\n",
-        "^export ics\n",
+        "^sync\n",
+        "^export\n",
         "^analyze\n",
         "^help\n",
         "^close\n"};

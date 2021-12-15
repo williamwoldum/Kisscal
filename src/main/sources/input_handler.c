@@ -170,12 +170,12 @@ int prompt_user_input(calendar *current_cal) {
             prn_day_content(current_cal->days[dow].time);
             break;
         }
-        case import_ics_rule: {
+        case sync_rule: {
             import_ics();
             prn_cal(current_cal);
             break;
         }
-        case export_ics_rule: {
+        case export_rule: {
             convert_cal_to_ics(current_cal);
             break;
         }
@@ -340,8 +340,8 @@ static void prn_help(void) {
 
         "print: <day>\n\n"
 
-        "import ICS\n"
-        "export ICS\n\n"
+        "sync\n"
+        "export\n\n"
 
         "analyze\n\n"
 
