@@ -103,8 +103,10 @@ int prompt_user_input(calendar *current_cal) {
             sscanf(time_end_str, "%d:%d", &hour_end, &mins_end);
             time_t time_end = digi_time_to_epoch(current_cal->days[dow].time, hour_end, mins_end);
 
-            add_event(title, time_start, time_end);
-            prn_cal(current_cal);
+            int succes = add_event(title, time_start, time_end);
+            if (succes) {
+                prn_cal(current_cal);
+            }
             break;
         }
         case remove_event_rule: {

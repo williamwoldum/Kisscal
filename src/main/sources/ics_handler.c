@@ -1,4 +1,3 @@
-#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -61,20 +60,6 @@ void convert_cal_to_ics(calendar *cal) {
  * @retval None
  */
 void import_ics(void) {
-    DIR *folder;
-    folder = opendir(ICS_INPUT_DIR_PATH);
-
-    struct dirent *dir;
-    char *name;
-
-    while ((dir = readdir(folder)) != NULL) {
-        name = dir->d_name;
-    }
-    char path[PATH_BUFFER_SIZE];
-
-    sprintf(path, "./Importfiles/%s", name);
-    closedir(folder);
-
     FILE *file = fopen("./Importfiles/myevents.ics", "r");
     if (file == NULL) {
         printf("\nFile not found\n");

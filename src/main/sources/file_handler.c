@@ -106,17 +106,17 @@ void clear_day(time_t day_time) {
  * @param  *title: Title/name of event
  * @param  start_time: Start time of event, acts as id
  * @param  end_time: End time of event
- * @retval None
+ * @retval int (succesfull add)
  */
-void add_event(char *title, time_t start_time, time_t end_time) {
+int add_event(char *title, time_t start_time, time_t end_time) {
     if (start_time > end_time) {
         printf("Event '%s' must end after it starts\n", title);
-        return;
+        return 0;
     }
 
     if (get_t_data(start_time, t_year) != get_t_data(end_time, t_year) || get_t_data(start_time, t_yday) != get_t_data(end_time, t_yday)) {
         printf("Event '%s' spreads through multiple days\n", title);
-        return;
+        return 0;
     }
 
     calendar cal = get_cal(get_cal_time_from_day_time(start_time));
@@ -134,7 +134,10 @@ void add_event(char *title, time_t start_time, time_t end_time) {
         index++;
     }
 
-    if (!overlaps) {
+    if (overlaps) {
+        printf("Event '%s' overlaps other events\n", title);
+        return 0;
+    } else {
         index = 0, search = 1;
         while (search && index < CONTENT_IN_DAY) {
             if (!cal.days[dow].events[index].valid) {
@@ -149,9 +152,7 @@ void add_event(char *title, time_t start_time, time_t end_time) {
         }
 
         save_cal(&cal);
-
-    } else {
-        printf("Event '%s' overlaps other events\n", title);
+        return 1;
     }
 }
 
