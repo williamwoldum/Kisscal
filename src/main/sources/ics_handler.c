@@ -11,7 +11,7 @@
 /************************************************************************* Symbolic constants */
 
 #define ICS_OUTPUT_PATH "./ics_output.ics"
-#define ICS_INPUT_DIR_PATH "./Importfiles"
+#define ICS_INPUT_PATH "./Importfiles/myevents.ics"
 #define DT_BUFFER_SIZE 100
 #define PATH_BUFFER_SIZE 300
 #define LINE_BUFFER_SIZE 100
@@ -60,29 +60,18 @@ void convert_cal_to_ics(calendar *cal) {
  * @retval None
  */
 void import_ics(void) {
-    FILE *file = fopen("./Importfiles/myevents.ics", "r");
+    FILE *file = fopen(ICS_INPUT_PATH, "r");
     if (file == NULL) {
         printf("\nFile not found\n");
         return;
     }
-
-    char c;
-    int linecount = 0;
-    while ((c = fgetc(file)) != EOF) {
-        if (c == '\n') {
-            linecount++;
-        }
-    }
-    fseek(file, 0, SEEK_SET);
 
     int eventstatus = 0;
     time_t start_time = 0, end_time = 0;
     char title[TITLE_LENGTH];
     char line[LINE_BUFFER_SIZE];
 
-    int i = 0;
-    for (i = 0; i < linecount; i++) {
-        fgets(line, LINE_BUFFER_SIZE, file);
+    while (fgets(line, LINE_BUFFER_SIZE, file) != NULL) {
         line[LINE_BUFFER_SIZE - 2] = '\n';
 
         if (strstr(line, "BEGIN:VEVENT")) {
