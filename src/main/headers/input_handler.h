@@ -13,6 +13,7 @@
 
 int prompt_user_input(calendar* current_cal);
 void sort_content(day* day);
+void load_capped_title(char* str, char* dest, char start_delim, char end_delim);
 
 /************************************************************/
 

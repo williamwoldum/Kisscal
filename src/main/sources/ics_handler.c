@@ -6,6 +6,7 @@
 
 #include "../headers/datatypes.h"
 #include "../headers/file_handler.h"
+#include "../headers/input_handler.h"
 #include "../headers/time_handler.h"
 
 /************************************************************************* Symbolic constants */
@@ -125,24 +126,11 @@ void import_ics(void) {
                 end_time = utc_to_epoch(buffer);
 
             } else if (strstr(line, "SUMMARY")) {
-                char buf[LINE_BUFFER_SIZE];
-                sscanf(line, "%*[^:]:%[ a-zA-Z0-9\n]", buf);
-
-                int i = 0, scan = 1;
-                while (scan) {
-                    if (i == TITLE_LENGTH - 1 || buf[i] == '\n') {
-                        title[i] = '\0';
-                        scan = 0;
-                    } else {
-                        title[i] = buf[i];
-                    }
-                    i++;
-                }
+                load_capped_title(line, title, ':', '\n');
             }
         }
     }
 
-    /*test if works*/
     fclose(file);
 }
 

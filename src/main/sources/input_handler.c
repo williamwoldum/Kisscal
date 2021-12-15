@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../headers/analyzer.h"
 #include "../headers/cal_renderer.h"
@@ -85,11 +86,13 @@ int prompt_user_input(calendar *current_cal) {
             break;
         }
         case add_event_rule: {
-            char event_str[TITLE_LENGTH];
+            char title[TITLE_LENGTH];
             char day_str[DAY_LEN];
             char time_start_str[TIME_LEN];
             char time_end_str[TIME_LEN];
-            sscanf(user_input, "%*[^:]: '%[^']'  %s %s %s", event_str, day_str, time_start_str, time_end_str);
+
+            sscanf(user_input, "%*[^']'%*[^']'  %s %s %s", day_str, time_start_str, time_end_str);
+            load_capped_title(user_input, title, '\'', '\'');
             int dow = get_dow_from_str(day_str);
 
             int hour_start, mins_start;
@@ -100,7 +103,7 @@ int prompt_user_input(calendar *current_cal) {
             sscanf(time_end_str, "%d:%d", &hour_end, &mins_end);
             time_t time_end = digi_time_to_epoch(current_cal->days[dow].time, hour_end, mins_end);
 
-            add_event(event_str, time_start, time_end);
+            add_event(title, time_start, time_end);
             prn_cal(current_cal);
             break;
         }
@@ -121,20 +124,21 @@ int prompt_user_input(calendar *current_cal) {
             break;
         }
         case add_assignment_rule: {
-            char assignment_str[TITLE_LENGTH];
+            char title[TITLE_LENGTH];
             char day_str[DAY_LEN];
             char deadline_str[TIME_LEN];
             float expexted_time;
             float elapsed_time;
 
-            sscanf(user_input, "%*[^:]: '%[^']' %s %s %f %f", assignment_str, day_str, deadline_str, &expexted_time, &elapsed_time);
+            sscanf(user_input, "%*[^']'%*[^']' %s %s %f %f", day_str, deadline_str, &expexted_time, &elapsed_time);
+            load_capped_title(user_input, title, '\'', '\'');
 
             int dow = get_dow_from_str(day_str);
             int hour, mins;
             sscanf(deadline_str, "%d:%d", &hour, &mins);
             time_t time_deadline = digi_time_to_epoch(current_cal->days[dow].time, hour, mins);
 
-            add_assignemnt(assignment_str, time_deadline, expexted_time, elapsed_time);
+            add_assignemnt(title, time_deadline, expexted_time, elapsed_time);
 
             prn_cal(current_cal);
             break;
@@ -202,6 +206,27 @@ int prompt_user_input(calendar *current_cal) {
 void sort_content(day *day) {
     qsort(day->events, CONTENT_IN_DAY, sizeof(event), cmp_events);
     qsort(day->assignments, CONTENT_IN_DAY, sizeof(assignment), cmp_assignments);
+}
+
+/**
+ * @brief  Loads title from string input and caps it to max length
+ * @note
+ * @param  *str: String with part to be capped
+ * @param  *dest: String to be loaded with capped title
+ * @param  start_delim: Delimter of where the title starts
+ * @param  end_delim: Delimter of where the title ends
+ * @retval None
+ */
+void load_capped_title(char *str, char *dest, char start_delim, char end_delim) {
+    char *title_start = strchr(str, start_delim) + 1;
+    char *title_end = strchr(title_start, end_delim);
+
+    int title_length = title_end - title_start;
+    if (title_length > TITLE_LENGTH - 1) {
+        title_length = TITLE_LENGTH - 1;
+    }
+    memcpy(dest, title_start, title_length);
+    dest[title_length] = '\0';
 }
 
 /************************************************************************* Static functions */
