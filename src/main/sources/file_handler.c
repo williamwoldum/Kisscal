@@ -169,6 +169,9 @@ void delete_event(time_t start_time) {
     while (!found && index < CONTENT_IN_DAY) {
         if (cal.days[dow].events[index].start_time == start_time) {
             cal.days[dow].events[index].valid = 0;
+            cal.days[dow].events[index].title[0] = '\0';
+            cal.days[dow].events[index].start_time = -1;
+            cal.days[dow].events[index].end_time = -1;
             found = 1;
         }
         index++;

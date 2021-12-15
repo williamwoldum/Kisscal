@@ -89,7 +89,6 @@ void import_ics(void) {
         }
     }
     fseek(file, 0, SEEK_SET);
-    printf("%d\n", linecount);
 
     int eventstatus = 0;
     time_t start_time = 0, end_time = 0;
@@ -99,6 +98,7 @@ void import_ics(void) {
     int i = 0;
     for (i = 0; i < linecount; i++) {
         fgets(line, LINE_BUFFER_SIZE, file);
+        line[LINE_BUFFER_SIZE - 2] = '\n';
 
         if (strstr(line, "BEGIN:VEVENT")) {
             start_time = 0;

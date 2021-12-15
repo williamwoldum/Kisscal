@@ -226,8 +226,10 @@ void load_capped_title(char *str, char *dest, char start_delim, char end_delim) 
         title_length = TITLE_LENGTH - 1;
     }
 
+    printf("|%d|\n", title_length);
+
     memcpy(dest, title_start, title_length);
-    dest[title_length - 1] = '\0';
+    dest[title_length] = '\0';
 }
 
 /************************************************************************* Static functions */
