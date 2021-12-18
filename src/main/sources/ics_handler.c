@@ -11,7 +11,7 @@
 /************************************************************************* Symbolic constants */
 
 #define ICS_OUTPUT_PATH "./ics_output.ics"
-#define ICS_INPUT_PATH "./Importfiles/myevents.ics"
+#define ICS_INPUT_PATH "./importfiles/myevents.ics"
 #define DT_BUFFER_SIZE 100
 #define PATH_BUFFER_SIZE 300
 #define LINE_BUFFER_SIZE 100

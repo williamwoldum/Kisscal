@@ -35,12 +35,6 @@ all: $(MOUT) $(TOUT)
 MAIN_DEPFLAGS = -MMD -MF $(patsubst $(MAIN_OBJ)/%.o, $(MAIN_DEP)/%.d, $(@))
 TEST_DEPFLAGS = -MMD -MF $(patsubst $(TEST_OBJ)/%.o, $(TEST_DEP)/%.d, $(@))
 
-$(MEXE): $(MAIN_OBJS)
-	$(CC) $^ -o $@ $(CFLAGS)
-
-$(TEXE): $(TEST_OBJS)
-	$(CC) $^ -o $@ $(CFLAGS)
-
 $(MOUT): $(MAIN_OBJS)
 	$(CC) $^ -o $@ $(CFLAGS)
 
