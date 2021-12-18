@@ -350,7 +350,7 @@ static void prn_help(void) {
         "-----------------------------------------------------------------------------------------------------------\n\n"
 
         "<week>  | Number from 1-53 eg. 45\n"
-        "<year>  | Number from 1000-9999 eg. 2021\n"
+        "<year>  | Number from 1000-9999 eg. 2021 (on mac 1970-9999)\n"
         "<day>   | Day in week Monday-Sunday eg. Tuesday\n"
         "<hours> | Number from 0-99 eg. 6.5\n"
         "<time>  | Time in digital format eg. 08:00\n\n"
