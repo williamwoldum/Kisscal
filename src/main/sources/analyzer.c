@@ -6,6 +6,7 @@
 
 #include "../headers/datatypes.h"
 #include "../headers/file_handler.h"
+#include "../headers/input_handler.h"
 #include "../headers/time_handler.h"
 
 /************************************************************************* Static function prototypes */
@@ -202,7 +203,7 @@ static void prn_assignments_status(calendar *cal, time_t current_time, int in_we
             days_to_deadline = deadline_dow;
         }
 
-        void sort_content(day);
+        sort_content(&cal->days[i]);
         for (j = 0; j < CONTENT_IN_DAY; j++) {
             assignment assignment = cal->days[i].assignments[j];
             if (assignment.valid && days_to_deadline >= 0) {

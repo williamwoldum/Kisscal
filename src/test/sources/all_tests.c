@@ -17,6 +17,7 @@ void Run_All_Tests(void) {
 
     /* FIle handler suites */
     CuSuiteAddSuite(suite, (CuSuite*)get_suite_get_cal_test());
+    CuSuiteAddSuite(suite, (CuSuite*)get_suite_convert_cal__to_ics_test());
 
     CuSuiteRun(suite);
     CuSuiteSummary(suite, output);

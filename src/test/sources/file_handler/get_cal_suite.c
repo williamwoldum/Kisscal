@@ -3,8 +3,7 @@
 #include <stdio.h>
 
 #include "../../../main/headers/datatypes.h"
-#include "../../../main/sources/file_handler.c"
-#include "../../../main/sources/time_handler.c"
+#include "../../../main/headers/file_handler.h"
 #include "../../headers/CuTest.h"
 #include "../../headers/file_handler/compare_helper.h"
 

@@ -21,8 +21,8 @@ MAIN_OBJS := $(patsubst $(MAIN_SRC)/%.c, $(MAIN_OBJ)/%.o, $(MAIN_SRCS))
 MAIN_DEPS := $(patsubst $(MAIN_OBJ)/%.o, $(MAIN_DEP)/%.d, $(MAIN_OBJS))
 
 TEST_SRCS := $(wildcard $(TEST_SRC)/*.c) $(wildcard $(TEST_SRC)/*/*.c)
-TEST_OBJS_PRE := $(patsubst $(TEST_SRC)/%.c, $(TEST_OBJ)/%.o, $(TEST_SRCS)) 
-TEST_OBJS := $(addprefix $(TEST_OBJ)/,$(notdir $(TEST_OBJS_PRE)))
+TEST_OBJS := $(patsubst $(TEST_SRC)/%.c, $(TEST_OBJ)/%.o, $(TEST_SRCS)) 
+TEST_OBJS := $(addprefix $(TEST_OBJ)/,$(notdir $(TEST_OBJS)))
 TEST_DEPS := $(patsubst $(TEST_OBJ)/%.o, $(TEST_DEP)/%.d, $(TEST_OBJS))
 
 #########################################################################
@@ -38,7 +38,7 @@ TEST_DEPFLAGS = -MMD -MF $(patsubst $(TEST_OBJ)/%.o, $(TEST_DEP)/%.d, $(@))
 $(MOUT): $(MAIN_OBJS)
 	$(CC) $^ -o $@ $(CFLAGS)
 
-$(TOUT): $(TEST_OBJS)
+$(TOUT): $(TEST_OBJS) $(filter-out  $(MAIN_OBJ)/main.o,$(MAIN_OBJS))
 	$(CC) $^ -o $@ $(CFLAGS)
 
 $(MAIN_OBJ)/%.o: $(MAIN_SRC)/%.c
@@ -47,7 +47,7 @@ $(MAIN_OBJ)/%.o: $(MAIN_SRC)/%.c
 $(TEST_OBJ)/%.o: %.c
 	$(CC) -c $< -o $@ $(CFLAGS) $(TEST_DEPFLAGS)
 
-vpath %.c $(shell find $(TEST_SRC) -type d)
+vpath %.c $(shell find $(TEST_SRC) -type d) 
 
 $(shell mkdir -p $(MAIN_OBJ) $(MAIN_DEP))
 $(shell mkdir -p $(TEST_OBJ) $(TEST_DEP))
@@ -55,7 +55,7 @@ $(shell mkdir -p $(TEST_OBJ) $(TEST_DEP))
 clean:
 	rm -rf $(MAIN_OBJ) $(MAIN_DEP)
 	rm -rf $(TEST_OBJ) $(TEST_DEP)
-	rm -f  *.out
+	rm -f *.out
 	rm -f ./main/cal_storage
 	rm -f ./ics_output.ics
-	rm -f ../.DS_Store
+	rm -f *.DS_Store
