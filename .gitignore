@@ -3,6 +3,5 @@ objects
 *.exe
 *.out
 *.DS_Store
-*.ics
 cal_storage
 .vscode
