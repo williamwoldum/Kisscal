@@ -10,9 +10,11 @@
 #include "../../../main/headers/time_handler.h"
 #include "../../headers/CuTest.h"
 
+#define WEEK_50_2021 1639393200
+
 void convert_cal_to_ics_test_zero_events(CuTest* tc) {
     prepare_file(0);
-    time_t cal_time = get_cal_time_from_day_time(time(NULL));
+    time_t cal_time = WEEK_50_2021;
     calendar cal = get_cal(cal_time);
     convert_cal_to_ics(&cal);
 
@@ -42,7 +44,7 @@ void convert_cal_to_ics_test_zero_events(CuTest* tc) {
 
 void convert_cal_to_ics_test_one_event(CuTest* tc) {
     prepare_file(0);
-    time_t cal_time = get_cal_time_from_day_time(time(NULL));
+    time_t cal_time = WEEK_50_2021;
     add_event("Party", cal_time, cal_time + SECS_IN_HOUR);
     calendar cal = get_cal(cal_time);
     convert_cal_to_ics(&cal);
@@ -73,7 +75,7 @@ void convert_cal_to_ics_test_one_event(CuTest* tc) {
 
 void convert_cal_to_ics_test_one_event_and_one_assignment(CuTest* tc) {
     prepare_file(0);
-    time_t cal_time = get_cal_time_from_day_time(time(NULL));
+    time_t cal_time = WEEK_50_2021;
     add_event("Movie night", cal_time, cal_time + SECS_IN_HOUR);
     add_assignemnt("Math test", cal_time + SECS_IN_DAY * 2, 7, 3);
     calendar cal = get_cal(cal_time);
