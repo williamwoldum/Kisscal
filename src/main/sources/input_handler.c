@@ -137,7 +137,7 @@ int prompt_user_input(calendar *current_cal) {
             sscanf(deadline_str, "%d:%d", &hour, &mins);
             time_t time_deadline = digi_time_to_epoch(current_cal->days[dow].time, hour, mins);
 
-            add_assignemnt(title, time_deadline, expexted_time, elapsed_time);
+            add_assignment(title, time_deadline, expexted_time, elapsed_time);
 
             prn_cal(current_cal);
             break;

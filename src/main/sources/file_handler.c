@@ -194,7 +194,7 @@ void delete_event(time_t start_time) {
  * @param  elapsed_time: Hour currently used in assignment
  * @retval None
  */
-void add_assignemnt(char *title, time_t deadline, float expected_time, float elapsed_time) {
+void add_assignment(char *title, time_t deadline, float expected_time, float elapsed_time) {
     calendar cal = get_cal(get_cal_time_from_day_time(deadline));
     int dow = get_t_data(deadline, t_dow);
 
