@@ -8,7 +8,7 @@
 #include "../headers/regex_handler.h"
 #include "../headers/time_handler.h"
 
-int main() {
+int main(void) {
     srand(time(NULL));
 
     setup_regex();
