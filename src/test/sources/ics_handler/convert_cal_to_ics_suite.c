@@ -77,7 +77,7 @@ void convert_cal_to_ics_test_one_event_and_one_assignment(CuTest* tc) {
     prepare_file(0);
     time_t cal_time = WEEK_50_2021;
     add_event("Movie night", cal_time, cal_time + SECS_IN_HOUR);
-    add_assignemnt("Math test", cal_time + SECS_IN_DAY * 2, 7, 3);
+    add_assignment("Math test", cal_time + SECS_IN_DAY * 2, 7, 3);
     calendar cal = get_cal(cal_time);
     convert_cal_to_ics(&cal);
 
