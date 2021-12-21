@@ -10,7 +10,6 @@
 
 int main(void) {
     srand(time(NULL));
-
     setup_regex();
     prepare_file(0);
 
