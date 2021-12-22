@@ -5,6 +5,8 @@
 
 #include "../../../main/headers/datatypes.h"
 
+/************************************************************************* Global functions  */
+
 int cmp_cals(calendar cal1, calendar cal2) {
     int failed = 0;
     failed += cal1.time != cal2.time;

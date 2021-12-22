@@ -7,12 +7,15 @@
 #include "../../headers/CuTest.h"
 #include "../../headers/file_handler/compare_helper.h"
 
+/************************************************************************* Symbolic constants */
+
 #define WEEK_45_2021 1636369200
 #define WEEK_53_2015 1451300400
 #define WEEK_01_1970 -219600
 #define WEEK_01_9999 253371063600
-
 #define WEEK_45_2021_OFFSET 1636369201
+
+/************************************************************************* Tests  */
 
 void get_cal_test_week_45_2021_fresh(CuTest* tc) {
     prepare_file(0);
@@ -177,6 +180,8 @@ void get_cal_test_week_45_2021_loaded(CuTest* tc) {
     CuAssertTrue(tc, cmp_cals(actual, expected));
     prepare_file(0);
 }
+
+/************************************************************************* Suite  */
 
 CuSuite* get_suite_get_cal_test() {
     CuSuite* suite = CuSuiteNew();

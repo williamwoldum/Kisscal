@@ -15,8 +15,10 @@ void Run_All_Tests(void) {
     CuString* output = CuStringNew();
     CuSuite* suite = CuSuiteNew();
 
-    /* FIle handler suites */
+    /* File handler suites */
     CuSuiteAddSuite(suite, (CuSuite*)get_suite_get_cal_test());
+
+    /* ICS handler suites */
     CuSuiteAddSuite(suite, (CuSuite*)get_suite_convert_cal__to_ics_test());
 
     CuSuiteRun(suite);

@@ -10,7 +10,11 @@
 #include "../../../main/headers/time_handler.h"
 #include "../../headers/CuTest.h"
 
+/************************************************************************* Symbolic constants */
+
 #define WEEK_50_2021 1639393200
+
+/************************************************************************* Tests  */
 
 void convert_cal_to_ics_test_zero_events(CuTest* tc) {
     prepare_file(0);
@@ -104,6 +108,8 @@ void convert_cal_to_ics_test_one_event_and_one_assignment(CuTest* tc) {
 
     CuAssertTrue(tc, succes);
 }
+
+/************************************************************************* Suite  */
 
 CuSuite* get_suite_convert_cal__to_ics_test() {
     CuSuite* suite = CuSuiteNew();
