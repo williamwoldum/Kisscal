@@ -157,6 +157,5 @@ static void assignment_to_ics(FILE *ics_file, assignment *assignment) {
  * @retval int
  */
 static int get_uid(void) {
-    int r = rand() % 1000000000;
-    return r;
+    return rand() % 1000000000;
 }
