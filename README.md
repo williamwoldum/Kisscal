@@ -9,7 +9,6 @@ Kisscal is part of a 1st semester project at Aalborg University, which aims to e
 
 To compile Kisscal.out and Tester.out navigate to the src directory and run "make".<br>
 Make sure GNU make and gcc is installed.<br>
-<br>
 Run "make clean" to "reset" repository.<br>
 <br>
 The repository comes with an ICS file for the "sync" command in Kisscal.<br>
